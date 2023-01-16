@@ -14,6 +14,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -21,11 +22,12 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class Swerve extends SubsystemBase {
     public SwerveDriveOdometry swerveOdometry;
     public SwerveModule[] mSwerveMods;
-    public Pigeon2 gyro;
+    public ADXRS450_Gyro gyro;
 
     public Swerve() {
-        gyro = new Pigeon2(Constants.Swerve.pigeonID);
-        gyro.configFactoryDefault();
+        gyro = new ADXRS450_Gyro();
+        //gyro.configFactoryDefault();
+        calibrateGyro();
         zeroGyro();
 
         mSwerveMods = new SwerveModule[] {
@@ -93,7 +95,13 @@ public class Swerve extends SubsystemBase {
     }
 
     public void zeroGyro(){
-        gyro.setYaw(0);
+        gyro.reset();
+        //gyro.setYaw(0);
+    }
+
+    public void calibrateGyro(){
+        gyro.calibrate();
+        //gyro.setYaw(0);
     }
 
     public Rotation2d getYaw() {
