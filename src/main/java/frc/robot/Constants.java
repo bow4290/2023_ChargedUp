@@ -17,12 +17,11 @@ public final class Constants {
         public static final int pigeonID = 1; // TODO: BOW (Find out which gyro we are using, adapt code)
         public static final boolean invertGyro = false; // Always ensure Gyro is CCW+ CW-
         
-        // TODO: BOW - I just guessed on this one, find out what it actually is (it's one of the SDS MK4i) 
         public static final COTSFalconSwerveConstants chosenModule =
             COTSFalconSwerveConstants.SDSMK4i(COTSFalconSwerveConstants.driveGearRatios.SDSMK4i_L2);
 
         /* Drivetrain Constants */
-        // Measured by Kabir 2023-01-10 using a ruler on swerve test bot. Probably inaccurate and I also 
+        // Approximate, measured by Kabir 2023-01-10 using a large ruler on swerve test bot. I also 
         // assumed that the robot was square (and it seems like it is)
         public static final double trackWidth = Units.inchesToMeters(25.75);
         public static final double wheelBase = Units.inchesToMeters(25.75);
