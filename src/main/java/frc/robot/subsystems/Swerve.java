@@ -43,10 +43,19 @@ public class Swerve extends SubsystemBase {
         Timer.delay(1.0);
         resetModulesToAbsolute();
 
+        // Class for swerve drive odometry. Odometry allows you to track the robot's position on the field
+        // over a course of a match using readings from your swerve drive encoders and swerve azimuth encoders.
         swerveOdometry = new SwerveDriveOdometry(Constants.Swerve.swerveKinematics, getYaw(), getModulePositions());
     }
 
     public void drive(Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop) {
+        // fieldRelative: When true, the positional inputs are oriented to the field.
+        // Pressing up moves the robot up relative to the field, regardless of the robot's rotation.
+        // When false, think of it like strafing. Pressing up will move the robot forward,
+        // and pressing left and right will move the robot side to side (relative to itself).
+        // In teleop, this is controlled by a button that is held down.
+        // Note that the robot does not have a concept of the field,
+        // and the gyro must be configured according to starting orientation.
         SwerveModuleState[] swerveModuleStates =
             Constants.Swerve.swerveKinematics.toSwerveModuleStates(
                 fieldRelative ? ChassisSpeeds.fromFieldRelativeSpeeds(
@@ -60,6 +69,7 @@ public class Swerve extends SubsystemBase {
                                     translation.getY(), 
                                     rotation)
                                 );
+        // Normalizes wheel speeds by the max (wheel) speed.
         SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.Swerve.maxSpeed);
 
         for(SwerveModule mod : mSwerveMods){
@@ -67,7 +77,7 @@ public class Swerve extends SubsystemBase {
         }
     }    
 
-    /* Used by SwerveControllerCommand in Auto */
+    /* Used by SwerveControllerCommand in Auto, instead of the drive method above, which is used by teleop */
     public void setModuleStates(SwerveModuleState[] desiredStates) {
         SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, Constants.Swerve.maxSpeed);
         
@@ -124,7 +134,7 @@ public class Swerve extends SubsystemBase {
     public void periodic(){
         Rotation2d yaw = getYaw();
 
-        swerveOdometry.update(getYaw(), getModulePositions());  
+        swerveOdometry.update(yaw, getModulePositions());  
 
         for(SwerveModule mod : mSwerveMods){
             SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Cancoder", mod.getCanCoder().getDegrees());

@@ -45,7 +45,8 @@ public class SwerveModule {
     }
 
     public void setDesiredState(SwerveModuleState desiredState, boolean isOpenLoop){
-        /* This is a custom optimize function, since default WPILib optimize assumes continuous controller which CTRE and Rev onboard is not */
+        // isOpenLoop is true during teleop and false in auto (uses feedfoward and pid control during auto).
+        // Calculates the shortest path to the desired angle, e.x. 340 -> 20 is +40 instead of -320.
         desiredState = CTREModuleState.optimize(desiredState, getState().angle); 
         setAngle(desiredState);
         setSpeed(desiredState, isOpenLoop);
@@ -63,7 +64,9 @@ public class SwerveModule {
     }
 
     private void setAngle(SwerveModuleState desiredState){
-        Rotation2d angle = (Math.abs(desiredState.speedMetersPerSecond) <= (Constants.Swerve.maxSpeed * 0.01)) ? lastAngle : desiredState.angle; //Prevent rotating module if speed is less then 1%. Prevents Jittering.
+        // 1% control deadband to prevent jittering. Note that this is module angle/direction, not robot.
+        // If we aren't moving that much, it doesn't matter that it's not in the correct direction.
+        Rotation2d angle = (Math.abs(desiredState.speedMetersPerSecond) <= (Constants.Swerve.maxSpeed * 0.01)) ? lastAngle : desiredState.angle;
         
         mAngleMotor.set(ControlMode.Position, Conversions.degreesToFalcon(angle.getDegrees(), Constants.Swerve.angleGearRatio));
         lastAngle = angle;
@@ -77,6 +80,7 @@ public class SwerveModule {
         return Rotation2d.fromDegrees(angleEncoder.getAbsolutePosition());
     }
 
+    // Measures the absolute encoder value and offset, and configures the angle motor to know the current angle.
     public void resetToAbsolute(){
         double absolutePosition = Conversions.degreesToFalcon(getCanCoder().getDegrees() - angleOffset.getDegrees(), Constants.Swerve.angleGearRatio);
         mAngleMotor.setSelectedSensorPosition(absolutePosition);
