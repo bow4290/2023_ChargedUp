@@ -14,9 +14,8 @@ public final class Constants {
     public static final double stickDeadband = 0.1;
 
     public static final class Swerve {
-        // Right now we are using the ADXRS450 which does not need a specific ID.
-        ///public static final int pigeonID = 1; // TODO: BOW (Find out which gyro we are using, adapt code)
-        public static final boolean invertGyro = true; // Always ensure Gyro is CCW+ CW-
+        public static final int pigeonID = 1; // TODO: BOW (Find out which gyro we are using, adapt code)
+        public static final boolean invertGyro = false; // Always ensure Gyro is CCW+ CW-
         
         public static final COTSFalconSwerveConstants chosenModule =
             COTSFalconSwerveConstants.SDSMK4i(COTSFalconSwerveConstants.driveGearRatios.SDSMK4i_L2);
