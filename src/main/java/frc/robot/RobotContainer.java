@@ -49,6 +49,6 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        return null; // new exampleAuto(s_Swerve);
+        return new exampleAuto(s_Swerve);
     }
 }
