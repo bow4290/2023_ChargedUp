@@ -63,7 +63,7 @@ public class exampleAuto extends SequentialCommandGroup {
                 s_Swerve);*/
         // This will load the file "FullAuto.path" and generate it with a max velocity of 4 m/s and a max acceleration of 3 m/s^2
 // for every path in the group
-ArrayList<PathPlannerTrajectory> pathGroup = (ArrayList<PathPlannerTrajectory>) PathPlanner.loadPathGroup("New Path", new PathConstraints(4, 3));
+ArrayList<PathPlannerTrajectory> pathGroup = (ArrayList<PathPlannerTrajectory>) PathPlanner.loadPathGroup("Star Path", new PathConstraints(4, 3));
 
 // This is just an example event map. It would be better to have a constant, global event map
 // in your code that will be used by all path following commands.
