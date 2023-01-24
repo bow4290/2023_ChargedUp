@@ -2,7 +2,7 @@ package frc.robot.subsystems;
 
 import frc.robot.SwerveModule;
 import frc.robot.Constants;
-
+import frc.robot.RobotContainer;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
@@ -17,6 +17,10 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+import java.util.Optional;
+
+import org.photonvision.EstimatedRobotPose;
 
 public class Swerve extends SubsystemBase {
     public SwerveDrivePoseEstimator swerveOdometry;
@@ -128,7 +132,7 @@ public class Swerve extends SubsystemBase {
 
         swerveOdometry.update(yaw, getModulePositions());
         RobotContainer.photonPoseEstimator.setReferencePose(getPose());
-        Optional<EstimatedRobotPose> res = swerveOdometry.update();
+        Optional<EstimatedRobotPose> res = RobotContainer.photonPoseEstimator.update();
         if (res.isPresent()) {
             EstimatedRobotPose camPose = res.get();
             swerveOdometry.addVisionMeasurement(camPose.estimatedPose.toPose2d(), camPose.timestampSeconds);
