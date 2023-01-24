@@ -43,8 +43,13 @@ public class RobotContainer {
     private final JoystickButton robotCentricPS5 = new JoystickButton(driverPS5, PS4Controller.Button.kL1.value);
 
 
+    private final JoystickButton intakeIn = new JoystickButton(driver, XboxController.Button.kA.value);
+    private final JoystickButton intakeOut = new JoystickButton(driver, XboxController.Button.kB.value);
+
     /* Subsystems */
     private final Swerve s_Swerve = new Swerve();
+
+    private final IntakeSubsystem s_Intake = new IntakeSubsystem();
 
     private AprilTagFieldLayout aprilLayout;
     public static PhotonCamera cam;
@@ -76,6 +81,11 @@ public class RobotContainer {
         /* Driver Buttons */
         zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
         zeroGyroPS5.onTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
+
+        intakeIn.whileTrue(new IntakeIn(s_Intake));
+
+        intakeOut.whileTrue(new IntakeOut(s_Intake));
+        
     }
 
     public Command getAutonomousCommand() {
