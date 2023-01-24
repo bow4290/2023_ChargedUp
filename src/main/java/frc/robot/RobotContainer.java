@@ -12,6 +12,9 @@ import frc.robot.autos.*;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
 
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
+
 public class RobotContainer {
     /* Controllers */
     private final Joystick driver = new Joystick(0);
@@ -36,6 +39,13 @@ public class RobotContainer {
     /* Subsystems */
     private final Swerve s_Swerve = new Swerve();
 
+    private AprilTagFieldLayout aprilLayout;
+    public static PhotonCamera cam;
+    // Cam mounted facing forward, half a meter forward of center, half a meter up from center.
+    // TODO: update
+    public static final Transform3d robotToCam = new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0,0,0));
+    public static PhotonPoseEstimator photonPoseEstimator;
+
 
     /** The container for the robot. Contains subsystems, IO devices, and commands. */
     public RobotContainer() {
@@ -48,6 +58,9 @@ public class RobotContainer {
                 () -> robotCentric.getAsBoolean() || robotCentricPS5.getAsBoolean()
             )
         );
+        try {aprilLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2023ChargedUp.m_resourceFile);} catch (Exception e) {};
+        cam = new PhotonCamera("main");
+        photonPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.CLOSEST_TO_REFERENCE_POSE, cam, robotToCam);
 
         configureButtonBindings();
     }

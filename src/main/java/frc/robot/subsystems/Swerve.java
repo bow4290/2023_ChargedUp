@@ -127,6 +127,12 @@ public class Swerve extends SubsystemBase {
         Rotation2d yaw = getYaw();
 
         swerveOdometry.update(yaw, getModulePositions());
+        RobotContainer.photonPoseEstimator.setReferencePose(getPose());
+        Optional<EstimatedRobotPose> res = swerveOdometry.update();
+        if (res.isPresent()) {
+            EstimatedRobotPose camPose = res.get();
+            swerveOdometry.addVisionMeasurement(camPose.estimatedPose.toPose2d(), camPose.timestampSeconds);
+        }
 
         for(SwerveModule mod : mSwerveMods){
             SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Cancoder", mod.getCanCoder().getDegrees());
