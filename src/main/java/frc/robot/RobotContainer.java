@@ -22,6 +22,12 @@ import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+
+import java.util.Optional;
+
+import org.photonvision.EstimatedRobotPose;
 
 public class RobotContainer {
     /* Controllers */
@@ -42,6 +48,12 @@ public class RobotContainer {
 
     private final JoystickButton robotCentric = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
     private final JoystickButton robotCentricPS5 = new JoystickButton(driverPS5, PS4Controller.Button.kL1.value);
+
+    private final JoystickButton resetPose = new JoystickButton(driver, XboxController.Button.kX.value);
+    private final JoystickButton resetPosePS5 = new JoystickButton(driverPS5, PS4Controller.Button.kSquare.value);
+
+    private final JoystickButton goToCenter = new JoystickButton(driver, XboxController.Button.kStart.value);
+    private final JoystickButton goToCenterPS5 = new JoystickButton(driverPS5, PS4Controller.Button.kShare.value);
 
 
     /* Subsystems */
@@ -76,8 +88,23 @@ public class RobotContainer {
 
     private void configureButtonBindings() {
         /* Driver Buttons */
-        zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
-        zeroGyroPS5.onTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
+        zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroGyro(), s_Swerve));
+        zeroGyroPS5.onTrue(new InstantCommand(() -> s_Swerve.zeroGyro(), s_Swerve));
+
+        InstantCommand resetPoseCmd = new InstantCommand(() -> {
+          photonPoseEstimator.setReferencePose(s_Swerve.getPose());
+          Optional<EstimatedRobotPose> res = photonPoseEstimator.update();
+          if (res.isPresent()) {
+            EstimatedRobotPose camPose = res.get();
+            s_Swerve.resetOdometry(camPose.estimatedPose.toPose2d());
+          }
+        }, s_Swerve);
+        resetPose.onTrue(resetPoseCmd);
+        resetPosePS5.onTrue(resetPoseCmd);
+
+        Command goToCenterCmd = new GoToPoint(s_Swerve, s_Swerve.getPose(), new Pose2d(5, 5, new Rotation2d(0)));
+        goToCenter.onTrue(goToCenterCmd);
+        goToCenterPS5.onTrue(goToCenterCmd);
     }
 
     public Command getAutonomousCommand() {
