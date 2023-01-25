@@ -17,16 +17,16 @@ public class IntakeSubsystem extends SubsystemBase {
   //  intakeMotor1.enableVoltageCompensation(11);
   //  intakeMotor1.setOpenLoopRampRate(0.5);
 
-    intakeMotor2 = new CANSparkMax(7, MotorType.kBrushless);
+    intakeMotor2 = new CANSparkMax(13, MotorType.kBrushless);
     intakeMotor2.restoreFactoryDefaults();
-    intakeMotor2.setInverted(true);
+    intakeMotor2.setInverted(false);
     //intakeMotor2.enableVoltageCompensation(11);
    // intakeMotor2.setOpenLoopRampRate(0.5);
   }
 
   public void intakeSpin(double intakeSpeed) {
     intakeMotor1.set(intakeSpeed);
-    intakeMotor2.set(intakeSpeed);
+    intakeMotor2.set(-intakeSpeed);
   }
 
   public boolean isIntakeSpinning(){

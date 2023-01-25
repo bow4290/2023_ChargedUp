@@ -18,7 +18,7 @@ public class IntakeIn extends CommandBase {
 
   @Override
   public void execute() {
-    intakeSubsystem.intakeSpin(0.3);
+    intakeSubsystem.intakeSpin(-0.3);
   }
 
   @Override
