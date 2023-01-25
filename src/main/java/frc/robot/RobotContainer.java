@@ -63,7 +63,7 @@ public class RobotContainer {
     public static PhotonCamera cam;
     // Cam mounted facing forward, half a meter forward of center, half a meter up from center.
     // TODO: update
-    public static final Transform3d robotToCam = new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0,0,0));
+    public static final Transform3d robotToCam = new Transform3d(new Translation3d(0, 0.381, 0.381), new Rotation3d(0,0,0));
     public static PhotonPoseEstimator photonPoseEstimator;
 
 
@@ -79,7 +79,7 @@ public class RobotContainer {
             )
         );
         try {aprilLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2023ChargedUp.m_resourceFile);} catch (Exception e) {};
-        cam = new PhotonCamera("main");
+        cam = new PhotonCamera("OV5647");
         cam.setLED(VisionLEDMode.kBlink);
         photonPoseEstimator = new PhotonPoseEstimator(aprilLayout, PoseStrategy.CLOSEST_TO_REFERENCE_POSE, cam, robotToCam);
 
