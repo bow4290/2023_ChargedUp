@@ -15,12 +15,19 @@ import frc.robot.subsystems.*;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
+import org.photonvision.common.hardware.VisionLEDMode;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+
+import java.util.Optional;
+
+import org.photonvision.EstimatedRobotPose;
 
 public class RobotContainer {
     /* Controllers */
@@ -42,6 +49,12 @@ public class RobotContainer {
     private final JoystickButton robotCentric = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
     private final JoystickButton robotCentricPS5 = new JoystickButton(driverPS5, PS4Controller.Button.kL1.value);
 
+    private final JoystickButton resetPose = new JoystickButton(driver, XboxController.Button.kX.value);
+    private final JoystickButton resetPosePS5 = new JoystickButton(driverPS5, PS4Controller.Button.kSquare.value);
+
+    private final JoystickButton goToCenter = new JoystickButton(driver, XboxController.Button.kStart.value);
+    private final JoystickButton goToCenterPS5 = new JoystickButton(driverPS5, PS4Controller.Button.kShare.value);
+
 
     /* Subsystems */
     private final Swerve s_Swerve = new Swerve();
@@ -50,7 +63,7 @@ public class RobotContainer {
     public static PhotonCamera cam;
     // Cam mounted facing forward, half a meter forward of center, half a meter up from center.
     // TODO: update
-    public static final Transform3d robotToCam = new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0,0,0));
+    public static final Transform3d robotToCam = new Transform3d(new Translation3d(0, 0.381, 0.381), new Rotation3d(0,0,0));
     public static PhotonPoseEstimator photonPoseEstimator;
 
 
@@ -66,7 +79,8 @@ public class RobotContainer {
             )
         );
         try {aprilLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2023ChargedUp.m_resourceFile);} catch (Exception e) {};
-        cam = new PhotonCamera("main");
+        cam = new PhotonCamera("OV5647");
+        cam.setLED(VisionLEDMode.kBlink);
         photonPoseEstimator = new PhotonPoseEstimator(aprilLayout, PoseStrategy.CLOSEST_TO_REFERENCE_POSE, cam, robotToCam);
 
         configureButtonBindings();
@@ -74,8 +88,23 @@ public class RobotContainer {
 
     private void configureButtonBindings() {
         /* Driver Buttons */
-        zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
-        zeroGyroPS5.onTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
+        zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroGyro(), s_Swerve));
+        zeroGyroPS5.onTrue(new InstantCommand(() -> s_Swerve.zeroGyro(), s_Swerve));
+
+        InstantCommand resetPoseCmd = new InstantCommand(() -> {
+          photonPoseEstimator.setReferencePose(s_Swerve.getPose());
+          Optional<EstimatedRobotPose> res = photonPoseEstimator.update();
+          if (res.isPresent()) {
+            EstimatedRobotPose camPose = res.get();
+            s_Swerve.resetOdometry(camPose.estimatedPose.toPose2d());
+          }
+        }, s_Swerve);
+        resetPose.onTrue(resetPoseCmd);
+        resetPosePS5.onTrue(resetPoseCmd);
+
+        Command goToCenterCmd = new GoToPoint(s_Swerve, s_Swerve.getPose(), new Pose2d(5, 5, new Rotation2d(0)));
+        goToCenter.onTrue(goToCenterCmd);
+        goToCenterPS5.onTrue(goToCenterCmd);
     }
 
     public Command getAutonomousCommand() {

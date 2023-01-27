@@ -133,9 +133,10 @@ public class Swerve extends SubsystemBase {
     @Override
     public void periodic(){
         Rotation2d yaw = getYaw();
+        Pose2d pose = getPose();
 
         swerveOdometry.update(yaw, getModulePositions());
-        RobotContainer.photonPoseEstimator.setReferencePose(getPose());
+        RobotContainer.photonPoseEstimator.setReferencePose(pose);
         Optional<EstimatedRobotPose> res = RobotContainer.photonPoseEstimator.update();
         if (res.isPresent()) {
             EstimatedRobotPose camPose = res.get();
@@ -150,5 +151,7 @@ public class Swerve extends SubsystemBase {
 
         SmartDashboard.putNumber("Gyro yaw", yaw.getDegrees());
         SmartDashboard.putNumber("Gyro pitch", getPitch());
+        SmartDashboard.putNumber("Robot X", pose.getX());
+        SmartDashboard.putNumber("Robot Y", pose.getY());
     }
 }
