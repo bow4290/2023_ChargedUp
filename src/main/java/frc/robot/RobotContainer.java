@@ -55,6 +55,10 @@ public class RobotContainer {
     private final JoystickButton goToCenter = new JoystickButton(driver, XboxController.Button.kStart.value);
     private final JoystickButton goToCenterPS5 = new JoystickButton(driverPS5, PS4Controller.Button.kShare.value);
 
+    private final JoystickButton tryToBalance = new JoystickButton(driver, XboxController.Button.kB.value);
+    // todo figure out what the ps5 equivalent of B is?
+    //private final JoystickButton tryToBalancePS5 = new JoystickButton(driverPS5, PS4Controller.Button.kc.value);
+
 
     /* Subsystems */
     private final Swerve s_Swerve = new Swerve();
@@ -105,6 +109,8 @@ public class RobotContainer {
         Command goToCenterCmd = new GoToPoint(s_Swerve, s_Swerve.getPose(), new Pose2d(5, 5, new Rotation2d(0)));
         goToCenter.onTrue(goToCenterCmd);
         goToCenterPS5.onTrue(goToCenterCmd);
+
+        tryToBalance.onTrue(new BalanceThing(s_Swerve));
     }
 
     public Command getAutonomousCommand() {
