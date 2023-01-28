@@ -130,6 +130,18 @@ public class Swerve extends SubsystemBase {
         }
     }
 
+    public double getTiltMagnitude() {
+        double[] grav = new double[3];
+        gyro.getGravityVector(grav);
+        return Math.sqrt(grav[0] * grav[0] + grav[1] * grav[1]);
+    }
+
+    public Rotation2d getTiltDirection() {
+        double[] grav = new double[3];
+        gyro.getGravityVector(grav);
+        return new Rotation2d(grav[0], grav[1]);
+    }
+
     @Override
     public void periodic(){
         Rotation2d yaw = getYaw();
@@ -153,5 +165,9 @@ public class Swerve extends SubsystemBase {
         SmartDashboard.putNumber("Gyro pitch", getPitch());
         SmartDashboard.putNumber("Robot X", pose.getX());
         SmartDashboard.putNumber("Robot Y", pose.getY());
+
+        double[] grav = new double[3];
+        gyro.getGravityVector(grav);
+        SmartDashboard.putNumber("grav", Math.sqrt(grav[0] * grav[0] + grav[1] * grav[1]));
     }
 }

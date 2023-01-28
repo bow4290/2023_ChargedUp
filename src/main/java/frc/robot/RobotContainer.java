@@ -110,7 +110,7 @@ public class RobotContainer {
         goToCenter.onTrue(goToCenterCmd);
         goToCenterPS5.onTrue(goToCenterCmd);
 
-        tryToBalance.onTrue(new BalanceThing(s_Swerve));
+        tryToBalance.whileTrue(new BalanceThing(s_Swerve));
     }
 
     public Command getAutonomousCommand() {
