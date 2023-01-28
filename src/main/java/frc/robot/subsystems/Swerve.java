@@ -120,18 +120,35 @@ public class Swerve extends SubsystemBase {
         return (Constants.Swerve.invertGyro) ? Rotation2d.fromDegrees(360 - gyro.getYaw()) : Rotation2d.fromDegrees(gyro.getYaw());
     }
 
+    public double getPitch() {
+        return gyro.getPitch();
+    }
+
     public void resetModulesToAbsolute(){
         for(SwerveModule mod : mSwerveMods){
             mod.resetToAbsolute();
         }
     }
 
+    public double getTiltMagnitude() {
+        double[] grav = new double[3];
+        gyro.getGravityVector(grav);
+        return Math.sqrt(grav[0] * grav[0] + grav[1] * grav[1]);
+    }
+
+    public Rotation2d getTiltDirection() {
+        double[] grav = new double[3];
+        gyro.getGravityVector(grav);
+        return new Rotation2d(grav[0], grav[1]);
+    }
+
     @Override
     public void periodic(){
         Rotation2d yaw = getYaw();
+        Pose2d pose = getPose();
 
         swerveOdometry.update(yaw, getModulePositions());
-        RobotContainer.photonPoseEstimator.setReferencePose(getPose());
+        RobotContainer.photonPoseEstimator.setReferencePose(pose);
         Optional<EstimatedRobotPose> res = RobotContainer.photonPoseEstimator.update();
         if (res.isPresent()) {
             EstimatedRobotPose camPose = res.get();
@@ -145,6 +162,12 @@ public class Swerve extends SubsystemBase {
         }
 
         SmartDashboard.putNumber("Gyro yaw", yaw.getDegrees());
-        SmartDashboard.putNumber("Gyro pitch", gyro.getPitch());
+        SmartDashboard.putNumber("Gyro pitch", getPitch());
+        SmartDashboard.putNumber("Robot X", pose.getX());
+        SmartDashboard.putNumber("Robot Y", pose.getY());
+
+        double[] grav = new double[3];
+        gyro.getGravityVector(grav);
+        SmartDashboard.putNumber("grav", Math.sqrt(grav[0] * grav[0] + grav[1] * grav[1]));
     }
 }

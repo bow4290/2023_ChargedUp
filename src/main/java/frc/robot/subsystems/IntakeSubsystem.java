@@ -11,13 +11,13 @@ public class IntakeSubsystem extends SubsystemBase {
 
 
   public IntakeSubsystem() {
-    intakeMotor1 = new CANSparkMax(3, MotorType.kBrushless);
+    intakeMotor1 = new CANSparkMax(2, MotorType.kBrushless);
     intakeMotor1.restoreFactoryDefaults();
     intakeMotor1.setInverted(false);
   //  intakeMotor1.enableVoltageCompensation(11);
   //  intakeMotor1.setOpenLoopRampRate(0.5);
 
-    intakeMotor2 = new CANSparkMax(13, MotorType.kBrushless);
+    intakeMotor2 = new CANSparkMax(7, MotorType.kBrushless);
     intakeMotor2.restoreFactoryDefaults();
     intakeMotor2.setInverted(false);
     //intakeMotor2.enableVoltageCompensation(11);
