@@ -47,9 +47,9 @@ public class SwerveModule {
     public void setDesiredState(SwerveModuleState desiredState, boolean isOpenLoop){
         // isOpenLoop is true during teleop and false in auto (uses feedfoward and pid control during auto).
         // Calculates the shortest path to the desired angle, e.x. 340 -> 20 is +40 instead of -320.
-        desiredState = CTREModuleState.optimize(desiredState, getState().angle); 
+        /*desiredState = CTREModuleState.optimize(desiredState, getState().angle); 
         setAngle(desiredState);
-        setSpeed(desiredState, isOpenLoop);
+        setSpeed(desiredState, isOpenLoop);*/
     }
 
     private void setSpeed(SwerveModuleState desiredState, boolean isOpenLoop){
