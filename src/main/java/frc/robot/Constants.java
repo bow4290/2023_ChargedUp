@@ -132,6 +132,15 @@ public final class Constants {
         }
     }
 
+    public static final class Intake {
+        // TODO: I just guessed wrt which one is left/right
+        public static final int leftIntakeID = 2;
+        public static final int rightIntakeID = 7;
+        public static final double inSpeed = -0.3;
+        public static final double ejectSpeed = 0.3;
+        public static final double stopSpeed = 0;
+    }
+
     public static final class AutoConstants { //TODO: The below constants are used in the example auto, and must be tuned to specific robot
         public static final double kMaxSpeedMetersPerSecond = 3;
         public static final double kMaxAccelerationMetersPerSecondSquared = 3;

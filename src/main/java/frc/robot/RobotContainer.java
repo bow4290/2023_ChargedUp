@@ -10,6 +10,12 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 import frc.robot.autos.*;
 import frc.robot.commands.*;
+import frc.robot.commands.intake.IntakeIn;
+import frc.robot.commands.intake.SpInintake;
+import frc.robot.commands.intake.SpInintake.IntakeSpinStatus;
+import frc.robot.commands.swerve.BalanceThing;
+import frc.robot.commands.swerve.GoToPoint;
+import frc.robot.commands.swerve.TeleopSwerve;
 import frc.robot.subsystems.*;
 
 import org.photonvision.PhotonCamera;
@@ -66,7 +72,7 @@ public class RobotContainer {
     /* Subsystems */
     private final Swerve s_Swerve = new Swerve();
 
-    private final IntakeSubsystem s_Intake = new IntakeSubsystem();
+    private final Intake s_Intake = new Intake();
 
     private AprilTagFieldLayout aprilLayout;
     public static PhotonCamera cam;
@@ -117,11 +123,9 @@ public class RobotContainer {
 
         tryToBalance.whileTrue(new BalanceThing(s_Swerve));
 
-        
+        intakeIn.whileTrue(new SpInintake(s_Intake, IntakeSpinStatus.Intake));
 
-        intakeIn.whileTrue(new IntakeIn(s_Intake));
-
-        intakeOut.whileTrue(new IntakeOut(s_Intake));
+        intakeOut.whileTrue(new SpInintake(s_Intake, IntakeSpinStatus.Eject));
     }
 
     public Command getAutonomousCommand() {
