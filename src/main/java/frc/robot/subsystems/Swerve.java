@@ -88,6 +88,13 @@ public class Swerve extends SubsystemBase {
         }
     }    
 
+    public void lockChargeStation() {
+        for (SwerveModule mod : mSwerveMods) {
+            mod.setDesiredState(new SwerveModuleState(0,
+                new Rotation2d(45 * (mod.moduleNumber/2) * 2 - 1)), false);
+        }
+    }
+
     public Pose2d getPose() {
         return swerveOdometry.getEstimatedPosition();
     }

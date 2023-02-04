@@ -77,7 +77,6 @@ public class RobotContainer {
     public static PhotonCamera cam;
     // Cam mounted facing forward, half a meter forward of center, half a meter up from center.
     // TODO: update
-    public static final Transform3d robotToCam = new Transform3d(new Translation3d(0, 0.381, 0.381), new Rotation3d(0,0,0));
     public static PhotonPoseEstimator photonPoseEstimator;
 
 
@@ -86,16 +85,20 @@ public class RobotContainer {
         s_Swerve.setDefaultCommand(
             new TeleopSwerve(
                 s_Swerve, 
-                () -> -driver.getRawAxis(forwardBackwardAxis) - driverPS5.getRawAxis(forwardBackwardAxisPS5), 
-                () -> -driver.getRawAxis(leftRightAxis) - driverPS5.getRawAxis(leftRightAxisPS5), 
-                () -> -driver.getRawAxis(rotationAxis) - driverPS5.getRawAxis(rotationAxisPS5), 
-                () -> robotCentric.getAsBoolean() || robotCentricPS5.getAsBoolean()
+                () -> -driver.getRawAxis(forwardBackwardAxis) - 
+                    (Constants.enablePS5 ? driverPS5.getRawAxis(forwardBackwardAxisPS5) : 0), 
+                () -> -driver.getRawAxis(leftRightAxis) - 
+                    (Constants.enablePS5 ? driverPS5.getRawAxis(leftRightAxisPS5) : 0), 
+                () -> -driver.getRawAxis(rotationAxis) - 
+                    (Constants.enablePS5 ? driverPS5.getRawAxis(rotationAxisPS5) : 0), 
+                () -> robotCentric.getAsBoolean() || 
+                    (Constants.enablePS5 ? robotCentricPS5.getAsBoolean() : false)
             )
         );
         try {aprilLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2023ChargedUp.m_resourceFile);} catch (Exception e) {};
-        cam = new PhotonCamera("OV5647");
+        cam = new PhotonCamera(Constants.Limelight.camName);
         cam.setLED(VisionLEDMode.kBlink);
-        photonPoseEstimator = new PhotonPoseEstimator(aprilLayout, PoseStrategy.CLOSEST_TO_REFERENCE_POSE, cam, robotToCam);
+        photonPoseEstimator = new PhotonPoseEstimator(aprilLayout, PoseStrategy.CLOSEST_TO_REFERENCE_POSE, cam, Constants.Limelight.robotToCam);
 
         configureButtonBindings();
     }
@@ -103,7 +106,8 @@ public class RobotContainer {
     private void configureButtonBindings() {
         /* Driver Buttons */
         zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroGyro(), s_Swerve));
-        zeroGyroPS5.onTrue(new InstantCommand(() -> s_Swerve.zeroGyro(), s_Swerve));
+        if (Constants.enablePS5)
+            zeroGyroPS5.onTrue(new InstantCommand(() -> s_Swerve.zeroGyro(), s_Swerve));
 
         InstantCommand resetPoseCmd = new InstantCommand(() -> {
           photonPoseEstimator.setReferencePose(s_Swerve.getPose());
@@ -114,13 +118,16 @@ public class RobotContainer {
           }
         }, s_Swerve);
         resetPose.onTrue(resetPoseCmd);
-        resetPosePS5.onTrue(resetPoseCmd);
+        if (Constants.enablePS5)
+            resetPosePS5.onTrue(resetPoseCmd);
 
         Command goToCenterCmd = new GoToPoint(s_Swerve, s_Swerve.getPose(), new Pose2d(5, 5, new Rotation2d(0)));
         goToCenter.onTrue(goToCenterCmd);
-        goToCenterPS5.onTrue(goToCenterCmd);
+        if (Constants.enablePS5)
+            goToCenterPS5.onTrue(goToCenterCmd);
 
         tryToBalance.whileTrue(new BalanceThing(s_Swerve));
+        // TODO: PS5 balance button
 
         intakeIn.whileTrue(new SpInintake(s_Intake, IntakeSpinStatus.Intake));
 
