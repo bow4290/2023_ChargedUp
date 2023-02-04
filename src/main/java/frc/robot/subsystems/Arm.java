@@ -12,7 +12,7 @@ public class Arm extends SubsystemBase {
   private final TalonFX armPivot;
 
   public Arm() {
-    armPivot = new TalonFX(Constants.Intake.leftIntakeID);
+    armPivot = new TalonFX(Constants.Arm.armPivotID);
     armPivot.configFactoryDefault();
     armPivot.setInverted(false);
     armPivot.setNeutralMode(NeutralMode.Brake);
