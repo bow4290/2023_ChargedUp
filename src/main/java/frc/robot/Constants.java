@@ -3,7 +3,10 @@ package frc.robot;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
@@ -12,6 +15,12 @@ import frc.lib.util.SwerveModuleConstants;
 
 public final class Constants {
     public static final double stickDeadband = 0.1;
+    public static final boolean enablePS5 = false;
+
+    public static final class Limelight {
+        public static final Transform3d robotToCam = new Transform3d(new Translation3d(0, 0.381, 0.381), new Rotation3d(0,0,0));
+        public static final String camName = "OV5647";
+    }
 
     public static final class Swerve {
         public static final int pigeonID = 1; // TODO: BOW (Find out which gyro we are using, adapt code)
