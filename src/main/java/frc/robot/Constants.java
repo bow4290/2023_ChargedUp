@@ -147,8 +147,10 @@ public final class Constants {
         public static final int leftIntakeID = 2;
         public static final int rightIntakeID = 7;
         // TODO: these are placeholder values
-        public static final int leftSolenoidPort = 4;
-        public static final int rightSolenoidPort = 5;
+        public static final int leftSolenoidPortForward = 4;
+        public static final int leftSolenoidPortReverse = 5;
+        public static final int rightSolenoidPortForward = 6;
+        public static final int rightSolenoidPortReverse = 7;
         public static final PneumaticsModuleType pneumaticType = PneumaticsModuleType.REVPH;
         
         public static final double inSpeed = -0.3;

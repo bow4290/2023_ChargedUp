@@ -22,6 +22,7 @@ public class Intake extends SubsystemBase {
     Cone,
     Cube
   }
+  public IntakePistonStatus status;
 
 
   public Intake() {
@@ -36,10 +37,11 @@ public class Intake extends SubsystemBase {
     rightIntake.setInverted(false);
     rightIntake.enableVoltageCompensation(11);
     rightIntake.setIdleMode(IdleMode.kBrake);
-    DoubleSolenoid leftSolenoid = new DoubleSolenoid(Constants.Intake.pneumaticType, 4, 5);
 
-    DoubleSolenoid rightSolenoid = new DoubleSolenoid(Constants.Intake.pneumaticType, 4, 5);
-
+    leftSolenoid = new DoubleSolenoid(Constants.Intake.pneumaticType, 
+      Constants.Intake.leftSolenoidPortForward, Constants.Intake.leftSolenoidPortReverse);
+    rightSolenoid = new DoubleSolenoid(Constants.Intake.pneumaticType, 
+      Constants.Intake.rightSolenoidPortForward, Constants.Intake.rightSolenoidPortReverse);
   }
 
   public void intakeSpin(double intakeSpeed) {
@@ -48,7 +50,13 @@ public class Intake extends SubsystemBase {
     rightIntake.set(-intakeSpeed);
   }
 
-  public void
+  public void setSolenoids(IntakePistonStatus status) {
+    DoubleSolenoid.Value solenoidValue = 
+      status == IntakePistonStatus.Cone ? DoubleSolenoid.Value.kForward : DoubleSolenoid.Value.kReverse;
+    
+    leftSolenoid.set(solenoidValue);
+    rightSolenoid.set(solenoidValue);
+  }
 
   @Override
   public void periodic() {

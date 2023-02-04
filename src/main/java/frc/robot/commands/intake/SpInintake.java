@@ -45,7 +45,10 @@ public class SpInintake extends CommandBase {
 
   @Override
   public void end(boolean interrupted) { 
-    intake.intakeSpin(Constants.Intake.stopSpeed);
+    // only stop spinning the intake if it's not interrupted
+    if (!interrupted) {
+      intake.intakeSpin(Constants.Intake.stopSpeed);
+    }
   }
 
   @Override
