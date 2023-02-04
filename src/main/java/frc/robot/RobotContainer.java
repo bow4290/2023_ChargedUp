@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 import frc.robot.autos.*;
 import frc.robot.commands.*;
+import frc.robot.commands.arm.MovArm;
 import frc.robot.commands.intake.SpInintake;
 import frc.robot.commands.intake.SpInintake.IntakeSpinStatus;
 import frc.robot.commands.swerve.BalanceThing;
@@ -54,16 +55,19 @@ public class RobotContainer {
     private final JoystickButton robotCentric = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
     private final JoystickButton robotCentricPS5 = new JoystickButton(driverPS5, PS4Controller.Button.kL1.value);
 
-    private final JoystickButton resetPose = new JoystickButton(driver, XboxController.Button.kX.value);
-    private final JoystickButton resetPosePS5 = new JoystickButton(driverPS5, PS4Controller.Button.kSquare.value);
+    //private final JoystickButton resetPose = new JoystickButton(driver, XboxController.Button.kX.value);
+    //private final JoystickButton resetPosePS5 = new JoystickButton(driverPS5, PS4Controller.Button.kSquare.value);
 
-    private final JoystickButton goToCenter = new JoystickButton(driver, XboxController.Button.kStart.value);
-    private final JoystickButton goToCenterPS5 = new JoystickButton(driverPS5, PS4Controller.Button.kShare.value);
+    //private final JoystickButton goToCenter = new JoystickButton(driver, XboxController.Button.kStart.value);
+    //private final JoystickButton goToCenterPS5 = new JoystickButton(driverPS5, PS4Controller.Button.kShare.value);
 
     private final JoystickButton tryToBalance = new JoystickButton(driver, XboxController.Button.kRightBumper.value);
     // todo figure out what the ps5 equivalent of B is?
     //private final JoystickButton tryToBalancePS5 = new JoystickButton(driverPS5, PS4Controller.Button.kc.value);
 
+    private final JoystickButton armUp = new JoystickButton(driver, XboxController.Button.kStart.value);
+
+    private final JoystickButton armDown = new JoystickButton(driver, XboxController.Button.kX.value);
 
     private final JoystickButton intakeIn = new JoystickButton(driver, XboxController.Button.kA.value);
     private final JoystickButton intakeOut = new JoystickButton(driver, XboxController.Button.kB.value);
@@ -72,6 +76,8 @@ public class RobotContainer {
     private final Swerve s_Swerve = new Swerve();
 
     private final Intake s_Intake = new Intake();
+
+    private final Arm s_Arm = new Arm();
 
     private AprilTagFieldLayout aprilLayout;
     public static PhotonCamera cam;
@@ -109,22 +115,22 @@ public class RobotContainer {
         if (Constants.enablePS5)
             zeroGyroPS5.onTrue(new InstantCommand(() -> s_Swerve.zeroGyro(), s_Swerve));
 
-        InstantCommand resetPoseCmd = new InstantCommand(() -> {
+     /*    InstantCommand resetPoseCmd = new InstantCommand(() -> {
           photonPoseEstimator.setReferencePose(s_Swerve.getPose());
           Optional<EstimatedRobotPose> res = photonPoseEstimator.update();
           if (res.isPresent()) {
             EstimatedRobotPose camPose = res.get();
             s_Swerve.resetOdometry(camPose.estimatedPose.toPose2d());
           }
-        }, s_Swerve);
-        resetPose.onTrue(resetPoseCmd);
-        if (Constants.enablePS5)
-            resetPosePS5.onTrue(resetPoseCmd);
+        }, s_Swerve);*/
+ //       resetPose.onTrue(resetPoseCmd);
+  //      if (Constants.enablePS5)
+  //          resetPosePS5.onTrue(resetPoseCmd);
 
-        Command goToCenterCmd = new GoToPoint(s_Swerve, s_Swerve.getPose(), new Pose2d(5, 5, new Rotation2d(0)));
-        goToCenter.onTrue(goToCenterCmd);
-        if (Constants.enablePS5)
-            goToCenterPS5.onTrue(goToCenterCmd);
+       // Command goToCenterCmd = new GoToPoint(s_Swerve, s_Swerve.getPose(), new Pose2d(5, 5, new Rotation2d(0)));
+       // goToCenter.onTrue(goToCenterCmd);
+        //if (Constants.enablePS5)
+        //    goToCenterPS5.onTrue(goToCenterCmd);
 
         tryToBalance.whileTrue(new BalanceThing(s_Swerve));
         // TODO: PS5 balance button
@@ -132,6 +138,9 @@ public class RobotContainer {
         intakeIn.whileTrue(new SpInintake(s_Intake, IntakeSpinStatus.Intake));
 
         intakeOut.whileTrue(new SpInintake(s_Intake, IntakeSpinStatus.Eject));
+
+        armUp.whileTrue(new MovArm(s_Arm, Constants.Arm.upSpeed));
+        armDown.whileTrue(new MovArm(s_Arm, Constants.Arm.downSpeed));
     }
 
     public Command getAutonomousCommand() {

@@ -158,6 +158,13 @@ public final class Constants {
         public static final double stopSpeed = 0;
     }
 
+    public static final class Arm {
+        public static final int armPivotID = 1;
+        public static final double upSpeed = 0.5;
+        public static final double downSpeed = -0.5;
+        public static final double stopSpeed = 0;
+    }
+
     public static final class AutoConstants { //TODO: The below constants are used in the example auto, and must be tuned to specific robot
         public static final double kMaxSpeedMetersPerSecond = 3;
         public static final double kMaxAccelerationMetersPerSecondSquared = 3;
