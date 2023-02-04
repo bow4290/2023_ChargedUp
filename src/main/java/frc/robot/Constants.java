@@ -7,6 +7,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import frc.lib.util.COTSFalconSwerveConstants;
 import frc.lib.util.SwerveModuleConstants;
 
@@ -136,6 +137,11 @@ public final class Constants {
         // TODO: I just guessed wrt which one is left/right
         public static final int leftIntakeID = 2;
         public static final int rightIntakeID = 7;
+        // TODO: these are placeholder values
+        public static final int leftSolenoidPort = 4;
+        public static final int rightSolenoidPort = 5;
+        public static final PneumaticsModuleType pneumaticType = PneumaticsModuleType.REVPH;
+        
         public static final double inSpeed = -0.3;
         public static final double ejectSpeed = 0.3;
         public static final double stopSpeed = 0;

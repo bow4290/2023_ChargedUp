@@ -10,7 +10,6 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 import frc.robot.autos.*;
 import frc.robot.commands.*;
-import frc.robot.commands.intake.IntakeIn;
 import frc.robot.commands.intake.SpInintake;
 import frc.robot.commands.intake.SpInintake.IntakeSpinStatus;
 import frc.robot.commands.swerve.BalanceThing;
