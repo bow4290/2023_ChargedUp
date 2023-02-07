@@ -157,6 +157,7 @@ public class Swerve extends SubsystemBase {
         swerveOdometry.update(yaw, getModulePositions());
         RobotContainer.photonPoseEstimator.setReferencePose(pose);
         Optional<EstimatedRobotPose> res = RobotContainer.photonPoseEstimator.update();
+
         if (res.isPresent()) {
             EstimatedRobotPose camPose = res.get();
             swerveOdometry.addVisionMeasurement(camPose.estimatedPose.toPose2d(), camPose.timestampSeconds);

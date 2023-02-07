@@ -52,23 +52,13 @@ public class RobotContainer {
     private final Intake s_Intake = new Intake();
     private final Arm s_Arm = new Arm();
     private final Elevator s_Elevator = new Elevator();
-
-    private AprilTagFieldLayout aprilLayout;
-    public static PhotonCamera cam;
-    // Cam mounted facing forward, half a meter forward of center, half a meter up from center.
-    // TODO: update
+    private final Vision s_Vision = new Vision();
     public static PhotonPoseEstimator photonPoseEstimator;
-
 
     /** The container for the robot. Contains subsystems, IO devices, and commands. */
     public RobotContainer() {
-
-        try {aprilLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2023ChargedUp.m_resourceFile);} catch (Exception e) {};
-        cam = new PhotonCamera(Constants.Limelight.camName);
-        cam.setLED(VisionLEDMode.kBlink);
-        photonPoseEstimator = new PhotonPoseEstimator(aprilLayout, PoseStrategy.CLOSEST_TO_REFERENCE_POSE, cam, Constants.Limelight.robotToCam);
-
         configureButtons();
+        photonPoseEstimator = s_Vision.photonPoseEstimator; // TODO: find a better way to integrate this
     }
 
     private void configureButtons() {
@@ -141,8 +131,6 @@ public class RobotContainer {
     public Command getAutonomousCommand() {
         return new exampleAuto(s_Swerve);
     }
-
-
 // todo: fix and re-integrate this code
      /*    InstantCommand resetPoseCmd = new InstantCommand(() -> {
           photonPoseEstimator.setReferencePose(s_Swerve.getPose());
