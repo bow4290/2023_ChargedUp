@@ -1,43 +1,18 @@
 package frc.robot;
 
-import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.PS4Controller;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 import frc.robot.autos.*;
 import frc.robot.commands.arm.MovArm;
 import frc.robot.commands.elevator.MovElevator;
-import frc.robot.commands.intake.PistonTake;
-import frc.robot.commands.intake.SpInintake;
-import frc.robot.commands.intake.SpInintake.IntakeSpinStatus;
 import frc.robot.commands.swerve.BalanceThing;
-import frc.robot.commands.swerve.GoToPoint;
 import frc.robot.commands.swerve.TeleopSwerve;
 import frc.robot.subsystems.*;
 
-import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
-import org.photonvision.PhotonPoseEstimator.PoseStrategy;
-import org.photonvision.common.hardware.VisionLEDMode;
-
-import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import edu.wpi.first.apriltag.AprilTagFields;
-import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.math.geometry.Translation3d;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-
-import java.util.Optional;
-
-import org.photonvision.EstimatedRobotPose;
 
 public class RobotContainer {
     /* Controllers */
@@ -100,10 +75,10 @@ public class RobotContainer {
 
     private void xboxOperatorConfiguration() {
         final var operator = new CommandXboxController(operatorPort);
-        operator.back().onTrue(new PistonTake(s_Intake, Intake.IntakePistonStatus.Cone));
-        operator.start().onTrue(new PistonTake(s_Intake, Intake.IntakePistonStatus.Cube));
-        operator.a().whileTrue(new SpInintake(s_Intake, IntakeSpinStatus.Intake));
-        operator.x().whileTrue(new SpInintake(s_Intake, IntakeSpinStatus.Eject));
+        operator.back().onTrue(s_Intake.pistonsCone());
+        operator.start().onTrue(s_Intake.pistonsCube());
+        operator.a().whileTrue(s_Intake.spinIn());
+        operator.x().whileTrue(s_Intake.spinEject());
         operator.leftBumper().whileTrue(new MovElevator(s_Elevator, Constants.Elevator.retractSpeed));
         operator.rightBumper().whileTrue(new MovElevator(s_Elevator, Constants.Elevator.extendSpeed));
         s_Arm.setDefaultCommand(
@@ -114,10 +89,10 @@ public class RobotContainer {
     }
     private void dualshockOperatorConfiguration() {
         final var operator = new CommandPS4Controller(operatorPort);
-        operator.share().onTrue(new PistonTake(s_Intake, Intake.IntakePistonStatus.Cone));
-        operator.options().onTrue(new PistonTake(s_Intake, Intake.IntakePistonStatus.Cube));
-        operator.cross().whileTrue(new SpInintake(s_Intake, IntakeSpinStatus.Intake));
-        operator.square().whileTrue(new SpInintake(s_Intake, IntakeSpinStatus.Eject));
+        operator.share().onTrue(s_Intake.pistonsCone());
+        operator.options().onTrue(s_Intake.pistonsCube());
+        operator.cross().whileTrue(s_Intake.spinIn());
+        operator.square().whileTrue(s_Intake.spinEject());
         operator.L1().whileTrue(new MovElevator(s_Elevator, Constants.Elevator.retractSpeed));
         operator.R1().whileTrue(new MovElevator(s_Elevator, Constants.Elevator.extendSpeed));
         s_Arm.setDefaultCommand(

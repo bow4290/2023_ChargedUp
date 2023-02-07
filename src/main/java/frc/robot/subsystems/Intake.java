@@ -6,6 +6,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -44,18 +45,39 @@ public class Intake extends SubsystemBase {
       Constants.Intake.rightSolenoidPortForward, Constants.Intake.rightSolenoidPortReverse);
   }
 
-  public void intakeSpin(double intakeSpeed) {
+  public void spin(double intakeSpeed) {
     lastPowerSet = intakeSpeed;
     leftIntake.set(intakeSpeed);
     rightIntake.set(-intakeSpeed);
   }
 
+  public void stopSpinning() {
+    spin(0);
+  }
+
   public void setSolenoids(IntakePistonStatus status) {
     DoubleSolenoid.Value solenoidValue = 
       status == IntakePistonStatus.Cone ? DoubleSolenoid.Value.kForward : DoubleSolenoid.Value.kReverse;
-    
+    this.status = status;
+
     leftSolenoid.set(solenoidValue);
     rightSolenoid.set(solenoidValue);
+  }
+
+  public Command pistonsCube() {
+    return runOnce(() -> setSolenoids(IntakePistonStatus.Cube));
+  }
+
+  public Command pistonsCone() {
+    return runOnce(() -> setSolenoids(IntakePistonStatus.Cone));
+  }
+
+  public Command spinIn() {
+    return startEnd(() -> spin(Constants.Intake.inSpeed), this::stopSpinning);
+  }
+
+  public Command spinEject() {
+    return startEnd(() -> spin(Constants.Intake.ejectSpeed), this::stopSpinning);
   }
 
   @Override
