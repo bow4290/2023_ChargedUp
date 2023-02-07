@@ -5,12 +5,17 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 import frc.robot.autos.*;
 import frc.robot.commands.*;
 import frc.robot.commands.arm.MovArm;
+import frc.robot.commands.elevator.MovElevator;
+import frc.robot.commands.intake.PistonTake;
 import frc.robot.commands.intake.SpInintake;
 import frc.robot.commands.intake.SpInintake.IntakeSpinStatus;
 import frc.robot.commands.swerve.BalanceThing;
@@ -37,47 +42,16 @@ import org.photonvision.EstimatedRobotPose;
 
 public class RobotContainer {
     /* Controllers */
-    private final Joystick driver = new Joystick(0);
-    private final Joystick driverPS5 = new Joystick(1);
-
-    /* Drive Controls */
-    private final int forwardBackwardAxis = XboxController.Axis.kLeftY.value;
-    private final int leftRightAxis = XboxController.Axis.kLeftX.value;
-    private final int rotationAxis = XboxController.Axis.kRightX.value;
-    private final int forwardBackwardAxisPS5 = PS4Controller.Axis.kLeftY.value;
-    private final int leftRightAxisPS5 = PS4Controller.Axis.kLeftX.value;
-    private final int rotationAxisPS5 = PS4Controller.Axis.kRightX.value;
-
-    /* Driver Buttons */
-    private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kY.value);
-    private final JoystickButton zeroGyroPS5 = new JoystickButton(driverPS5, PS4Controller.Button.kTriangle.value);
-
-    private final JoystickButton robotCentric = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
-    private final JoystickButton robotCentricPS5 = new JoystickButton(driverPS5, PS4Controller.Button.kL1.value);
-
-    //private final JoystickButton resetPose = new JoystickButton(driver, XboxController.Button.kX.value);
-    //private final JoystickButton resetPosePS5 = new JoystickButton(driverPS5, PS4Controller.Button.kSquare.value);
-
-    //private final JoystickButton goToCenter = new JoystickButton(driver, XboxController.Button.kStart.value);
-    //private final JoystickButton goToCenterPS5 = new JoystickButton(driverPS5, PS4Controller.Button.kShare.value);
-
-    private final JoystickButton tryToBalance = new JoystickButton(driver, XboxController.Button.kRightBumper.value);
-    // todo figure out what the ps5 equivalent of B is?
-    //private final JoystickButton tryToBalancePS5 = new JoystickButton(driverPS5, PS4Controller.Button.kc.value);
-
-    private final JoystickButton armUp = new JoystickButton(driver, XboxController.Button.kStart.value);
-
-    private final JoystickButton armDown = new JoystickButton(driver, XboxController.Button.kX.value);
-
-    private final JoystickButton intakeIn = new JoystickButton(driver, XboxController.Button.kA.value);
-    private final JoystickButton intakeOut = new JoystickButton(driver, XboxController.Button.kB.value);
+    private final int driverPort = 0;
+    private boolean driverDualshock = true;
+    private final int operatorPort = 1;
+    private boolean operatorDualshock = true;
 
     /* Subsystems */
     private final Swerve s_Swerve = new Swerve();
-
     private final Intake s_Intake = new Intake();
-
     private final Arm s_Arm = new Arm();
+    private final Elevator s_Elevator = new Elevator();
 
     private AprilTagFieldLayout aprilLayout;
     public static PhotonCamera cam;
@@ -88,33 +62,88 @@ public class RobotContainer {
 
     /** The container for the robot. Contains subsystems, IO devices, and commands. */
     public RobotContainer() {
-        s_Swerve.setDefaultCommand(
-            new TeleopSwerve(
-                s_Swerve, 
-                () -> -driver.getRawAxis(forwardBackwardAxis) - 
-                    (Constants.enablePS5 ? driverPS5.getRawAxis(forwardBackwardAxisPS5) : 0), 
-                () -> -driver.getRawAxis(leftRightAxis) - 
-                    (Constants.enablePS5 ? driverPS5.getRawAxis(leftRightAxisPS5) : 0), 
-                () -> -driver.getRawAxis(rotationAxis) - 
-                    (Constants.enablePS5 ? driverPS5.getRawAxis(rotationAxisPS5) : 0), 
-                () -> robotCentric.getAsBoolean() || 
-                    (Constants.enablePS5 ? robotCentricPS5.getAsBoolean() : false)
-            )
-        );
+
         try {aprilLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2023ChargedUp.m_resourceFile);} catch (Exception e) {};
         cam = new PhotonCamera(Constants.Limelight.camName);
         cam.setLED(VisionLEDMode.kBlink);
         photonPoseEstimator = new PhotonPoseEstimator(aprilLayout, PoseStrategy.CLOSEST_TO_REFERENCE_POSE, cam, Constants.Limelight.robotToCam);
 
-        configureButtonBindings();
+        configureButtons();
     }
 
-    private void configureButtonBindings() {
-        /* Driver Buttons */
-        zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroGyro(), s_Swerve));
-        if (Constants.enablePS5)
-            zeroGyroPS5.onTrue(new InstantCommand(() -> s_Swerve.zeroGyro(), s_Swerve));
+    private void configureButtons() {
+        if (driverDualshock) dualshockDriverConfiguration();
+        else xboxDriverConfiguration();
+        if (operatorDualshock) dualshockOperatorConfiguration();
+        else xboxOperatorConfiguration();
+    }
 
+    private void xboxDriverConfiguration() {
+        final var driver = new CommandXboxController(driverPort);
+        s_Swerve.setDefaultCommand(
+                new TeleopSwerve(
+                        s_Swerve,
+                        () -> -driver.getLeftY(),
+                        () -> -driver.getLeftX(),
+                        () -> -driver.getRightX(),
+                        driver.leftBumper()::getAsBoolean
+                )
+        );
+
+        driver.y().onTrue(new InstantCommand(s_Swerve::zeroGyro));
+        driver.b().onTrue(new BalanceThing(s_Swerve));
+    }
+    private void dualshockDriverConfiguration() {
+        final var driver = new CommandPS4Controller(driverPort);
+        s_Swerve.setDefaultCommand(
+                new TeleopSwerve(
+                        s_Swerve,
+                        () -> -driver.getLeftY(),
+                        () -> -driver.getLeftX(),
+                        () -> -driver.getRightX(),
+                        driver.L1()::getAsBoolean
+                )
+        );
+
+        driver.triangle().onTrue(new InstantCommand(s_Swerve::zeroGyro));
+        driver.circle().onTrue(new BalanceThing(s_Swerve));
+    }
+
+    private void xboxOperatorConfiguration() {
+        final var operator = new CommandXboxController(operatorPort);
+        operator.back().onTrue(new PistonTake(s_Intake, Intake.IntakePistonStatus.Cone));
+        operator.start().onTrue(new PistonTake(s_Intake, Intake.IntakePistonStatus.Cube));
+        operator.a().whileTrue(new SpInintake(s_Intake, IntakeSpinStatus.Intake));
+        operator.x().whileTrue(new SpInintake(s_Intake, IntakeSpinStatus.Eject));
+        operator.leftBumper().whileTrue(new MovElevator(s_Elevator, Constants.Elevator.retractSpeed));
+        operator.rightBumper().whileTrue(new MovElevator(s_Elevator, Constants.Elevator.extendSpeed));
+        s_Arm.setDefaultCommand(
+                new MovArm(s_Arm, () -> Constants.Arm.downSpeed * operator.getLeftTriggerAxis() +
+                        Constants.Arm.upSpeed * operator.getRightTriggerAxis()
+                )
+        );
+    }
+    private void dualshockOperatorConfiguration() {
+        final var operator = new CommandPS4Controller(operatorPort);
+        operator.share().onTrue(new PistonTake(s_Intake, Intake.IntakePistonStatus.Cone));
+        operator.options().onTrue(new PistonTake(s_Intake, Intake.IntakePistonStatus.Cube));
+        operator.cross().whileTrue(new SpInintake(s_Intake, IntakeSpinStatus.Intake));
+        operator.square().whileTrue(new SpInintake(s_Intake, IntakeSpinStatus.Eject));
+        operator.L1().whileTrue(new MovElevator(s_Elevator, Constants.Elevator.retractSpeed));
+        operator.R1().whileTrue(new MovElevator(s_Elevator, Constants.Elevator.extendSpeed));
+        s_Arm.setDefaultCommand(
+                new MovArm(s_Arm, () -> Constants.Arm.downSpeed * operator.getL2Axis() +
+                        Constants.Arm.upSpeed * operator.getR2Axis()
+                )
+        );
+    }
+
+    public Command getAutonomousCommand() {
+        return new exampleAuto(s_Swerve);
+    }
+
+
+// todo: fix and re-integrate this code
      /*    InstantCommand resetPoseCmd = new InstantCommand(() -> {
           photonPoseEstimator.setReferencePose(s_Swerve.getPose());
           Optional<EstimatedRobotPose> res = photonPoseEstimator.update();
@@ -123,27 +152,12 @@ public class RobotContainer {
             s_Swerve.resetOdometry(camPose.estimatedPose.toPose2d());
           }
         }, s_Swerve);*/
- //       resetPose.onTrue(resetPoseCmd);
-  //      if (Constants.enablePS5)
-  //          resetPosePS5.onTrue(resetPoseCmd);
+    //       resetPose.onTrue(resetPoseCmd);
+    //      if (Constants.enablePS5)
+    //          resetPosePS5.onTrue(resetPoseCmd);
 
-       // Command goToCenterCmd = new GoToPoint(s_Swerve, s_Swerve.getPose(), new Pose2d(5, 5, new Rotation2d(0)));
-       // goToCenter.onTrue(goToCenterCmd);
-        //if (Constants.enablePS5)
-        //    goToCenterPS5.onTrue(goToCenterCmd);
-
-        tryToBalance.whileTrue(new BalanceThing(s_Swerve));
-        // TODO: PS5 balance button
-
-        intakeIn.whileTrue(new SpInintake(s_Intake, IntakeSpinStatus.Intake));
-
-        intakeOut.whileTrue(new SpInintake(s_Intake, IntakeSpinStatus.Eject));
-
-        armUp.whileTrue(new MovArm(s_Arm, Constants.Arm.upSpeed));
-        armDown.whileTrue(new MovArm(s_Arm, Constants.Arm.downSpeed));
-    }
-
-    public Command getAutonomousCommand() {
-        return new exampleAuto(s_Swerve);
-    }
+    // Command goToCenterCmd = new GoToPoint(s_Swerve, s_Swerve.getPose(), new Pose2d(5, 5, new Rotation2d(0)));
+    // goToCenter.onTrue(goToCenterCmd);
+    //if (Constants.enablePS5)
+    //    goToCenterPS5.onTrue(goToCenterCmd);
 }
