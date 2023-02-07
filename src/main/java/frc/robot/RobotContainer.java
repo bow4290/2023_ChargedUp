@@ -6,8 +6,6 @@ import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 import frc.robot.autos.*;
-import frc.robot.commands.arm.MovArm;
-import frc.robot.commands.elevator.MovElevator;
 import frc.robot.commands.swerve.BalanceThing;
 import frc.robot.commands.swerve.TeleopSwerve;
 import frc.robot.subsystems.*;
@@ -75,30 +73,27 @@ public class RobotContainer {
 
     private void xboxOperatorConfiguration() {
         final var operator = new CommandXboxController(operatorPort);
-        operator.back().onTrue(s_Intake.pistonsCone());
-        operator.start().onTrue(s_Intake.pistonsCube());
-        operator.a().whileTrue(s_Intake.spinIn());
-        operator.x().whileTrue(s_Intake.spinEject());
-        operator.leftBumper().whileTrue(new MovElevator(s_Elevator, Constants.Elevator.retractSpeed));
-        operator.rightBumper().whileTrue(new MovElevator(s_Elevator, Constants.Elevator.extendSpeed));
-        s_Arm.setDefaultCommand(
-                new MovArm(s_Arm, () -> Constants.Arm.downSpeed * operator.getLeftTriggerAxis() +
+        operator.back().onTrue(s_Intake.pistonsConeCmd());
+        operator.start().onTrue(s_Intake.pistonsCubeCmd());
+        operator.a().whileTrue(s_Intake.spinInCmd());
+        operator.x().whileTrue(s_Intake.spinEjectCmd());
+        operator.leftBumper().whileTrue(s_Elevator.moveCmd(Constants.Elevator.retractSpeed));
+        operator.rightBumper().whileTrue(s_Elevator.moveCmd(Constants.Elevator.extendSpeed));
+        s_Arm.setDefaultCommand(s_Arm.moveCmd(() -> Constants.Arm.downSpeed * operator.getLeftTriggerAxis() +
                         Constants.Arm.upSpeed * operator.getRightTriggerAxis()
                 )
         );
     }
     private void dualshockOperatorConfiguration() {
         final var operator = new CommandPS4Controller(operatorPort);
-        operator.share().onTrue(s_Intake.pistonsCone());
-        operator.options().onTrue(s_Intake.pistonsCube());
-        operator.cross().whileTrue(s_Intake.spinIn());
-        operator.square().whileTrue(s_Intake.spinEject());
-        operator.L1().whileTrue(new MovElevator(s_Elevator, Constants.Elevator.retractSpeed));
-        operator.R1().whileTrue(new MovElevator(s_Elevator, Constants.Elevator.extendSpeed));
-        s_Arm.setDefaultCommand(
-                new MovArm(s_Arm, () -> Constants.Arm.downSpeed * operator.getL2Axis() +
-                        Constants.Arm.upSpeed * operator.getR2Axis()
-                )
+        operator.share().onTrue(s_Intake.pistonsConeCmd());
+        operator.options().onTrue(s_Intake.pistonsCubeCmd());
+        operator.cross().whileTrue(s_Intake.spinInCmd());
+        operator.square().whileTrue(s_Intake.spinEjectCmd());
+        operator.L1().whileTrue(s_Elevator.moveCmd(Constants.Elevator.retractSpeed));
+        operator.R1().whileTrue(s_Elevator.moveCmd(Constants.Elevator.extendSpeed));
+        s_Arm.setDefaultCommand(s_Arm.moveCmd(
+                () -> Constants.Arm.downSpeed * operator.getL2Axis() + Constants.Arm.upSpeed * operator.getR2Axis())
         );
     }
 

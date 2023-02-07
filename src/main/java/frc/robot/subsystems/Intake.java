@@ -64,19 +64,17 @@ public class Intake extends SubsystemBase {
     rightSolenoid.set(solenoidValue);
   }
 
-  public Command pistonsCube() {
+  public Command pistonsCubeCmd () {
     return runOnce(() -> setSolenoids(IntakePistonStatus.Cube));
   }
 
-  public Command pistonsCone() {
+  public Command pistonsConeCmd () {
     return runOnce(() -> setSolenoids(IntakePistonStatus.Cone));
   }
 
-  public Command spinIn() {
-    return startEnd(() -> spin(Constants.Intake.inSpeed), this::stopSpinning);
-  }
+  public Command spinInCmd () { return startEnd(() -> spin(Constants.Intake.inSpeed), this::stopSpinning); }
 
-  public Command spinEject() {
+  public Command spinEjectCmd () {
     return startEnd(() -> spin(Constants.Intake.ejectSpeed), this::stopSpinning);
   }
 
