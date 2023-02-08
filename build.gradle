@@ -4,7 +4,6 @@ plugins {
     id "java"
     id "edu.wpi.first.GradleRIO" version "2023.2.1"
     id 'com.diffplug.spotless' version '6.12.0'
-
 }
 
 sourceCompatibility = JavaVersion.VERSION_11
@@ -131,7 +130,7 @@ tasks.register("writeDeployInfo") {
     new File(
             projectDir.toString() + "/src/main/deploy",
             "info.txt"
-    ).text = branch + " " + commitHash + " " + dateString
+            ).text = branch + " " + commitHash + " " + dateString
 }
 deploy.targets.roborio.artifacts.frcStaticFileDeploy.dependsOn(writeDeployInfo)
 

@@ -3,7 +3,6 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -23,8 +22,8 @@ public class Intake extends SubsystemBase {
     Cone,
     Cube
   }
-  public IntakePistonStatus status;
 
+  public IntakePistonStatus status;
 
   public Intake() {
     leftIntake = new CANSparkMax(Constants.Intake.leftIntakeID, MotorType.kBrushless);
@@ -39,10 +38,16 @@ public class Intake extends SubsystemBase {
     rightIntake.enableVoltageCompensation(11);
     rightIntake.setIdleMode(IdleMode.kBrake);
 
-    leftSolenoid = new DoubleSolenoid(Constants.Intake.pneumaticType, 
-      Constants.Intake.leftSolenoidPortForward, Constants.Intake.leftSolenoidPortReverse);
-    rightSolenoid = new DoubleSolenoid(Constants.Intake.pneumaticType, 
-      Constants.Intake.rightSolenoidPortForward, Constants.Intake.rightSolenoidPortReverse);
+    leftSolenoid =
+        new DoubleSolenoid(
+            Constants.Intake.pneumaticType,
+            Constants.Intake.leftSolenoidPortForward,
+            Constants.Intake.leftSolenoidPortReverse);
+    rightSolenoid =
+        new DoubleSolenoid(
+            Constants.Intake.pneumaticType,
+            Constants.Intake.rightSolenoidPortForward,
+            Constants.Intake.rightSolenoidPortReverse);
   }
 
   public void spin(double intakeSpeed) {
@@ -56,25 +61,29 @@ public class Intake extends SubsystemBase {
   }
 
   public void setSolenoids(IntakePistonStatus status) {
-    DoubleSolenoid.Value solenoidValue = 
-      status == IntakePistonStatus.Cone ? DoubleSolenoid.Value.kForward : DoubleSolenoid.Value.kReverse;
+    DoubleSolenoid.Value solenoidValue =
+        status == IntakePistonStatus.Cone
+            ? DoubleSolenoid.Value.kForward
+            : DoubleSolenoid.Value.kReverse;
     this.status = status;
 
     leftSolenoid.set(solenoidValue);
     rightSolenoid.set(solenoidValue);
   }
 
-  public Command pistonsCubeCmd () {
+  public Command pistonsCubeCmd() {
     return runOnce(() -> setSolenoids(IntakePistonStatus.Cube));
   }
 
-  public Command pistonsConeCmd () {
+  public Command pistonsConeCmd() {
     return runOnce(() -> setSolenoids(IntakePistonStatus.Cone));
   }
 
-  public Command spinInCmd () { return startEnd(() -> spin(Constants.Intake.inSpeed), this::stopSpinning); }
+  public Command spinInCmd() {
+    return startEnd(() -> spin(Constants.Intake.inSpeed), this::stopSpinning);
+  }
 
-  public Command spinEjectCmd () {
+  public Command spinEjectCmd() {
     return startEnd(() -> spin(Constants.Intake.ejectSpeed), this::stopSpinning);
   }
 
