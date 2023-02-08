@@ -1,3 +1,5 @@
+import java.text.SimpleDateFormat
+
 plugins {
     id "java"
     id "edu.wpi.first.GradleRIO" version "2023.2.1"
@@ -97,3 +99,37 @@ wpi.java.configureTestTasks(test)
 tasks.withType(JavaCompile) {
     options.compilerArgs.add '-XDstringConcat=inline'
 }
+
+tasks.register("writeDeployInfo") {
+    def stdout = new ByteArrayOutputStream()
+
+    // Execute the git command
+    exec {
+        commandLine "git", "rev-parse", "--abbrev-ref", "HEAD"
+        // Write to the output stream instead of terminal
+        standardOutput = stdout
+    }
+
+    // Parse the output into a string
+    def branch = stdout.toString().trim()
+
+    def stdout2 = new ByteArrayOutputStream()
+
+    exec {
+        commandLine "git", "rev-parse", "--short", "HEAD"
+        standardOutput = stdout2
+    }
+
+    def commitHash = stdout2.toString().trim()
+
+    def df = new SimpleDateFormat("EEEEE MMMMM FF yyyy-MM-dd HH:mm:ss")
+    df.setTimeZone(TimeZone.getTimeZone("America/New_York"))
+    def dateString = df.format(new Date())
+
+    new File(
+            projectDir.toString() + "/src/main/deploy",
+            "info.txt"
+    ).text = branch + " " + commitHash + " " + dateString
+}
+deploy.targets.roborio.artifacts.frcStaticFileDeploy.dependsOn(writeDeployInfo)
+

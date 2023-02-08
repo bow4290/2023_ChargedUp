@@ -1,5 +1,7 @@
 package frc.robot;
 
+import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
@@ -11,6 +13,11 @@ import frc.robot.commands.swerve.TeleopSwerve;
 import frc.robot.subsystems.*;
 
 import org.photonvision.PhotonPoseEstimator;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 public class RobotContainer {
     /* Controllers */
@@ -29,8 +36,18 @@ public class RobotContainer {
 
     /** The container for the robot. Contains subsystems, IO devices, and commands. */
     public RobotContainer() {
-        configureButtons();
         photonPoseEstimator = s_Vision.photonPoseEstimator; // TODO: find a better way to integrate this
+        configureButtons();
+        putInfoInDashboard();
+    }
+
+    private void putInfoInDashboard() {
+        var deployDir = Filesystem.getDeployDirectory();
+        var deployInfo = "Unable to find, for some reason";
+        try {
+            deployInfo = Files.readString(new File(deployDir, "info.txt").toPath());
+        } catch (Exception e) {}
+        SmartDashboard.putString("Code Last Deployed", deployInfo);
     }
 
     private void configureButtons() {
