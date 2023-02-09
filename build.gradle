@@ -123,6 +123,24 @@ tasks.register("writeDeployInfo") {
 
     def commitHash = stdout2.toString().trim()
 
+    def stdout3 = new ByteArrayOutputStream()
+
+    exec {
+        commandLine "git", "config", "--get", "user.name"
+        standardOutput = stdout3
+    }
+
+    def userName = stdout3.toString().trim()
+
+    def stdout4 = new ByteArrayOutputStream()
+
+    exec {
+        commandLine "git", "status", "-z"
+        standardOutput = stdout4
+    }
+
+    def changedFiles = stdout4.toString().replace("\0", "").trim()
+
     def df = new SimpleDateFormat("EEEEE MMMMM FF yyyy-MM-dd HH:mm:ss")
     df.setTimeZone(TimeZone.getTimeZone("America/New_York"))
     def dateString = df.format(new Date())
@@ -130,7 +148,7 @@ tasks.register("writeDeployInfo") {
     new File(
             projectDir.toString() + "/src/main/deploy",
             "info.txt"
-            ).text = branch + " " + commitHash + " " + dateString
+            ).text = userName + " " + dateString + " " + branch + " " + commitHash + " " + changedFiles
 }
 deploy.targets.roborio.artifacts.frcStaticFileDeploy.dependsOn(writeDeployInfo)
 

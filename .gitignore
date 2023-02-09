@@ -1,3 +1,9 @@
+# Items added by BOW
+# Auto gen on each build
+src/main/deploy/info.txt 
+# IntelliJ makes this for some reason
+.idea/
+
 # This gitignore has been specially created by the WPILib team.
 # If you remove items from this file, intellisense might break.
 
@@ -160,5 +166,3 @@ bin/
 
 # Simulation GUI and other tools window save file
 *-window.json
-
-src/main/deploy/info.txt
