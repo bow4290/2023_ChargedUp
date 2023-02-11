@@ -13,8 +13,7 @@ public class Intake extends SubsystemBase {
   private final CANSparkMax leftIntake;
   private final CANSparkMax rightIntake;
 
-  private final DoubleSolenoid leftSolenoid;
-  private final DoubleSolenoid rightSolenoid;
+  private final DoubleSolenoid solenoid;
 
   public double lastPowerSet = 0;
 
@@ -38,16 +37,11 @@ public class Intake extends SubsystemBase {
     rightIntake.enableVoltageCompensation(11);
     rightIntake.setIdleMode(IdleMode.kBrake);
 
-    leftSolenoid =
+    solenoid =
         new DoubleSolenoid(
             Constants.Intake.pneumaticType,
-            Constants.Intake.leftSolenoidPortForward,
-            Constants.Intake.leftSolenoidPortReverse);
-    rightSolenoid =
-        new DoubleSolenoid(
-            Constants.Intake.pneumaticType,
-            Constants.Intake.rightSolenoidPortForward,
-            Constants.Intake.rightSolenoidPortReverse);
+            Constants.Intake.solenoidPortForward,
+            Constants.Intake.solenoidPortReverse);
   }
 
   public void spin(double intakeSpeed) {
@@ -60,23 +54,22 @@ public class Intake extends SubsystemBase {
     spin(0);
   }
 
-  public void setSolenoids(IntakePistonStatus status) {
+  public void setSolenoid(IntakePistonStatus status) {
     DoubleSolenoid.Value solenoidValue =
         status == IntakePistonStatus.Cone
             ? DoubleSolenoid.Value.kForward
             : DoubleSolenoid.Value.kReverse;
     this.status = status;
 
-    leftSolenoid.set(solenoidValue);
-    rightSolenoid.set(solenoidValue);
+    solenoid.set(solenoidValue);
   }
 
   public Command pistonsCubeCmd() {
-    return runOnce(() -> setSolenoids(IntakePistonStatus.Cube));
+    return runOnce(() -> setSolenoid(IntakePistonStatus.Cube));
   }
 
   public Command pistonsConeCmd() {
-    return runOnce(() -> setSolenoids(IntakePistonStatus.Cone));
+    return runOnce(() -> setSolenoid(IntakePistonStatus.Cone));
   }
 
   public Command spinInCmd() {
