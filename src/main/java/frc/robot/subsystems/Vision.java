@@ -11,9 +11,8 @@ import org.photonvision.common.hardware.VisionLEDMode;
 public class Vision extends SubsystemBase {
   private AprilTagFieldLayout aprilLayout;
   public static PhotonCamera cam;
-  // Cam mounted facing forward, half a meter forward of center, half a meter up from center.
-  // TODO: update
-  public static PhotonPoseEstimator photonPoseEstimator;
+  
+  public PhotonPoseEstimator photonPoseEstimator;
 
   public Vision() {
     try {

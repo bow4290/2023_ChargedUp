@@ -9,6 +9,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import frc.lib.math.Conversions;
+import frc.lib.util.CTREModuleState;
 import frc.lib.util.SwerveModuleConstants;
 
 public class SwerveModule {
@@ -47,9 +48,9 @@ public class SwerveModule {
     // isOpenLoop is true during teleop and false in auto (uses feedfoward and pid control during
     // auto).
     // Calculates the shortest path to the desired angle, e.x. 340 -> 20 is +40 instead of -320.
-    /*desiredState = CTREModuleState.optimize(desiredState, getState().angle);
+    desiredState = CTREModuleState.optimize(desiredState, getState().angle);
     setAngle(desiredState);
-    setSpeed(desiredState, isOpenLoop);*/
+    setSpeed(desiredState, isOpenLoop);
   }
 
   private void setSpeed(SwerveModuleState desiredState, boolean isOpenLoop) {
