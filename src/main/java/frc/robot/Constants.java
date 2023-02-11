@@ -151,7 +151,7 @@ public final class Constants {
     // TODO: these are placeholder values
     public static final int solenoidPortForward = 3;
     public static final int solenoidPortReverse = 7;
-    public static final PneumaticsModuleType pneumaticType = PneumaticsModuleType.REVPH;
+    public static final PneumaticsModuleType pneumaticType = PneumaticsModuleType.CTREPCM;
 
     public static final double inSpeed = -0.3;
     public static final double ejectSpeed = 0.3;
