@@ -151,6 +151,7 @@ tasks.register("writeDeployInfo") {
             ).text = userName + " " + dateString + " " + branch + " " + commitHash + " " + changedFiles
 }
 deploy.targets.roborio.artifacts.frcStaticFileDeploy.dependsOn(writeDeployInfo)
+build.dependsOn 'spotlessApply'
 
 spotless {
     java {

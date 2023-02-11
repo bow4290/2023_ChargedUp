@@ -11,7 +11,7 @@ import org.photonvision.common.hardware.VisionLEDMode;
 public class Vision extends SubsystemBase {
   private AprilTagFieldLayout aprilLayout;
   public static PhotonCamera cam;
-  
+
   public PhotonPoseEstimator photonPoseEstimator;
 
   public Vision() {
@@ -19,8 +19,9 @@ public class Vision extends SubsystemBase {
       aprilLayout =
           AprilTagFieldLayout.loadFromResource(AprilTagFields.k2023ChargedUp.m_resourceFile);
     } catch (Exception e) {
+      // lol do nothing
     }
-    ;
+
     cam = new PhotonCamera(Constants.Limelight.camName);
     cam.setLED(VisionLEDMode.kBlink);
     photonPoseEstimator =
