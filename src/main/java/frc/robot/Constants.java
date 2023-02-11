@@ -146,14 +146,11 @@ public final class Constants {
   }
 
   public static final class Intake {
-    // TODO: I just guessed wrt which one is left/right
-    public static final int leftIntakeID = 2;
-    public static final int rightIntakeID = 7;
+    public static final int leftIntakeID = 13;
+    public static final int rightIntakeID = 12;
     // TODO: these are placeholder values
-    public static final int leftSolenoidPortForward = 4;
-    public static final int leftSolenoidPortReverse = 5;
-    public static final int rightSolenoidPortForward = 6;
-    public static final int rightSolenoidPortReverse = 7;
+    public static final int solenoidPortForward = 3;
+    public static final int solenoidPortReverse = 7;
     public static final PneumaticsModuleType pneumaticType = PneumaticsModuleType.REVPH;
 
     public static final double inSpeed = -0.3;
@@ -162,14 +159,14 @@ public final class Constants {
   }
 
   public static final class Arm {
-    public static final int armPivotID = 1;
+    public static final int armPivotID = 9;
     public static final double upSpeed = 0.5;
     public static final double downSpeed = -0.5;
     public static final double stopSpeed = 0;
   }
 
   public static final class Elevator {
-    public static final int elevatorMotorID = 1;
+    public static final int elevatorMotorID = 10;
     public static final double extendSpeed = 0.5;
     public static final double retractSpeed = -0.5;
     public static final double stopSpeed = 0;
