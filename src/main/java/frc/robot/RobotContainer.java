@@ -17,9 +17,9 @@ import org.photonvision.PhotonPoseEstimator;
 public class RobotContainer {
   /* Controllers */
   private final int driverPort = 0;
-  private boolean driverDualshock = true;
+  private boolean driverDualshock = false;
   private final int operatorPort = 1;
-  private boolean operatorDualshock = true;
+  private boolean operatorDualshock = false;
 
   /* Subsystems */
   private final Swerve s_Swerve = new Swerve();
