@@ -141,7 +141,7 @@ tasks.register("writeDeployInfo") {
 
     def changedFiles = stdout4.toString().replace("\0", "").trim()
 
-    def df = new SimpleDateFormat("EEEEE MMMMM FF yyyy-MM-dd HH:mm:ss")
+    def df = new SimpleDateFormat("EEEEE MMMMM dd yyyy-MM-dd HH:mm:ss")
     df.setTimeZone(TimeZone.getTimeZone("America/New_York"))
     def dateString = df.format(new Date())
 
