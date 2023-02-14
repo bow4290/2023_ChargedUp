@@ -13,9 +13,15 @@ public class Elevator extends SubsystemBase {
   private final TalonFX elevatorMotor;
 
   public Elevator() {
+    /*
+     * 27000: extending battery to second level
+     * 44000: max extend
+     * 
+     * 
+     */
     elevatorMotor = new TalonFX(Constants.Elevator.elevatorMotorID);
     elevatorMotor.configFactoryDefault();
-    elevatorMotor.setInverted(true);
+    elevatorMotor.setInverted(false);
     elevatorMotor.setNeutralMode(NeutralMode.Brake);
   }
 

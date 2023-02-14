@@ -14,7 +14,43 @@ public class Arm extends SubsystemBase {
 
   public Arm() {
     // 512/7 ratio, according to build
-
+      /*
+       * |
+       * |
+       * _ _ back = 83222
+       * 
+       * 
+       * __
+       * __  3800
+       * 
+       * 
+       * 
+       * 
+       * 
+       * New measurements:
+       * good for scoring level 3: 165000
+       * vertical at that point: 123000
+       * 
+       * ~80000: scoring backwards
+       * 
+       * 
+       * 
+       * 
+       * 
+       * 
+       * 
+       * 
+       * 
+       * 105 degrees
+       * 80000
+       * 
+       * 39.062 rotations of the falcon
+       * (7/512)
+       * 0.534 rotations
+       * 
+       * 
+       * 1024/7
+       */
     
     armPivot = new TalonFX(Constants.Arm.armPivotID);
     armPivot.configFactoryDefault();
