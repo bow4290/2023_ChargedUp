@@ -92,8 +92,8 @@ public class RobotContainer {
     s_Arm.setDefaultCommand(
         s_Arm.moveCmd(
             () ->
-                Constants.Arm.downSpeed * operator.getLeftTriggerAxis()
-                    + Constants.Arm.upSpeed * operator.getRightTriggerAxis()));
+                Constants.Arm.backSpeed * operator.getLeftTriggerAxis()
+                    + Constants.Arm.frontSpeed * operator.getRightTriggerAxis()));
   }
 
   private void dualshockOperatorConfiguration() {
@@ -107,8 +107,8 @@ public class RobotContainer {
     s_Arm.setDefaultCommand(
         s_Arm.moveCmd(
             () ->
-                Constants.Arm.downSpeed * operator.getL2Axis()
-                    + Constants.Arm.upSpeed * operator.getR2Axis()));
+                Constants.Arm.backSpeed * operator.getL2Axis()
+                    + Constants.Arm.frontSpeed * operator.getR2Axis()));
   }
 
   public Command getAutonomousCommand() {
