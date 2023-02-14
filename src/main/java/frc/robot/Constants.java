@@ -160,8 +160,8 @@ public final class Constants {
 
   public static final class Arm {
     public static final int armPivotID = 9;
-    public static final double upSpeed = 0.5;
-    public static final double downSpeed = -0.5;
+    public static final double frontSpeed = 0.5;
+    public static final double backSpeed = -0.5;
     public static final double stopSpeed = 0;
   }
 

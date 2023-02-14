@@ -15,7 +15,7 @@ public class Elevator extends SubsystemBase {
   public Elevator() {
     elevatorMotor = new TalonFX(Constants.Elevator.elevatorMotorID);
     elevatorMotor.configFactoryDefault();
-    elevatorMotor.setInverted(false);
+    elevatorMotor.setInverted(true);
     elevatorMotor.setNeutralMode(NeutralMode.Brake);
   }
 
