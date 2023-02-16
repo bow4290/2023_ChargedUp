@@ -149,8 +149,8 @@ public final class Constants {
     public static final int leftIntakeID = 13;
     public static final int rightIntakeID = 12;
     // TODO: these are placeholder values
-    public static final int solenoidPortForward = 3;
-    public static final int solenoidPortReverse = 7;
+    public static final int solenoidPortForward = 0;
+    public static final int solenoidPortReverse = 2;
     public static final PneumaticsModuleType pneumaticType = PneumaticsModuleType.CTREPCM;
 
     public static final double inSpeed = -0.3;
@@ -174,8 +174,8 @@ public final class Constants {
 
   public static final class Elevator {
     public static final int elevatorMotorID = 10;
-    public static final double extendSpeed = 0.35;
-    public static final double retractSpeed = -0.35;
+    public static final double extendSpeed = 0.225;
+    public static final double retractSpeed = -0.225;
     public static final double stopSpeed = 0;
 
 
