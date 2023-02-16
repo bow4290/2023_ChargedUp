@@ -32,6 +32,7 @@ public class Elevator extends SubsystemBase {
     elevatorMotor.set(ControlMode.PercentOutput, speed);
   }
 
+
   public Command moveCmd(DoubleSupplier speed) {
     return this.runEnd(() -> move(speed.getAsDouble()), () -> move(0));
   }

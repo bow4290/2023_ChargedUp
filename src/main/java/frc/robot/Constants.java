@@ -163,6 +163,13 @@ public final class Constants {
     public static final double frontSpeed = 0.5;
     public static final double backSpeed = -0.5;
     public static final double stopSpeed = 0;
+
+
+
+    public static final double gearRatio = 1024/7;
+    public static final double talonCPR = 2048;
+    public static final double ticksPerDegree = gearRatio * talonCPR / 360;
+    public static final double degreesPerTick = 1 / ticksPerDegree;
   }
 
   public static final class Elevator {
@@ -170,6 +177,14 @@ public final class Constants {
     public static final double extendSpeed = 0.35;
     public static final double retractSpeed = -0.35;
     public static final double stopSpeed = 0;
+
+
+    public static final double base = 0;
+    public static final double max = 44000;
+    public static final double revolutionsPerMeter = 40 * 2048; // (APPROXIMATE)
+    public static final double metersPerRevolution = 1 / revolutionsPerMeter;
+
+
   }
 
   public static final

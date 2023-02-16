@@ -65,9 +65,21 @@ public class Arm extends SubsystemBase {
     armPivot.set(ControlMode.PercentOutput, speed);
   }
 
+  public void retainPosition() {
+    armPivot.set(ControlMode.MotionMagic, armPivot.getSelectedSensorPosition());
+  }
+
+  public Command retainPositionCmd() {
+    return runOnce(this::retainPosition);
+  }
+
   public Command moveCmd(DoubleSupplier speed) {
     return this.runEnd(() -> move(speed.getAsDouble()), () -> move(0));
   }
+  public Command moveCmd(double speed) {
+    return moveCmd(() -> speed);
+  }
+
 
   @Override
   public void periodic() {
