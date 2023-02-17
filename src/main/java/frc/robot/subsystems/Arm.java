@@ -53,7 +53,7 @@ public class Arm extends SubsystemBase {
        */
     
     armPivot = new TalonFX(Constants.Arm.armPivotID);
-    armPivot.configFactoryDefault();
+    //armPivot.configFactoryDefault();
     armPivot.setInverted(true);
     armPivot.setNeutralMode(NeutralMode.Brake);
   }
@@ -64,9 +64,38 @@ public class Arm extends SubsystemBase {
     lastPowerSet = speed;
     armPivot.set(ControlMode.PercentOutput, speed);
   }
+  public void pos(double pos ) {
+    //lastPowerSet = speed;
+   // System.out.println("Position set");
+    armPivot.set(ControlMode.MotionMagic, pos);
+  }
 
   public Command moveCmd(DoubleSupplier speed) {
     return this.runEnd(() -> move(speed.getAsDouble()), () -> move(0));
+  }
+  public Command posCmd(double position) {
+    return this.runEnd(() -> pos(position), () -> armPivot.set(ControlMode.PercentOutput, 0));
+  }
+
+// I wrote tihs code in a rush please improve it lol
+  double positionUponSC = 0;
+  boolean previouslyMove = false;
+  public Command moveAndorHoldCommand(DoubleSupplier speed) {
+    return this.runEnd(() -> {
+      double s = speed.getAsDouble();
+      SmartDashboard.putNumber("speed", s);
+      if (Math.abs(s) > 0.125) {
+        move(s);
+        previouslyMove = true;
+      } else {
+        if (previouslyMove) {
+          positionUponSC = armPivot.getSelectedSensorPosition();
+        }
+        previouslyMove = false;
+        pos(positionUponSC);
+      }
+    }, 
+      () -> move(0));
   }
 
   @Override
