@@ -174,8 +174,8 @@ public final class Constants {
 
   public static final class Elevator {
     public static final int elevatorMotorID = 10;
-    public static final double extendSpeed = 0.225;
-    public static final double retractSpeed = -0.225;
+    public static final double extendSpeed = 0.25;
+    public static final double retractSpeed = -0.25;
     public static final double stopSpeed = 0;
 
 
