@@ -65,7 +65,7 @@ public class RobotContainer {
 
     driver.y().onTrue(new InstantCommand(s_Swerve::zeroGyro));
     driver.b().onTrue(new BalanceThing(s_Swerve));
-    //driver.a().whileTrue(s_Arm.posCmd(0));
+    // driver.a().whileTrue(s_Arm.posCmd(0));
   }
 
   private void dualshockDriverConfiguration() {

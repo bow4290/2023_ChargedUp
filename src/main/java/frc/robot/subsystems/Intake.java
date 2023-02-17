@@ -62,7 +62,7 @@ public class Intake extends SubsystemBase {
     this.status = status;
 
     solenoid.set(solenoidValue);
-    System.out.println("SOLENOID "+ solenoidValue.toString());
+    System.out.println("SOLENOID " + solenoidValue.toString());
   }
 
   public Command pistonsCubeCmd() {
