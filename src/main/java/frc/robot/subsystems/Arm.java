@@ -23,23 +23,14 @@ public class Arm extends SubsystemBase {
        * __
        * __  3800
        * 
-       * 
-       * 
-       * 
-       * 
+       *
        * New measurements:
        * good for scoring level 3: 165000
        * vertical at that point: 123000
        * 
        * ~80000: scoring backwards
-       * 
-       * 
-       * 
-       * 
-       * 
-       * 
-       * 
-       * 
+       *
+       *
        * 
        * 105 degrees
        * 80000
@@ -87,7 +78,7 @@ public class Arm extends SubsystemBase {
 
 // I wrote tihs code in a rush please improve it lol
   double positionUponSC = 0;
-  boolean previouslyMove = false;
+  boolean previouslyMove = true;
   public Command moveAndorHoldCommand(DoubleSupplier speed) {
     return this.runEnd(() -> {
       double s = speed.getAsDouble();

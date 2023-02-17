@@ -88,6 +88,10 @@ public class RobotContainer {
     operator.start().onTrue(s_Intake.pistonsCubeCmd());
     operator.a().whileTrue(s_Intake.spinInCmd());
     operator.x().whileTrue(s_Intake.spinEjectCmd());
+
+    operator.y().whileTrue(s_Elevator.positionCmd(44000));
+    operator.b().whileTrue(s_Elevator.positionCmd(0));
+
     operator.leftBumper().whileTrue(s_Elevator.moveCmd(Constants.Elevator.retractSpeed));
     operator.rightBumper().whileTrue(s_Elevator.moveCmd(Constants.Elevator.extendSpeed));
     s_Arm.setDefaultCommand(
@@ -103,10 +107,14 @@ public class RobotContainer {
     operator.options().onTrue(s_Intake.pistonsCubeCmd());
     operator.cross().whileTrue(s_Intake.spinInCmd());
     operator.square().whileTrue(s_Intake.spinEjectCmd());
+
+    operator.triangle().whileTrue(s_Elevator.positionCmd(44000));
+    operator.circle().whileTrue(s_Elevator.positionCmd(0));
+
     operator.L1().whileTrue(s_Elevator.moveCmd(Constants.Elevator.retractSpeed));
     operator.R1().whileTrue(s_Elevator.moveCmd(Constants.Elevator.extendSpeed));
     s_Arm.setDefaultCommand(
-        s_Arm.moveCmd(
+        s_Arm.moveAndorHoldCommand(
             () ->
                 Constants.Arm.backSpeed * operator.getL2Axis()
                     + Constants.Arm.frontSpeed * operator.getR2Axis()));

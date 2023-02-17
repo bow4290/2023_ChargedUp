@@ -18,9 +18,14 @@ public class Elevator extends SubsystemBase {
      * 44000: max extend
      * 
      * 
+
      */
     elevatorMotor = new TalonFX(Constants.Elevator.elevatorMotorID);
-    elevatorMotor.configFactoryDefault();
+    //elevatorMotor.configFactoryDefault();
+    elevatorMotor.config_kP(0, 0.1);
+    elevatorMotor.config_kF(0, 0.073);
+    elevatorMotor.configMotionAcceleration(7000);
+    elevatorMotor.configMotionCruiseVelocity(7000);
     elevatorMotor.setInverted(false);
     elevatorMotor.setNeutralMode(NeutralMode.Brake);
   }
@@ -30,6 +35,15 @@ public class Elevator extends SubsystemBase {
   public void move(double speed) {
     lastPowerSet = speed;
     elevatorMotor.set(ControlMode.PercentOutput, speed);
+  }
+
+  public void pose(double position) {
+    elevatorMotor.set(ControlMode.MotionMagic, position);
+
+  }
+
+  public Command positionCmd(double posi) {
+    return this.run(() -> pose(posi));
   }
 
 
