@@ -14,18 +14,18 @@ public class Elevator extends SubsystemBase {
 
   public Elevator() {
     /*
-     * 27000: extending battery to second level
-     * 44000: max extend
-     * 
-     * 
+    * 27000: extending battery to second level
+    * 44000: max extend
+    *
+    *
 
-     */
+    */
     elevatorMotor = new TalonFX(Constants.Elevator.elevatorMotorID);
-    //elevatorMotor.configFactoryDefault();
-    elevatorMotor.config_kP(0, 0.1);
+    // elevatorMotor.configFactoryDefault();
+    elevatorMotor.config_kP(0, 1);
     elevatorMotor.config_kF(0, 0.073);
-    elevatorMotor.configMotionAcceleration(7000);
-    elevatorMotor.configMotionCruiseVelocity(7000);
+    elevatorMotor.configMotionAcceleration(10000);
+    elevatorMotor.configMotionCruiseVelocity(10000);
     elevatorMotor.setInverted(false);
     elevatorMotor.setNeutralMode(NeutralMode.Brake);
   }
@@ -39,13 +39,11 @@ public class Elevator extends SubsystemBase {
 
   public void pose(double position) {
     elevatorMotor.set(ControlMode.MotionMagic, position);
-
   }
 
   public Command positionCmd(double posi) {
     return this.run(() -> pose(posi));
   }
-
 
   public Command moveCmd(DoubleSupplier speed) {
     return this.runEnd(() -> move(speed.getAsDouble()), () -> move(0));

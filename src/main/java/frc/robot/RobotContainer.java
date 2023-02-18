@@ -17,7 +17,7 @@ import org.photonvision.PhotonPoseEstimator;
 public class RobotContainer {
   /* Controllers */
   private final int driverPort = 0;
-  private boolean driverDualshock = false;
+  private boolean driverDualshock = true;
   private final int operatorPort = 1;
   private boolean operatorDualshock = false;
 
@@ -65,7 +65,7 @@ public class RobotContainer {
 
     driver.y().onTrue(new InstantCommand(s_Swerve::zeroGyro));
     driver.b().onTrue(new BalanceThing(s_Swerve));
-    //driver.a().whileTrue(s_Arm.posCmd(0));
+    // driver.a().whileTrue(s_Arm.posCmd(0));
   }
 
   private void dualshockDriverConfiguration() {
