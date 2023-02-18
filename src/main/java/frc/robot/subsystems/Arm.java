@@ -5,6 +5,7 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import java.util.function.DoubleSupplier;
@@ -76,25 +77,27 @@ public class Arm extends SubsystemBase {
     return this.runEnd(() -> pos(position), () -> armPivot.set(ControlMode.PercentOutput, 0));
   }
 
-// I wrote tihs code in a rush please improve it lol
-  double positionUponSC = 0;
-  boolean previouslyMove = true;
+  public Command moveWhileWantedCommand(DoubleSupplier speed) {
+    return new FunctionalCommand(
+            () -> {}, // Don't do anything specific on init
+            () -> move(speed.getAsDouble()),
+            (Boolean interrupted) -> move(0), // Don't do anything specific on end
+            () -> Math.abs(speed.getAsDouble()) < 0.125
+            );
+  }
+
+  double position;
+  public Command holdPositionWhileNotWantedCommand(DoubleSupplier speed) {
+    return new FunctionalCommand(
+            () -> position = armPivot.getSelectedSensorPosition(),
+            () -> pos(position),
+            (Boolean interrupted) -> move(0),
+            () -> Math.abs(speed.getAsDouble()) >= 0.125
+            );
+  }
+
   public Command moveAndorHoldCommand(DoubleSupplier speed) {
-    return this.runEnd(() -> {
-      double s = speed.getAsDouble();
-      SmartDashboard.putNumber("speed", s);
-      if (Math.abs(s) > 0.125) {
-        move(s);
-        previouslyMove = true;
-      } else {
-        if (previouslyMove) {
-          positionUponSC = armPivot.getSelectedSensorPosition();
-        }
-        previouslyMove = false;
-        pos(positionUponSC);
-      }
-    }, 
-      () -> move(0));
+    return moveWhileWantedCommand(speed).andThen(holdPositionWhileNotWantedCommand(speed)).repeatedly();
   }
 
   @Override
