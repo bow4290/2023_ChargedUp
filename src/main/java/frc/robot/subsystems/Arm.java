@@ -46,10 +46,13 @@ public class Arm extends SubsystemBase {
 
     armPivot = new TalonFX(Constants.Arm.armPivotID);
     // armPivot.configFactoryDefault();
+    armPivot.configForwardSoftLimitEnable(true);
+    armPivot.configForwardSoftLimitThreshold(1000);
     armPivot.config_kP(0, 1);
+    armPivot.config_kD(0, 10);
     armPivot.config_kF(0, 0.0565);
-    armPivot.configMotionAcceleration(10000);
-    armPivot.configMotionCruiseVelocity(10000);
+    armPivot.configMotionAcceleration(4000);
+    armPivot.configMotionCruiseVelocity(8000);
 
     armPivot.setInverted(true);
     armPivot.setNeutralMode(NeutralMode.Brake);
@@ -89,7 +92,8 @@ public class Arm extends SubsystemBase {
             () -> {}, // Don't do anything specific on init
             () -> move(speed.getAsDouble()),
             (Boolean interrupted) -> move(0), // Don't do anything specific on end
-            () -> Math.abs(speed.getAsDouble()) < 0.125
+            () -> Math.abs(speed.getAsDouble()) < 0.125,
+            this
             );
   }
 
@@ -99,7 +103,8 @@ public class Arm extends SubsystemBase {
             () -> position = armPivot.getSelectedSensorPosition(),
             () -> pos(position),
             (Boolean interrupted) -> move(0),
-            () -> Math.abs(speed.getAsDouble()) >= 0.125
+            () -> Math.abs(speed.getAsDouble()) >= 0.125,
+            this
             );
   }
 

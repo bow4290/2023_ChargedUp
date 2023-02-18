@@ -89,12 +89,14 @@ public class RobotContainer {
     operator.a().whileTrue(s_Intake.spinInCmd());
     operator.x().whileTrue(s_Intake.spinEjectCmd());
 
+    // completely out: 42000
     operator.y().whileTrue(s_Elevator.positionCmd(42000));
+    operator.povLeft().whileTrue(s_Elevator.positionCmd(28000));
     operator.b().whileTrue(s_Elevator.positionCmd(0));
     operator.povLeft().whileTrue(s_Arm.posCmd(0.0));
-    operator.povUp().whileTrue(s_Arm.posCmd(30000));
-    operator.povDown().whileTrue(s_Arm.posCmd(-60000));
-    operator.povRight().whileTrue(s_Arm.posCmd(-80000));
+    //operator.povUp().whileTrue(s_Arm.posCmd(30000));
+    operator.povDown().whileTrue(s_Arm.posCmd(-67000));
+    operator.povRight().whileTrue(s_Arm.posCmd(-35000));
 
     operator.leftBumper().whileTrue(s_Elevator.moveCmd(Constants.Elevator.retractSpeed));
     operator.rightBumper().whileTrue(s_Elevator.moveCmd(Constants.Elevator.extendSpeed));

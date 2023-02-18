@@ -28,6 +28,7 @@ public class Elevator extends SubsystemBase {
     elevatorMotor.configMotionCruiseVelocity(10000);
     elevatorMotor.setInverted(false);
     elevatorMotor.setNeutralMode(NeutralMode.Brake);
+    setDefaultCommand(moveCmd(0));
   }
 
   private double lastPowerSet = 0;
