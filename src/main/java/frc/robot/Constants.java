@@ -24,8 +24,7 @@ public final class Constants {
   }
 
   public static final class Swerve {
-    public static final int pigeonID =
-        1; // TODO: BOW (Find out which gyro we are using, adapt code)
+    public static final int pigeonID = 1;
     public static final boolean invertGyro = false; // Always ensure Gyro is CCW+ CW-
 
     public static final COTSFalconSwerveConstants chosenModule =
@@ -34,6 +33,7 @@ public final class Constants {
     /* Drivetrain Constants */
     // Approximate, measured by Kabir 2023-01-10 using a large ruler on swerve test bot. I also
     // assumed that the robot was square (and it seems like it is)
+    // TODO: Update for 29x29 robot
     public static final double trackWidth = Units.inchesToMeters(25.75);
     public static final double wheelBase = Units.inchesToMeters(25.75);
     public static final double wheelCircumference = chosenModule.wheelCircumference;
@@ -96,8 +96,9 @@ public final class Constants {
     /** Meters per Second */
     public static final double maxSpeed = 1.0; // 4.5 //TODO: This must be tuned to specific robot
     /** Radians per Second */
+    // was 2
     public static final double maxAngularVelocity =
-        2.0; // TODO: This must be tuned to specific robot
+        1.75; // TODO: This must be tuned to specific robot
 
     /* Neutral Modes */
     public static final NeutralMode angleNeutralMode = NeutralMode.Coast;

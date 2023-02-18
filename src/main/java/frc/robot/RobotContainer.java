@@ -1,6 +1,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -19,7 +20,7 @@ public class RobotContainer {
   private final int driverPort = 0;
   private boolean driverDualshock = true;
   private final int operatorPort = 1;
-  private boolean operatorDualshock = false;
+  private boolean operatorDualshock = false; //WARNING: CHECK IF PS4 CONTROLS ARE OUTDATED
 
   /* Subsystems */
   private final Swerve s_Swerve = new Swerve();
@@ -29,11 +30,16 @@ public class RobotContainer {
   private final Vision s_Vision = new Vision();
   public static PhotonPoseEstimator photonPoseEstimator;
 
+  SendableChooser<Command> chooser = new SendableChooser<>();
   /** The container for the robot. Contains subsystems, IO devices, and commands. */
   public RobotContainer() {
     photonPoseEstimator = s_Vision.photonPoseEstimator; // TODO: find a better way to integrate this
     configureButtons();
     putInfoInDashboard();
+
+    chooser.setDefaultOption("move forward", new exampleAuto(s_Swerve));
+    chooser.addOption("do nothing", new InstantCommand(() -> {}));
+    //robot.explode();
   }
 
   private void putInfoInDashboard() {
@@ -91,14 +97,14 @@ public class RobotContainer {
 
     // completely out: 42000
     operator.y().whileTrue(s_Elevator.positionCmd(42000));
-    operator.povLeft().whileTrue(s_Elevator.positionCmd(28000));
-    operator.b().whileTrue(s_Elevator.positionCmd(0));
+    operator.b().whileTrue(s_Elevator.positionCmd(100));
+    operator.povUp().whileTrue(s_Elevator.positionCmd(28000));
     operator.povLeft().whileTrue(s_Arm.posCmd(0.0));
-    //operator.povUp().whileTrue(s_Arm.posCmd(30000));
     operator.povDown().whileTrue(s_Arm.posCmd(-67000));
-    operator.povRight().whileTrue(s_Arm.posCmd(-35000));
+    operator.povRight().whileTrue(s_Arm.posCmd(-30000));
+    //operator.povUp().whileTrue(s_Arm.posCmd(30000));
 
-    operator.leftBumper().whileTrue(s_Elevator.moveCmd(Constants.Elevator.retractSpeed));
+    operator.leftBumper().whileTrue(s_Arm.posCmd(-31500));
     operator.rightBumper().whileTrue(s_Elevator.moveCmd(Constants.Elevator.extendSpeed));
     s_Arm.setDefaultCommand(
         s_Arm.moveAndorHoldCommand(
@@ -128,7 +134,9 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    return new exampleAuto(s_Swerve);
+    return chooser.getSelected();
+      
+    //exampleAuto(s_Swerve);
   }
   // todo: fix and re-integrate this code
   /*    InstantCommand resetPoseCmd = new InstantCommand(() -> {
