@@ -89,8 +89,12 @@ public class RobotContainer {
     operator.a().whileTrue(s_Intake.spinInCmd());
     operator.x().whileTrue(s_Intake.spinEjectCmd());
 
-    operator.y().whileTrue(s_Elevator.positionCmd(44000));
+    operator.y().whileTrue(s_Elevator.positionCmd(42000));
     operator.b().whileTrue(s_Elevator.positionCmd(0));
+    operator.povLeft().whileTrue(s_Arm.posCmd(0.0));
+    operator.povUp().whileTrue(s_Arm.posCmd(30000));
+    operator.povDown().whileTrue(s_Arm.posCmd(-60000));
+    operator.povRight().whileTrue(s_Arm.posCmd(-80000));
 
     operator.leftBumper().whileTrue(s_Elevator.moveCmd(Constants.Elevator.retractSpeed));
     operator.rightBumper().whileTrue(s_Elevator.moveCmd(Constants.Elevator.extendSpeed));
@@ -102,6 +106,7 @@ public class RobotContainer {
   }
 
   private void dualshockOperatorConfiguration() {
+    // TODO: Update
     final var operator = new CommandPS4Controller(operatorPort);
     operator.share().onTrue(s_Intake.pistonsConeCmd());
     operator.options().onTrue(s_Intake.pistonsCubeCmd());
