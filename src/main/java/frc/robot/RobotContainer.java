@@ -97,15 +97,19 @@ public class RobotContainer {
 
     // completely out: 42000
     operator.y().whileTrue(s_Elevator.positionCmd(42000));
-    operator.b().whileTrue(s_Elevator.positionCmd(100));
+    operator.b().whileTrue(s_Elevator.positionCmd(300));
     operator.povUp().whileTrue(s_Elevator.positionCmd(28000));
     operator.povLeft().whileTrue(s_Arm.posCmd(0.0));
-    operator.povDown().whileTrue(s_Arm.posCmd(-67000));
-    operator.povRight().whileTrue(s_Arm.posCmd(-30000));
+    // Down
+    operator.povDown().whileTrue(s_Arm.posCmd(-72500));
+    // Slider
+    operator.povRight().whileTrue(s_Arm.posCmd(-38000));
     //operator.povUp().whileTrue(s_Arm.posCmd(30000));
 
-    operator.leftBumper().whileTrue(s_Arm.posCmd(-31500));
-    operator.rightBumper().whileTrue(s_Elevator.moveCmd(Constants.Elevator.extendSpeed));
+    // Ramp
+    operator.leftBumper().whileTrue(s_Arm.posCmd(-40000));
+    // 3rd
+    operator.rightBumper().whileTrue(s_Arm.posCmd(40000));
     s_Arm.setDefaultCommand(
         s_Arm.moveAndorHoldCommand(
             () ->

@@ -46,8 +46,8 @@ public class Arm extends SubsystemBase {
 
     armPivot = new TalonFX(Constants.Arm.armPivotID);
     // armPivot.configFactoryDefault();
-    armPivot.configForwardSoftLimitEnable(true);
-    armPivot.configForwardSoftLimitThreshold(1000);
+    armPivot.configForwardSoftLimitEnable(false);
+    //armPivot.configForwardSoftLimitThreshold(1000);
     armPivot.config_kP(0, 1);
     armPivot.config_kD(0, 10);
     armPivot.config_kF(0, 0.0565);

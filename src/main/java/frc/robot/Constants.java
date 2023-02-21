@@ -155,7 +155,7 @@ public final class Constants {
     public static final PneumaticsModuleType pneumaticType = PneumaticsModuleType.CTREPCM;
 
     public static final double inSpeed = -0.6;
-    public static final double ejectSpeed = 0.6;
+    public static final double ejectSpeed = 0.3;
     public static final double stopSpeed = 0;
   }
 
