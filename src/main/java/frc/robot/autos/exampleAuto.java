@@ -12,27 +12,19 @@ import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.auto.PIDConstants;
 import com.pathplanner.lib.auto.SwerveAutoBuilder;
 
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.math.trajectory.TrajectoryConfig;
-import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
+
 
 public class exampleAuto extends SequentialCommandGroup {
   public exampleAuto(Swerve s_Swerve, Arm s_Arm){
-      var pathGroup = PathPlanner.loadPathGroup("First Path", new PathConstraints(4, 3));
+      var pathGroup = PathPlanner.loadPathGroup("Best Path", new PathConstraints(3, 3));
 
       // This is just an example event map. It would be better to have a constant, global event map
       // in your code that will be used by all path following commands.
       HashMap<String, Command> eventMap = new HashMap<>();
-      eventMap.put("thirdTierCone", s_Arm.posCmd(0).until(() -> Math.abs(s_Arm.getPosition()) < 100.0));
+      eventMap.put("thirdTierCone", s_Arm.posCmd(0).until(() -> Math.abs(s_Arm.getPosition()) < 100.0)); // TODO Find out a better way to do this
 
       var thetaController =
       new ProfiledPIDController(

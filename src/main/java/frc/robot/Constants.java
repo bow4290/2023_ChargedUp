@@ -31,11 +31,10 @@ public final class Constants {
         COTSFalconSwerveConstants.SDSMK4i(COTSFalconSwerveConstants.driveGearRatios.SDSMK4i_L2);
 
     /* Drivetrain Constants */
-    // Approximate, measured by Kabir 2023-01-10 using a large ruler on swerve test bot. I also
-    // assumed that the robot was square (and it seems like it is)
-    // TODO: Update for 29x29 robot
-    public static final double trackWidth = Units.inchesToMeters(29);
-    public static final double wheelBase = Units.inchesToMeters(29);
+    // Approximate-ish
+    // Updated for 29x29 robot (contemplate: a 29x29 bot will not have a distance of 29 inches between the wheels)
+    public static final double trackWidth = Units.inchesToMeters(23.75);
+    public static final double wheelBase = Units.inchesToMeters(23.75);
     public static final double wheelCircumference = chosenModule.wheelCircumference;
 
     /* Swerve Kinematics
@@ -94,11 +93,12 @@ public final class Constants {
 
     /* Swerve Profiling Values */
     /** Meters per Second */
-    public static final double maxSpeed = 1.0; // 4.5 //TODO: This must be tuned to specific robot
+    // FYI this does not change teleop behavior
+    public static final double maxSpeed = 3.0; // 4.5 //TODO: This must be tuned to specific robot
     /** Radians per Second */
     // was 2
     public static final double maxAngularVelocity =
-        1.75; // TODO: This must be tuned to specific robot
+        2; // TODO: This must be tuned to specific robot
 
     /* Neutral Modes */
     public static final NeutralMode angleNeutralMode = NeutralMode.Coast;
