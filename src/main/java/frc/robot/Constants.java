@@ -34,8 +34,8 @@ public final class Constants {
     // Approximate, measured by Kabir 2023-01-10 using a large ruler on swerve test bot. I also
     // assumed that the robot was square (and it seems like it is)
     // TODO: Update for 29x29 robot
-    public static final double trackWidth = Units.inchesToMeters(25.75);
-    public static final double wheelBase = Units.inchesToMeters(25.75);
+    public static final double trackWidth = Units.inchesToMeters(29);
+    public static final double wheelBase = Units.inchesToMeters(29);
     public static final double wheelCircumference = chosenModule.wheelCircumference;
 
     /* Swerve Kinematics

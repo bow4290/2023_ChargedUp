@@ -1,9 +1,16 @@
 package frc.robot.autos;
 
 import frc.robot.Constants;
+import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Swerve;
 
+import java.util.HashMap;
 import java.util.List;
+
+import com.pathplanner.lib.PathConstraints;
+import com.pathplanner.lib.PathPlanner;
+import com.pathplanner.lib.auto.PIDConstants;
+import com.pathplanner.lib.auto.SwerveAutoBuilder;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -13,6 +20,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
@@ -24,7 +32,7 @@ public class exampleAuto extends SequentialCommandGroup {
       // This is just an example event map. It would be better to have a constant, global event map
       // in your code that will be used by all path following commands.
       HashMap<String, Command> eventMap = new HashMap<>();
-      eventMap.insert("thirdTierCone", s_Arm.posCmd(0));
+      eventMap.put("thirdTierCone", s_Arm.posCmd(0).until(() -> Math.abs(s_Arm.getPosition()) < 100.0));
 
       var thetaController =
       new ProfiledPIDController(
@@ -50,6 +58,6 @@ public class exampleAuto extends SequentialCommandGroup {
         addCommands(
             fullAuto
         );
-        addRequiremets(s_Arm);
+        addRequirements(s_Arm);
   }
 }

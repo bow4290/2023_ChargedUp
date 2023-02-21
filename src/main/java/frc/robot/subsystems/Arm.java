@@ -48,11 +48,13 @@ public class Arm extends SubsystemBase {
     // armPivot.configFactoryDefault();
     armPivot.configForwardSoftLimitEnable(false);
     //armPivot.configForwardSoftLimitThreshold(1000);
+    armPivot.configReverseSoftLimitEnable(true);
+    armPivot.configReverseSoftLimitThreshold(-73000);
     armPivot.config_kP(0, 1);
     armPivot.config_kD(0, 10);
     armPivot.config_kF(0, 0.0565);
-    armPivot.configMotionAcceleration(3000);
-    armPivot.configMotionCruiseVelocity(6000);
+    armPivot.configMotionAcceleration(6000);
+    armPivot.configMotionCruiseVelocity(10000);
 
     armPivot.setInverted(true);
     armPivot.setNeutralMode(NeutralMode.Brake);
@@ -106,6 +108,10 @@ public class Arm extends SubsystemBase {
             () -> Math.abs(speed.getAsDouble()) >= 0.075,
             this
             );
+  }
+
+  public double getPosition() {
+    return armPivot.getSelectedSensorPosition();
   }
 
   public Command moveAndorHoldCommand(DoubleSupplier speed) {

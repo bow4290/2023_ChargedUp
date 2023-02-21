@@ -20,7 +20,7 @@ public class RobotContainer {
   private final int driverPort = 0;
   private boolean driverDualshock = true;
   private final int operatorPort = 1;
-  private boolean operatorDualshock = false; //WARNING: CHECK IF PS4 CONTROLS ARE OUTDATED
+  private boolean operatorDualshock = true;
 
   /* Subsystems */
   private final Swerve s_Swerve = new Swerve();
@@ -37,7 +37,7 @@ public class RobotContainer {
     configureButtons();
     putInfoInDashboard();
 
-    chooser.setDefaultOption("move forward", new exampleAuto(s_Swerve));
+    chooser.setDefaultOption("move forward", new exampleAuto(s_Swerve, s_Arm));
     chooser.addOption("do nothing", new InstantCommand(() -> {}));
     //robot.explode();
   }
@@ -118,18 +118,37 @@ public class RobotContainer {
   }
 
   private void dualshockOperatorConfiguration() {
-    // TODO: Update
+    ERROR DO NOT DEPLOY, WIP
+    COMMENT OUT FOLLOWING PARAGRAPH FOR OLD BEHAVIOR
     final var operator = new CommandPS4Controller(operatorPort);
+    operator.square().whileTrue(s_Intake.pistonsCubeCmd().andThen(s_Intake.spinInCmd()));
+    operator.triangle().whileTrue(s_Intake.pistonsConeCmd().andThen(s_Intake.spinInCmd()));
+    operator.circle().whileTrue(s_Intake.pistonsCubeCmd().andThen(s_Intake.spinEjectCmd()));
+    operator.cross().whileTrue(s_Elevator.positionCmd(100).alongWith(s_Arm.posCmd(0)));
+    operator.povDown().whileTrue(s_Arm.posCmd(-72750));
+    operator.povLeft().whileTrue(s_Arm.)
+
+
     operator.share().onTrue(s_Intake.pistonsConeCmd());
     operator.options().onTrue(s_Intake.pistonsCubeCmd());
     operator.cross().whileTrue(s_Intake.spinInCmd());
     operator.square().whileTrue(s_Intake.spinEjectCmd());
 
-    operator.triangle().whileTrue(s_Elevator.positionCmd(44000));
-    operator.circle().whileTrue(s_Elevator.positionCmd(0));
+    // completely out: 42000
+    operator.triangle().whileTrue(s_Elevator.positionCmd(42000));
+    operator.circle().whileTrue(s_Elevator.positionCmd(300));
+    operator.povUp().whileTrue(s_Elevator.positionCmd(28000));
+    operator.povLeft().whileTrue(s_Arm.posCmd(0.0));
+    // Down
+    operator.povDown().whileTrue(s_Arm.posCmd(-72500));
+    // Slider
+    operator.povRight().whileTrue(s_Arm.posCmd(-38000));
+    //operator.povUp().whileTrue(s_Arm.posCmd(30000));
 
-    operator.L1().whileTrue(s_Elevator.moveCmd(Constants.Elevator.retractSpeed));
-    operator.R1().whileTrue(s_Elevator.moveCmd(Constants.Elevator.extendSpeed));
+    // Ramp
+    operator.L1().whileTrue(s_Arm.posCmd(-40000));
+    // 3rd
+    operator.R1().whileTrue(s_Arm.posCmd(40000));
     s_Arm.setDefaultCommand(
         s_Arm.moveAndorHoldCommand(
             () ->
