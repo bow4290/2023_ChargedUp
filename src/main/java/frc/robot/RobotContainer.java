@@ -118,10 +118,10 @@ public class RobotContainer {
   }
 
   private void dualshockOperatorConfiguration() {
-    ERROR DO NOT DEPLOY, WIP
-    COMMENT OUT FOLLOWING PARAGRAPH FOR OLD BEHAVIOR
+    /*ERROR DO NOT DEPLOY, WIP
+    COMMENT OUT FOLLOWING PARAGRAPH FOR OLD BEHAVIOR*/
     final var operator = new CommandPS4Controller(operatorPort);
-    operator.square().whileTrue(s_Intake.pistonsCubeCmd().andThen(s_Intake.spinInCmd()));
+    /*operator.square().whileTrue(s_Intake.pistonsCubeCmd().andThen(s_Intake.spinInCmd()));
     operator.triangle().whileTrue(s_Intake.pistonsConeCmd().andThen(s_Intake.spinInCmd()));
     operator.circle().whileTrue(s_Intake.pistonsCubeCmd().andThen(s_Intake.spinEjectCmd()));
     operator.cross().whileTrue(s_Elevator.positionCmd(100).alongWith(s_Arm.posCmd(0)));
@@ -133,7 +133,7 @@ public class RobotContainer {
     operator.options().onTrue(s_Intake.pistonsCubeCmd());
     operator.cross().whileTrue(s_Intake.spinInCmd());
     operator.square().whileTrue(s_Intake.spinEjectCmd());
-
+*/
     // completely out: 42000
     operator.triangle().whileTrue(s_Elevator.positionCmd(42000));
     operator.circle().whileTrue(s_Elevator.positionCmd(300));
