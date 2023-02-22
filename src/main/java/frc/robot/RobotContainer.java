@@ -70,7 +70,7 @@ public class RobotContainer {
             driver.leftBumper()::getAsBoolean));
 
     driver.y().onTrue(new InstantCommand(s_Swerve::zeroGyro));
-    driver.b().onTrue(new BalanceThing(s_Swerve));
+    driver.b().whileTrue(new BalanceThing(s_Swerve));
     // driver.a().whileTrue(s_Arm.posCmd(0));
   }
 
@@ -85,7 +85,7 @@ public class RobotContainer {
             driver.L1()::getAsBoolean));
 
     driver.triangle().onTrue(new InstantCommand(s_Swerve::zeroGyro));
-    driver.circle().onTrue(new BalanceThing(s_Swerve));
+    driver.circle().whileTrue(new BalanceThing(s_Swerve));
   }
 
   private void xboxOperatorConfiguration() {
