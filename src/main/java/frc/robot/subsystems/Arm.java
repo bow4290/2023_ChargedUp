@@ -81,7 +81,8 @@ public class Arm extends SubsystemBase {
   }
 
   public void retainPosition() {
-    armPivot.set(ControlMode.MotionMagic, getPosition());
+    move(0); // WARNING THIS IS ONLY FOR TEST PURPOSES
+    // armPivot.set(ControlMode.MotionMagic, getPosition());
   }
 
   public Command retainPositionCmd() {
