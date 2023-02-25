@@ -9,45 +9,45 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import java.util.function.DoubleSupplier;
 
-public class Arm extends SubsystemBase {
-  private final TalonFX armPivot;
-  private final TalonFX armPivot2;
+public class Elbow extends SubsystemBase {
+  private final TalonFX elbowPivot;
+  private final TalonFX elbowPivot2;
 
   public double degreesToTicks(double degrees) {
     return degrees * Constants.Arm.ticksPerDegree;
   }
 
-  public Arm() {
-    armPivot = new TalonFX(Constants.Arm.armPivotID);
-    armPivot.configFactoryDefault();
-    armPivot.configForwardSoftLimitEnable(true);
-    armPivot.configForwardSoftLimitThreshold(degreesToTicks(95));
-    armPivot.configReverseSoftLimitEnable(true);
-    armPivot.configReverseSoftLimitThreshold(degreesToTicks(-95));
+  public Elbow() {
+    elbowPivot = new TalonFX(Constants.Arm.armPivotID);
+    elbowPivot.configFactoryDefault();
+    elbowPivot.configForwardSoftLimitEnable(true);
+    elbowPivot.configForwardSoftLimitThreshold(degreesToTicks(95));
+    elbowPivot.configReverseSoftLimitEnable(true);
+    elbowPivot.configReverseSoftLimitThreshold(degreesToTicks(-95));
 
     // TODO Needs to be tuned for follower motors
-    armPivot.config_kP(0, 1);
-    armPivot.config_kD(0, 10);
-    armPivot.config_kF(0, 0.0565);
-    armPivot.configMotionAcceleration(8000);
-    armPivot.configMotionCruiseVelocity(10000);
+    elbowPivot.config_kP(0, 1);
+    elbowPivot.config_kD(0, 10);
+    elbowPivot.config_kF(0, 0.0565);
+    elbowPivot.configMotionAcceleration(8000);
+    elbowPivot.configMotionCruiseVelocity(10000);
 
-    armPivot.setStatusFramePeriod(
+    elbowPivot.setStatusFramePeriod(
         StatusFrame.Status_1_General, 5); // This might make following more accurate?
 
-    armPivot.setInverted(true);
-    armPivot.setNeutralMode(NeutralMode.Brake);
+    elbowPivot.setInverted(true);
+    elbowPivot.setNeutralMode(NeutralMode.Brake);
 
-    armPivot2 = new TalonFX(Constants.Arm.armPivot2ID);
-    armPivot2.configFactoryDefault();
-    armPivot2.follow(armPivot);
-    armPivot2.setInverted(
+    elbowPivot2 = new TalonFX(Constants.Arm.armPivot2ID);
+    elbowPivot2.configFactoryDefault();
+    elbowPivot2.follow(elbowPivot);
+    elbowPivot2.setInverted(
         InvertType.OpposeMaster); // One motor needs to be CCW, the other needs to be CW
     // "Motor controllers that are followers can have slower update rates for this group without
     // impacting performance."
     // - Phoenix docs
-    armPivot2.setStatusFramePeriod(StatusFrame.Status_1_General, 100);
-    armPivot2.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 100);
+    elbowPivot2.setStatusFramePeriod(StatusFrame.Status_1_General, 100);
+    elbowPivot2.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 100);
 
     SmartDashboard.putData("Arm", this);
   }
@@ -56,25 +56,25 @@ public class Arm extends SubsystemBase {
   @Override
   public void initSendable(SendableBuilder builder) {
     super.initSendable(builder);
-    builder.addDoubleProperty("Power", armPivot::getMotorOutputPercent, null);
-    builder.addStringProperty("Mode", () -> armPivot.getControlMode().toString(), null);
-    builder.addDoubleProperty("Target Pos", armPivot::getActiveTrajectoryPosition, null);
+    builder.addDoubleProperty("Power", elbowPivot::getMotorOutputPercent, null);
+    builder.addStringProperty("Mode", () -> elbowPivot.getControlMode().toString(), null);
+    builder.addDoubleProperty("Target Pos", elbowPivot::getActiveTrajectoryPosition, null);
     builder.addDoubleProperty("Pos", this::getPosition, null);
-    builder.addDoubleProperty("Target Vel", armPivot::getActiveTrajectoryVelocity, null);
-    builder.addDoubleProperty("Vel", armPivot::getSelectedSensorVelocity, null);
+    builder.addDoubleProperty("Target Vel", elbowPivot::getActiveTrajectoryVelocity, null);
+    builder.addDoubleProperty("Vel", elbowPivot::getSelectedSensorVelocity, null);
     builder.addDoubleProperty("Degrees", () -> getPosition() * Constants.Arm.degreesPerTick, null);
   }
 
   public double getPosition() {
-    return armPivot.getSelectedSensorPosition();
+    return elbowPivot.getSelectedSensorPosition();
   }
 
   public void move(double speed) {
-    armPivot.set(ControlMode.PercentOutput, speed);
+    elbowPivot.set(ControlMode.PercentOutput, speed);
   }
 
   public void pos(double pos) {
-    armPivot.set(ControlMode.MotionMagic, pos);
+    elbowPivot.set(ControlMode.MotionMagic, pos);
   }
 
   public void retainPosition() {

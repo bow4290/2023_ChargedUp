@@ -8,12 +8,12 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
-import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Elbow;
 import frc.robot.subsystems.Swerve;
 import java.util.HashMap;
 
 public class exampleAuto extends SequentialCommandGroup {
-  public exampleAuto(Swerve s_Swerve, Arm s_Arm) {
+  public exampleAuto(Swerve s_Swerve, Elbow s_Elbow) {
     var pathGroup = PathPlanner.loadPathGroup("Best Path", new PathConstraints(3, 3));
 
     // This is just an example event map. It would be better to have a constant, global event map
@@ -21,11 +21,11 @@ public class exampleAuto extends SequentialCommandGroup {
     HashMap<String, Command> eventMap = new HashMap<>();
     eventMap.put(
         "thirdTierCone",
-        s_Arm
+        s_Elbow
             .posCmd(0)
             .until(
                 () ->
-                    Math.abs(s_Arm.getPosition())
+                    Math.abs(s_Elbow.getPosition())
                         < 100.0)); // TODO Find out a better way to do this
 
     var thetaController =
@@ -58,6 +58,6 @@ public class exampleAuto extends SequentialCommandGroup {
     Command fullAuto = autoBuilder.fullAuto(pathGroup);
 
     addCommands(fullAuto);
-    addRequirements(s_Arm);
+    addRequirements(s_Elbow);
   }
 }

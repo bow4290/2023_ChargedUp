@@ -20,7 +20,7 @@ public class RobotContainer {
   /* Subsystems */
   private final Swerve s_Swerve = new Swerve();
   private final Intake s_Intake = new Intake();
-  private final Arm s_Arm = new Arm();
+  private final Elbow s_Elbow = new Elbow();
   private final Elevator s_Elevator = new Elevator();
   private final Vision s_Vision = new Vision();
   public static PhotonPoseEstimator photonPoseEstimator;
@@ -32,7 +32,7 @@ public class RobotContainer {
     configureButtons();
     putInfoInDashboard();
 
-    chooser.setDefaultOption("move forward", new exampleAuto(s_Swerve, s_Arm));
+    chooser.setDefaultOption("move forward", new exampleAuto(s_Swerve, s_Elbow));
     chooser.addOption("do nothing", new InstantCommand(() -> {}));
     // robot.explode();
   }
@@ -92,19 +92,19 @@ public class RobotContainer {
     operator.y.whileTrue(s_Elevator.positionMaxCmd());
     operator.b.whileTrue(s_Elevator.positionBaseCmd());
 
-    operator.dpadUp.whileTrue(s_Arm.posDegCmd(0));
+    operator.dpadUp.whileTrue(s_Elbow.posDegCmd(0));
 
-    operator.dpadLeft.whileTrue(s_Arm.posDegCmd(-45));
-    operator.dpadRight.whileTrue(s_Arm.posDegCmd(45));
+    operator.dpadLeft.whileTrue(s_Elbow.posDegCmd(-45));
+    operator.dpadRight.whileTrue(s_Elbow.posDegCmd(45));
 
     operator.dpadDown.whileTrue(s_Elevator.positionMidCmd());
 
     // Ramp
-    operator.leftBumper.whileTrue(s_Arm.posDegCmd(90));
+    operator.leftBumper.whileTrue(s_Elbow.posDegCmd(90));
     // 3rd
-    operator.rightBumper.whileTrue(s_Arm.posDegCmd(-90));
+    operator.rightBumper.whileTrue(s_Elbow.posDegCmd(-90));
     // Todo: find something to assign to left/right bumper (manual control overrides)?
-    s_Arm.setDefaultCommand(s_Arm.doubleMoveOrHoldCmd(operator.leftTrigger, operator.rightTrigger));
+    s_Elbow.setDefaultCommand(s_Elbow.doubleMoveOrHoldCmd(operator.leftTrigger, operator.rightTrigger));
   }
 
   public Command getAutonomousCommand() {
