@@ -3,6 +3,8 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -21,8 +23,21 @@ public class Elevator extends SubsystemBase {
     elevatorMotor.configMotionCruiseVelocity(10000);
     elevatorMotor.setInverted(false);
     elevatorMotor.setNeutralMode(NeutralMode.Brake);
-
     setDefaultCommand(moveCmd(0));
+
+    SmartDashboard.putData("Arm", this);
+  }
+
+  // SmartDashboard stuff
+  @Override
+  public void initSendable(SendableBuilder builder) {
+    super.initSendable(builder);
+    builder.addDoubleProperty("Power", elevatorMotor::getMotorOutputPercent, null);
+    builder.addStringProperty("Mode", () -> elevatorMotor.getControlMode().toString(), null);
+    builder.addDoubleProperty("Target Pos", elevatorMotor::getActiveTrajectoryPosition, null);
+    builder.addDoubleProperty("Pos", elevatorMotor::getSelectedSensorPosition, null);
+    builder.addDoubleProperty("Target Vel", elevatorMotor::getActiveTrajectoryVelocity, null);
+    builder.addDoubleProperty("Vel", elevatorMotor::getSelectedSensorVelocity, null);
   }
 
   public void move(double speed) {
@@ -55,6 +70,10 @@ public class Elevator extends SubsystemBase {
 
   public Command moveCmd(double speed) {
     return moveCmd(() -> speed);
+  }
+
+  public void resetToZero() {
+    elevatorMotor.setSelectedSensorPosition(0);
   }
 
   @Override

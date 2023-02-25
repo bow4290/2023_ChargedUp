@@ -78,7 +78,7 @@ public class Elbow extends SubsystemBase {
   }
 
   public void retainPosition() {
-    move(0); // WARNING THIS IS ONLY FOR TEST PURPOSES
+    move(0); // THIS IS ONLY FOR TEST PURPOSES TO SEE IF BOTH FALCONS CAN BRAKE
     // armPivot.set(ControlMode.MotionMagic, getPosition());
   }
 
@@ -117,6 +117,10 @@ public class Elbow extends SubsystemBase {
         () ->
             backSpeed.getAsDouble() * Constants.Arm.backSpeed
                 + frontSpeed.getAsDouble() * Constants.Arm.frontSpeed);
+  }
+
+  public void resetToZero() {
+    elbowPivot.setSelectedSensorPosition(0);
   }
 
   @Override

@@ -32,9 +32,22 @@ public class RobotContainer {
     configureButtons();
     putInfoInDashboard();
 
+    SmartDashboard.putData(
+        "Reset Swerve Modules To Absolute", s_Swerve.resetModulesToAbsoluteCommand());
+    SmartDashboard.putData(
+        "Reset Elbow/Elevator to Zero",
+        new InstantCommand(
+            () -> {
+              s_Elbow.resetToZero();
+              s_Elevator.resetToZero();
+            }));
+
     chooser.setDefaultOption("move forward", new exampleAuto(s_Swerve, s_Elbow));
     chooser.addOption("do nothing", new InstantCommand(() -> {}));
+
+    // DO NOT UNCOMMENT THE FOLLOWING LINES
     // robot.explode();
+    // Robot-on-fire incident counter so far: 1
   }
 
   private void putInfoInDashboard() {
@@ -99,12 +112,10 @@ public class RobotContainer {
 
     operator.dpadDown.whileTrue(s_Elevator.positionMidCmd());
 
-    // Ramp
     operator.leftBumper.whileTrue(s_Elbow.posDegCmd(90));
-    // 3rd
     operator.rightBumper.whileTrue(s_Elbow.posDegCmd(-90));
-    // Todo: find something to assign to left/right bumper (manual control overrides)?
-    s_Elbow.setDefaultCommand(s_Elbow.doubleMoveOrHoldCmd(operator.leftTrigger, operator.rightTrigger));
+    s_Elbow.setDefaultCommand(
+        s_Elbow.doubleMoveOrHoldCmd(operator.leftTrigger, operator.rightTrigger));
   }
 
   public Command getAutonomousCommand() {
