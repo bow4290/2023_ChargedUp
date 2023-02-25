@@ -95,11 +95,7 @@ public class RobotContainer {
     operator.leftBumper.whileTrue(s_Arm.posCmd(-40000));
     // 3rd
     operator.rightBumper.whileTrue(s_Arm.posCmd(40000));
-    s_Arm.setDefaultCommand(
-        s_Arm.moveOrHoldCmd(
-            () ->
-                Constants.Arm.backSpeed * operator.leftTrigger.getAsDouble()
-                    + Constants.Arm.frontSpeed * operator.rightTrigger.getAsDouble()));
+    s_Arm.setDefaultCommand(s_Arm.doubleMoveOrHoldCmd(operator.leftTrigger, operator.rightTrigger));
   }
 
   public Command getAutonomousCommand() {

@@ -90,6 +90,11 @@ public class Arm extends SubsystemBase {
   public Command moveOrHoldCmd(DoubleSupplier speed) {
     return moveWhileWantedCmd(speed).andThen(holdPositionWhileNotWantedCmd(speed)).repeatedly();
   }
+
+  public Command doubleMoveOrHoldCmd(DoubleSupplier backSpeed, DoubleSupplier frontSpeed) {
+    return moveOrHoldCmd(() -> backSpeed.getAsDouble() * Constants.Arm.backSpeed +
+            frontSpeed.getAsDouble() * Constants.Arm.frontSpeed);
+  }
   @Override
   public void periodic() {
     SmartDashboard.putNumber("Arm Power", armPivot.getMotorOutputPercent());
