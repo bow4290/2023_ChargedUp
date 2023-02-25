@@ -6,13 +6,13 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import java.util.function.DoubleSupplier;
 
 public class GenericGamepad {
-  // Equivalent to △ Green Triangle on PS4
+  // Equivalent to × Blue Cross on PS4
   public Trigger a;
   // Equivalent to ○ Red Circle on PS4
   public Trigger b;
   // Equivalent to □ Purple Square on PS4
   public Trigger x;
-  // Equivalent to × Blue Cross on PS4 (yes, this is slightly confusing)
+  // Equivalent to △ Green Triangle on PS4 (yes, this is slightly confusing)
   public Trigger y;
   public Trigger leftBumper;
   public Trigger rightBumper;
@@ -38,10 +38,10 @@ public class GenericGamepad {
   public Trigger rightMiddle;
 
   public GenericGamepad(CommandPS4Controller controller) {
-    a = controller.triangle();
+    a = controller.cross();
     b = controller.circle();
     x = controller.square();
-    y = controller.cross();
+    y = controller.triangle();
 
     leftBumper = controller.L1();
     rightBumper = controller.R1();
@@ -58,7 +58,7 @@ public class GenericGamepad {
 
     dpadUp = controller.povUp();
     dpadLeft = controller.povLeft();
-    dpadRight = controller.povLeft();
+    dpadRight = controller.povRight();
     dpadDown = controller.povDown();
 
     leftMiddle = controller.share();

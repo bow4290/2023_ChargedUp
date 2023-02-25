@@ -16,10 +16,10 @@ import frc.lib.util.SwerveModuleConstants;
 public final class Constants {
   public static final double stickDeadband = 0.1;
   public static final boolean enablePS5 = false;
-
   public static final class Limelight {
+
     public static final Transform3d robotToCam =
-        new Transform3d(new Translation3d(0, 0.381, 0.381), new Rotation3d(0, 0, 0));
+        new Transform3d(new Translation3d(-0.082, -0.2105, 0.58), new Rotation3d(0, 0, 0));
     public static final String camName = "OV5647";
   }
 

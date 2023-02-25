@@ -96,15 +96,17 @@ public class RobotContainer {
     driver.y.onTrue(new InstantCommand(s_Swerve::zeroGyro));
     driver.b.whileTrue(new BalanceThing(s_Swerve));
 
-    // It is not intended for the driver to manually operate the elevator during normal robot operation.
+    // It is not intended for the driver to manually operate the elevator during normal robot
+    // operation.
     // This should only be used in the event of an unexpected situation.
-    DoubleSupplier combined =
-            () ->
-                    operator.leftTrigger.getAsDouble() * Constants.Elevator.retractSpeed
-                            + operator.rightTrigger.getAsDouble() * Constants.Elevator.extendSpeed;
+    /*DoubleSupplier combined =
+          () ->
+              driver.leftTrigger.getAsDouble() * Constants.Elevator.retractSpeed
+                  + driver.rightTrigger.getAsDouble() * Constants.Elevator.extendSpeed;
 
-    new Trigger(() -> Math.abs(combined.getAsDouble()) > Constants.Elevator.elevatorDeadband)
-            .whileTrue(s_Elevator.moveCmd(combined));
+      new Trigger(() -> Math.abs(combined.getAsDouble()) > Constants.Elevator.elevatorDeadband)
+          .whileTrue(s_Elevator.moveCmd(combined));
+    */
   }
 
   private void operatorConfiguration() {
@@ -121,8 +123,10 @@ public class RobotContainer {
     operator.dpadRight.onTrue(s_Elbow.posDegCmd(45));
     operator.dpadDown.onTrue(s_Elevator.positionMidCmd());
 
-    operator.leftBumper.onTrue(s_Elbow.posDegCmd(90));
-    operator.rightBumper.onTrue(s_Elbow.posDegCmd(-90));
+    // operator.leftBumper.onTrue(s_Elbow.posDegCmd(90));
+    // operator.rightBumper.onTrue(s_Elbow.posDegCmd(-90));
+    operator.leftBumper.whileTrue(s_Elevator.moveCmd(Constants.Elevator.retractSpeed));
+    operator.rightBumper.whileTrue(s_Elevator.moveCmd(Constants.Elevator.extendSpeed));
 
     DoubleSupplier combined =
         () ->

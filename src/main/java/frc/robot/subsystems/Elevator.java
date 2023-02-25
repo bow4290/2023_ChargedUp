@@ -25,7 +25,7 @@ public class Elevator extends SubsystemBase {
     elevatorMotor.setNeutralMode(NeutralMode.Brake);
     setDefaultCommand(moveCmd(0));
 
-    SmartDashboard.putData("Arm", this);
+    SmartDashboard.putData("Elevator", this);
   }
 
   // SmartDashboard stuff
