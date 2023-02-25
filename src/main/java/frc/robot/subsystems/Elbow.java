@@ -50,6 +50,8 @@ public class Elbow extends SubsystemBase {
     elbowPivot2.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 100);
 
     SmartDashboard.putData("Arm", this);
+
+    setDefaultCommand(retainPositionCmd());
   }
 
   // SmartDashboard stuff
@@ -83,7 +85,8 @@ public class Elbow extends SubsystemBase {
   }
 
   public Command retainPositionCmd() {
-    return startEnd(this::retainPosition, () -> move(0));
+    // NOTE: CHANGE THIS TO A startEnd IF YOU ARE USING MOTION MAGIC FOR THIS
+    return runEnd(this::retainPosition, () -> move(0));
   }
 
   public Command moveCmd(DoubleSupplier speed) {
@@ -96,27 +99,6 @@ public class Elbow extends SubsystemBase {
 
   public Command posDegCmd(double positionDeg) {
     return posCmd(degreesToTicks(positionDeg));
-  }
-
-  // This is probably not the best way to do this, but it works:
-  public Command moveWhileWantedCmd(DoubleSupplier speed) {
-    return moveCmd(speed).until(() -> Math.abs(speed.getAsDouble()) < Constants.Arm.armDeadband);
-  }
-
-  public Command holdPositionWhileNotWantedCmd(DoubleSupplier speed) {
-    return retainPositionCmd()
-        .until(() -> Math.abs(speed.getAsDouble()) >= Constants.Arm.armDeadband);
-  }
-
-  public Command moveOrHoldCmd(DoubleSupplier speed) {
-    return moveWhileWantedCmd(speed).andThen(holdPositionWhileNotWantedCmd(speed)).repeatedly();
-  }
-
-  public Command doubleMoveOrHoldCmd(DoubleSupplier backSpeed, DoubleSupplier frontSpeed) {
-    return moveOrHoldCmd(
-        () ->
-            backSpeed.getAsDouble() * Constants.Arm.backSpeed
-                + frontSpeed.getAsDouble() * Constants.Arm.frontSpeed);
   }
 
   public void resetToZero() {

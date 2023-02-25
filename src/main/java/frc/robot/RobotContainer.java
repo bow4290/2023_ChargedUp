@@ -7,12 +7,14 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.autos.*;
 import frc.robot.commands.swerve.BalanceThing;
 import frc.robot.commands.swerve.TeleopSwerve;
 import frc.robot.subsystems.*;
 import java.io.File;
 import java.nio.file.Files;
+import java.util.function.DoubleSupplier;
 import org.photonvision.PhotonPoseEstimator;
 
 public class RobotContainer {
@@ -94,7 +96,7 @@ public class RobotContainer {
     driver.y.onTrue(new InstantCommand(s_Swerve::zeroGyro));
     driver.b.whileTrue(new BalanceThing(s_Swerve));
   }
-e
+
   private void operatorConfiguration() {
     operator.leftMiddle.onTrue(s_Intake.pistonsConeCmd());
     operator.rightMiddle.onTrue(s_Intake.pistonsCubeCmd());
@@ -114,8 +116,14 @@ e
 
     operator.leftBumper.whileTrue(s_Elbow.posDegCmd(90));
     operator.rightBumper.whileTrue(s_Elbow.posDegCmd(-90));
-    s_Elbow.setDefaultCommand(
-        s_Elbow.doubleMoveOrHoldCmd(operator.leftTrigger, operator.rightTrigger));
+
+    DoubleSupplier combined =
+        () ->
+            operator.leftTrigger.getAsDouble() * Constants.Arm.backSpeed
+                + operator.rightTrigger.getAsDouble() * Constants.Arm.frontSpeed;
+
+    new Trigger(() -> Math.abs(combined.getAsDouble()) > Constants.Arm.armDeadband)
+        .onTrue(s_Elbow.moveCmd(combined));
   }
 
   public Command getAutonomousCommand() {
