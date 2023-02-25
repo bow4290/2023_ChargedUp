@@ -95,6 +95,16 @@ public class RobotContainer {
 
     driver.y.onTrue(new InstantCommand(s_Swerve::zeroGyro));
     driver.b.whileTrue(new BalanceThing(s_Swerve));
+
+    // It is not intended for the driver to manually operate the elevator during normal robot operation.
+    // This should only be used in the event of an unexpected situation.
+    DoubleSupplier combined =
+            () ->
+                    operator.leftTrigger.getAsDouble() * Constants.Elevator.retractSpeed
+                            + operator.rightTrigger.getAsDouble() * Constants.Elevator.extendSpeed;
+
+    new Trigger(() -> Math.abs(combined.getAsDouble()) > Constants.Elevator.elevatorDeadband)
+            .whileTrue(s_Elevator.moveCmd(combined));
   }
 
   private void operatorConfiguration() {
@@ -103,19 +113,16 @@ public class RobotContainer {
 
     operator.a.whileTrue(s_Intake.spinInCmd());
     operator.x.whileTrue(s_Intake.spinEjectCmd());
+    operator.y.onTrue(s_Elevator.positionMaxCmd());
+    operator.b.onTrue(s_Elevator.positionBaseCmd());
 
-    operator.y.whileTrue(s_Elevator.positionMaxCmd());
-    operator.b.whileTrue(s_Elevator.positionBaseCmd());
+    operator.dpadUp.onTrue(s_Elbow.posDegCmd(0));
+    operator.dpadLeft.onTrue(s_Elbow.posDegCmd(-45));
+    operator.dpadRight.onTrue(s_Elbow.posDegCmd(45));
+    operator.dpadDown.onTrue(s_Elevator.positionMidCmd());
 
-    operator.dpadUp.whileTrue(s_Elbow.posDegCmd(0));
-
-    operator.dpadLeft.whileTrue(s_Elbow.posDegCmd(-45));
-    operator.dpadRight.whileTrue(s_Elbow.posDegCmd(45));
-
-    operator.dpadDown.whileTrue(s_Elevator.positionMidCmd());
-
-    operator.leftBumper.whileTrue(s_Elbow.posDegCmd(90));
-    operator.rightBumper.whileTrue(s_Elbow.posDegCmd(-90));
+    operator.leftBumper.onTrue(s_Elbow.posDegCmd(90));
+    operator.rightBumper.onTrue(s_Elbow.posDegCmd(-90));
 
     DoubleSupplier combined =
         () ->
@@ -123,7 +130,7 @@ public class RobotContainer {
                 + operator.rightTrigger.getAsDouble() * Constants.Arm.frontSpeed;
 
     new Trigger(() -> Math.abs(combined.getAsDouble()) > Constants.Arm.armDeadband)
-        .onTrue(s_Elbow.moveCmd(combined));
+        .whileTrue(s_Elbow.moveCmd(combined));
   }
 
   public Command getAutonomousCommand() {

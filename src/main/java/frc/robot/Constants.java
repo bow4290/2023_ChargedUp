@@ -174,7 +174,7 @@ public final class Constants {
     public static final double ticksPerDegree = gearRatio * talonCPR / 360;
     public static final double degreesPerTick = 1 / ticksPerDegree;
 
-    public static final double armDeadband = 0.075;
+    public static final double armDeadband = 0.06;
   }
 
   public static final class Elevator {
@@ -182,6 +182,7 @@ public final class Constants {
     public static final double extendSpeed = 0.25;
     public static final double retractSpeed = -0.25;
     public static final double stopSpeed = 0;
+    public static final double elevatorDeadband = 0.03;
 
     public static final double base = 0;
     public static final double middle = 27000;
