@@ -166,6 +166,8 @@ public final class Constants {
     public static final double backSpeed = -0.5;
     public static final double stopSpeed = 0;
 
+    // 512/7 ratio, according to build
+    // Testing determined the ratio is probably closer to 1024/7 so just use that
     public static final double gearRatio = 1024 / 7;
     public static final double talonCPR = 2048;
     public static final double ticksPerDegree = gearRatio * talonCPR / 360;
