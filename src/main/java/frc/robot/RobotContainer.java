@@ -34,7 +34,7 @@ public class RobotContainer {
 
     chooser.setDefaultOption("move forward", new exampleAuto(s_Swerve, s_Arm));
     chooser.addOption("do nothing", new InstantCommand(() -> {}));
-    //robot.explode();
+    // robot.explode();
   }
 
   private void putInfoInDashboard() {
@@ -47,19 +47,23 @@ public class RobotContainer {
     SmartDashboard.putString("Code Last Deployed", deployInfo);
   }
 
-
   /* Controllers */
+  // TODO: It should be possible to detect whether a gamepad is PS4 or Xbox(Logitech) based on the
+  // button count
   private final int driverPort = 0;
   private final boolean driverDualshock = true;
   private final int operatorPort = 1;
   private final boolean operatorDualshock = true;
 
-  private final GenericGamepad driver = driverDualshock ? new GenericGamepad(new CommandPS4Controller(driverPort)) :
-          new GenericGamepad(new CommandXboxController(driverPort));
-  private final GenericGamepad operator = operatorDualshock ? new GenericGamepad(new CommandPS4Controller(operatorPort)) :
-          new GenericGamepad(new CommandXboxController(operatorPort));
+  private final GenericGamepad driver =
+      driverDualshock
+          ? new GenericGamepad(new CommandPS4Controller(driverPort))
+          : new GenericGamepad(new CommandXboxController(driverPort));
+  private final GenericGamepad operator =
+      operatorDualshock
+          ? new GenericGamepad(new CommandPS4Controller(operatorPort))
+          : new GenericGamepad(new CommandXboxController(operatorPort));
 
-  // TODO: It could be possible to detect whether a gamepad is PS4 or Xbox(Logitech) based on the button count
   private void configureButtons() {
     driverConfiguration();
     operatorConfiguration();

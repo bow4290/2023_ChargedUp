@@ -32,7 +32,8 @@ public final class Constants {
 
     /* Drivetrain Constants */
     // Approximate-ish
-    // Updated for 29x29 robot (contemplate: a 29x29 bot will not have a distance of 29 inches between the wheels)
+    // Updated for 29x29 robot (contemplate: a 29x29 bot will not have a distance of 29 inches
+    // between the wheels)
     public static final double trackWidth = Units.inchesToMeters(23.75);
     public static final double wheelBase = Units.inchesToMeters(23.75);
     public static final double wheelCircumference = chosenModule.wheelCircumference;
@@ -97,8 +98,7 @@ public final class Constants {
     public static final double maxSpeed = 3.0; // 4.5 //TODO: This must be tuned to specific robot
     /** Radians per Second */
     // was 2
-    public static final double maxAngularVelocity =
-        2; // TODO: This must be tuned to specific robot
+    public static final double maxAngularVelocity = 2; // TODO: This must be tuned to specific robot
 
     /* Neutral Modes */
     public static final NeutralMode angleNeutralMode = NeutralMode.Coast;
