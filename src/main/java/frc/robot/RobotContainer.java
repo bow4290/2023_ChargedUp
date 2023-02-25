@@ -96,15 +96,16 @@ public class RobotContainer {
     driver.y.onTrue(new InstantCommand(s_Swerve::zeroGyro));
     driver.b.whileTrue(new BalanceThing(s_Swerve));
 
-    // It is not intended for the driver to manually operate the elevator during normal robot operation.
+    // It is not intended for the driver to manually operate the elevator during normal robot
+    // operation.
     // This should only be used in the event of an unexpected situation.
     DoubleSupplier combined =
-            () ->
-                    operator.leftTrigger.getAsDouble() * Constants.Elevator.retractSpeed
-                            + operator.rightTrigger.getAsDouble() * Constants.Elevator.extendSpeed;
+        () ->
+            operator.leftTrigger.getAsDouble() * Constants.Elevator.retractSpeed
+                + operator.rightTrigger.getAsDouble() * Constants.Elevator.extendSpeed;
 
     new Trigger(() -> Math.abs(combined.getAsDouble()) > Constants.Elevator.elevatorDeadband)
-            .whileTrue(s_Elevator.moveCmd(combined));
+        .whileTrue(s_Elevator.moveCmd(combined));
   }
 
   private void operatorConfiguration() {
