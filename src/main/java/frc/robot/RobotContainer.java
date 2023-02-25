@@ -16,11 +16,6 @@ import java.nio.file.Files;
 import org.photonvision.PhotonPoseEstimator;
 
 public class RobotContainer {
-  /* Controllers */
-  private final int driverPort = 0;
-  private boolean driverDualshock = true;
-  private final int operatorPort = 1;
-  private boolean operatorDualshock = true;
 
   /* Subsystems */
   private final Swerve s_Swerve = new Swerve();
@@ -52,107 +47,59 @@ public class RobotContainer {
     SmartDashboard.putString("Code Last Deployed", deployInfo);
   }
 
+
+  /* Controllers */
+  private final int driverPort = 0;
+  private final boolean driverDualshock = true;
+  private final int operatorPort = 1;
+  private final boolean operatorDualshock = true;
+
+  private final GenericGamepad driver = driverDualshock ? new GenericGamepad(new CommandPS4Controller(driverPort)) :
+          new GenericGamepad(new CommandXboxController(driverPort));
+  private final GenericGamepad operator = operatorDualshock ? new GenericGamepad(new CommandPS4Controller(operatorPort)) :
+          new GenericGamepad(new CommandXboxController(operatorPort));
+
+  // TODO: It could be possible to detect whether a gamepad is PS4 or Xbox(Logitech) based on the button count
   private void configureButtons() {
-    if (driverDualshock) dualshockDriverConfiguration();
-    else xboxDriverConfiguration();
-    if (operatorDualshock) dualshockOperatorConfiguration();
-    else xboxOperatorConfiguration();
+    driverConfiguration();
+    operatorConfiguration();
   }
 
-  private void xboxDriverConfiguration() {
-    final var driver = new CommandXboxController(driverPort);
+  private void driverConfiguration() {
     s_Swerve.setDefaultCommand(
         new TeleopSwerve(
             s_Swerve,
-            () -> -driver.getLeftY(),
-            () -> -driver.getLeftX(),
-            () -> -driver.getRightX(),
-            driver.leftBumper()::getAsBoolean));
+            () -> -driver.leftY.getAsDouble(),
+            () -> -driver.leftX.getAsDouble(),
+            () -> -driver.rightX.getAsDouble(),
+            driver.leftBumper::getAsBoolean));
 
-    driver.y().onTrue(new InstantCommand(s_Swerve::zeroGyro));
-    driver.b().whileTrue(new BalanceThing(s_Swerve));
-    // driver.a().whileTrue(s_Arm.posCmd(0));
+    driver.y.onTrue(new InstantCommand(s_Swerve::zeroGyro));
+    driver.b.whileTrue(new BalanceThing(s_Swerve));
   }
 
-  private void dualshockDriverConfiguration() {
-    final var driver = new CommandPS4Controller(driverPort);
-    s_Swerve.setDefaultCommand(
-        new TeleopSwerve(
-            s_Swerve,
-            () -> -driver.getLeftY(),
-            () -> -driver.getLeftX(),
-            () -> -driver.getRightX(),
-            driver.L1()::getAsBoolean));
+  private void operatorConfiguration() {
+    operator.leftMiddle.onTrue(s_Intake.pistonsConeCmd());
+    operator.rightMiddle.onTrue(s_Intake.pistonsCubeCmd());
+    operator.a.whileTrue(s_Intake.spinInCmd());
+    operator.x.whileTrue(s_Intake.spinEjectCmd());
 
-    driver.triangle().onTrue(new InstantCommand(s_Swerve::zeroGyro));
-    driver.circle().whileTrue(new BalanceThing(s_Swerve));
-  }
-
-  private void xboxOperatorConfiguration() {
-    final var operator = new CommandXboxController(operatorPort);
-    operator.back().onTrue(s_Intake.pistonsConeCmd());
-    operator.start().onTrue(s_Intake.pistonsCubeCmd());
-    operator.a().whileTrue(s_Intake.spinInCmd());
-    operator.x().whileTrue(s_Intake.spinEjectCmd());
-
-    // completely out: 42000
-    operator.y().whileTrue(s_Elevator.positionCmd(42000));
-    operator.b().whileTrue(s_Elevator.positionCmd(300));
-    operator.povUp().whileTrue(s_Elevator.positionCmd(28000));
-    operator.povLeft().whileTrue(s_Arm.posCmd(0.0));
-    // Down
-    operator.povDown().whileTrue(s_Arm.posCmd(-72500));
-    // Slider
-    operator.povRight().whileTrue(s_Arm.posCmd(-38000));
-    //operator.povUp().whileTrue(s_Arm.posCmd(30000));
+    operator.y.whileTrue(s_Elevator.positionCmd(42000));
+    operator.b.whileTrue(s_Elevator.positionCmd(300));
+    operator.dpadUp.whileTrue(s_Elevator.positionCmd(28000));
+    operator.dpadLeft.whileTrue(s_Arm.posCmd(0.0));
+    operator.dpadDown.whileTrue(s_Arm.posCmd(-72500));
+    operator.dpadRight.whileTrue(s_Arm.posCmd(-38000));
 
     // Ramp
-    operator.leftBumper().whileTrue(s_Arm.posCmd(-40000));
+    operator.leftBumper.whileTrue(s_Arm.posCmd(-40000));
     // 3rd
-    operator.rightBumper().whileTrue(s_Arm.posCmd(40000));
+    operator.rightBumper.whileTrue(s_Arm.posCmd(40000));
     s_Arm.setDefaultCommand(
-        s_Arm.moveAndorHoldCommand(
+        s_Arm.moveOrHoldCmd(
             () ->
-                Constants.Arm.backSpeed * operator.getLeftTriggerAxis()
-                    + Constants.Arm.frontSpeed * operator.getRightTriggerAxis()));
-  }
-
-  private void dualshockOperatorConfiguration() {
-    final var operator = new CommandPS4Controller(operatorPort);
-    // WIP code
-    /*operator.square().whileTrue(s_Intake.pistonsCubeCmd().andThen(s_Intake.spinInCmd()));
-    operator.triangle().whileTrue(s_Intake.pistonsConeCmd().andThen(s_Intake.spinInCmd()));
-    operator.circle().whileTrue(s_Intake.pistonsCubeCmd().andThen(s_Intake.spinEjectCmd()));
-    operator.cross().whileTrue(s_Elevator.positionCmd(100).alongWith(s_Arm.posCmd(0)));
-    operator.povDown().whileTrue(s_Arm.posCmd(-72750));
-    operator.povLeft().whileTrue(s_Arm.)
-
-*/
-    operator.share().onTrue(s_Intake.pistonsConeCmd());
-    operator.options().onTrue(s_Intake.pistonsCubeCmd());
-    operator.cross().whileTrue(s_Intake.spinInCmd());
-    operator.square().whileTrue(s_Intake.spinEjectCmd());
-
-    // completely out: 42000
-    operator.triangle().whileTrue(s_Elevator.positionCmd(42000));
-    operator.circle().whileTrue(s_Elevator.positionCmd(300));
-    operator.povUp().whileTrue(s_Elevator.positionCmd(28000));
-    operator.povLeft().whileTrue(s_Arm.posCmd(0.0));
-    // Down
-    operator.povDown().whileTrue(s_Arm.posCmd(-72500));
-    // Slider
-    operator.povRight().whileTrue(s_Arm.posCmd(-38000));
-    //operator.povUp().whileTrue(s_Arm.posCmd(30000));
-
-    // Ramp
-    operator.L1().whileTrue(s_Arm.posCmd(-40000));
-    // 3rd
-    operator.R1().whileTrue(s_Arm.posCmd(40000));
-    s_Arm.setDefaultCommand(
-        s_Arm.moveAndorHoldCommand(
-            () ->
-                Constants.Arm.backSpeed * operator.getL2Axis()
-                    + Constants.Arm.frontSpeed * operator.getR2Axis()));
+                Constants.Arm.backSpeed * operator.leftTrigger.getAsDouble()
+                    + Constants.Arm.frontSpeed * operator.rightTrigger.getAsDouble()));
   }
 
   public Command getAutonomousCommand() {

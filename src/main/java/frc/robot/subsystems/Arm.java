@@ -59,34 +59,43 @@ public class Arm extends SubsystemBase {
   }
 
   public void pos(double pos) {
-    // lastPowerSet = speed;
-    // System.out.println("Position set");
     armPivot.set(ControlMode.MotionMagic, pos);
   }
 
+  public void retainPosition() {
+    armPivot.set(ControlMode.MotionMagic, getPosition());
+  }
+
+  public Command retainPositionCmd() {
+    return startEnd(this::retainPosition, () -> move(0));
+  }
+
   public Command moveCmd(DoubleSupplier speed) {
-    return this.runEnd(() -> move(speed.getAsDouble()), () -> move(0));
+    return runEnd(() -> move(speed.getAsDouble()), () -> move(0));
   }
 
   public Command posCmd(double position) {
-    return this.runEnd(() -> pos(position), () -> armPivot.set(ControlMode.PercentOutput, 0));
+    return startEnd(() -> pos(position), () -> move(0));
   }
 
-  public Command moveWhileWantedCommand(DoubleSupplier speed) {
-    return this.runEnd(() -> move(speed.getAsDouble()), () -> move(0))
-            .until(() -> Math.abs(speed.getAsDouble()) < 0.075);
+  // This is probably not the best way to do this, but it works:
+  public Command moveWhileWantedCmd(DoubleSupplier speed) {
+    return moveCmd(speed).until(() -> Math.abs(speed.getAsDouble()) < Constants.Arm.armDeadband);
   }
 
-  public Command holdPositionWhileNotWantedCommand(DoubleSupplier speed) {
-    return this.startEnd(() -> pos(getPosition()), () -> move(0))
-            .until(() -> Math.abs(speed.getAsDouble()) >= 0.075);
+  public Command holdPositionWhileNotWantedCmd(DoubleSupplier speed) {
+    return retainPositionCmd().until(() -> Math.abs(speed.getAsDouble()) >= Constants.Arm.armDeadband);
   }
 
-  public Command moveAndorHoldCommand(DoubleSupplier speed) {
-    return moveWhileWantedCommand(speed).andThen(holdPositionWhileNotWantedCommand(speed)).repeatedly();
+  public Command moveOrHoldCmd(DoubleSupplier speed) {
+    return moveWhileWantedCmd(speed).andThen(holdPositionWhileNotWantedCmd(speed)).repeatedly();
   }
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Arm Power: ", lastPowerSet);
+    SmartDashboard.putNumber("Arm Power", armPivot.getMotorOutputPercent());
+    SmartDashboard.putNumber("Arm Current Pos", armPivot.getSelectedSensorPosition());
+    SmartDashboard.putString("Arm Mode", armPivot.getControlMode().toString());
+    SmartDashboard.putNumber("Arm Target Pos", armPivot.getActiveTrajectoryPosition());
+    SmartDashboard.putNumber("Arm 1 Current", armPivot.getSupplyCurrent());
   }
 }
