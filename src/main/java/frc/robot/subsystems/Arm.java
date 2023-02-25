@@ -1,7 +1,6 @@
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -12,6 +11,11 @@ import java.util.function.DoubleSupplier;
 
 public class Arm extends SubsystemBase {
   private final TalonFX armPivot;
+  private final TalonFX armPivot2;
+
+  public double degreesToTicks(double degrees) {
+    return degrees * Constants.Arm.ticksPerDegree;
+  }
 
   public Arm() {
     // 512/7 ratio, according to build
@@ -45,19 +49,31 @@ public class Arm extends SubsystemBase {
      */
 
     armPivot = new TalonFX(Constants.Arm.armPivotID);
-    // armPivot.configFactoryDefault();
+    armPivot.configFactoryDefault();
     armPivot.configForwardSoftLimitEnable(false);
+    // May need to recalibrate these soon
     //armPivot.configForwardSoftLimitThreshold(1000);
-    armPivot.configReverseSoftLimitEnable(true);
-    armPivot.configReverseSoftLimitThreshold(-73000);
+    armPivot.configReverseSoftLimitEnable(false);
+    //armPivot.configReverseSoftLimitThreshold(-73000);
     armPivot.config_kP(0, 1);
     armPivot.config_kD(0, 10);
     armPivot.config_kF(0, 0.0565);
     armPivot.configMotionAcceleration(6000);
     armPivot.configMotionCruiseVelocity(10000);
 
+    armPivot.setStatusFramePeriod(StatusFrame.Status_1_General,5); // This might make following more accurate? not sure
+
     armPivot.setInverted(true);
     armPivot.setNeutralMode(NeutralMode.Brake);
+    
+    armPivot2 = new TalonFX(Constants.Arm.armPivot2ID);
+    armPivot2.configFactoryDefault();
+    armPivot2.follow(armPivot);
+    armPivot2.setInverted(InvertType.OpposeMaster); // One motor needs to be CCW, the other needs to be CW
+    // "Motor controllers that are followers can have slower update rates for this group without impacting performance."
+    // - Phoenix docs
+    armPivot2.setStatusFramePeriod(StatusFrame.Status_1_General,100);
+    armPivot2.setStatusFramePeriod(StatusFrame.Status_2_Feedback0,100);
   }
 
   private double lastPowerSet = 0;

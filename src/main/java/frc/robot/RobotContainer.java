@@ -118,9 +118,8 @@ public class RobotContainer {
   }
 
   private void dualshockOperatorConfiguration() {
-    /*ERROR DO NOT DEPLOY, WIP
-    COMMENT OUT FOLLOWING PARAGRAPH FOR OLD BEHAVIOR*/
     final var operator = new CommandPS4Controller(operatorPort);
+    // WIP code
     /*operator.square().whileTrue(s_Intake.pistonsCubeCmd().andThen(s_Intake.spinInCmd()));
     operator.triangle().whileTrue(s_Intake.pistonsConeCmd().andThen(s_Intake.spinInCmd()));
     operator.circle().whileTrue(s_Intake.pistonsCubeCmd().andThen(s_Intake.spinEjectCmd()));
@@ -128,12 +127,12 @@ public class RobotContainer {
     operator.povDown().whileTrue(s_Arm.posCmd(-72750));
     operator.povLeft().whileTrue(s_Arm.)
 
-
+*/
     operator.share().onTrue(s_Intake.pistonsConeCmd());
     operator.options().onTrue(s_Intake.pistonsCubeCmd());
     operator.cross().whileTrue(s_Intake.spinInCmd());
     operator.square().whileTrue(s_Intake.spinEjectCmd());
-*/
+
     // completely out: 42000
     operator.triangle().whileTrue(s_Elevator.positionCmd(42000));
     operator.circle().whileTrue(s_Elevator.positionCmd(300));
@@ -158,25 +157,5 @@ public class RobotContainer {
 
   public Command getAutonomousCommand() {
     return chooser.getSelected();
-      
-    //exampleAuto(s_Swerve);
   }
-  // todo: fix and re-integrate this code
-  /*    InstantCommand resetPoseCmd = new InstantCommand(() -> {
-    photonPoseEstimator.setReferencePose(s_Swerve.getPose());
-    Optional<EstimatedRobotPose> res = photonPoseEstimator.update();
-    if (res.isPresent()) {
-      EstimatedRobotPose camPose = res.get();
-      s_Swerve.resetOdometry(camPose.estimatedPose.toPose2d());
-    }
-  }, s_Swerve);*/
-  //       resetPose.onTrue(resetPoseCmd);
-  //      if (Constants.enablePS5)
-  //          resetPosePS5.onTrue(resetPoseCmd);
-
-  // Command goToCenterCmd = new GoToPoint(s_Swerve, s_Swerve.getPose(), new Pose2d(5, 5, new
-  // Rotation2d(0)));
-  // goToCenter.onTrue(goToCenterCmd);
-  // if (Constants.enablePS5)
-  //    goToCenterPS5.onTrue(goToCenterCmd);
 }
