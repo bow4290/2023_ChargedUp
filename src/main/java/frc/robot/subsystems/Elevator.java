@@ -65,7 +65,7 @@ public class Elevator extends SubsystemBase {
   }
 
   public Command moveCmd(DoubleSupplier speed) {
-    return this.runEnd(() -> move(speed.getAsDouble()), () -> move(0));
+    return runEnd(() -> move(speed.getAsDouble()), () -> move(0));
   }
 
   public Command moveCmd(double speed) {
