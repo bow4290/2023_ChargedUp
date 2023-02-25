@@ -17,7 +17,7 @@
       "isStopPoint": false,
       "stopEvent": {
         "names": [
-          "firstCone"
+          "coneTop"
         ],
         "executionBehavior": "parallel",
         "waitBehavior": "deadline",
@@ -71,7 +71,7 @@
       "isStopPoint": true,
       "stopEvent": {
         "names": [
-          "secondCone"
+          "coneTop"
         ],
         "executionBehavior": "sequential",
         "waitBehavior": "deadline",
