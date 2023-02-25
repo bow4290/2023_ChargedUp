@@ -85,20 +85,25 @@ public class RobotContainer {
   private void operatorConfiguration() {
     operator.leftMiddle.onTrue(s_Intake.pistonsConeCmd());
     operator.rightMiddle.onTrue(s_Intake.pistonsCubeCmd());
+
     operator.a.whileTrue(s_Intake.spinInCmd());
     operator.x.whileTrue(s_Intake.spinEjectCmd());
 
-    operator.y.whileTrue(s_Elevator.positionCmd(42000));
-    operator.b.whileTrue(s_Elevator.positionCmd(300));
-    operator.dpadUp.whileTrue(s_Elevator.positionCmd(28000));
-    operator.dpadLeft.whileTrue(s_Arm.posCmd(0.0));
-    operator.dpadDown.whileTrue(s_Arm.posCmd(-72500));
-    operator.dpadRight.whileTrue(s_Arm.posCmd(-38000));
+    operator.y.whileTrue(s_Elevator.positionMaxCmd());
+    operator.b.whileTrue(s_Elevator.positionBaseCmd());
+
+    operator.dpadUp.whileTrue(s_Arm.posDegCmd(0));
+
+    operator.dpadLeft.whileTrue(s_Arm.posDegCmd(-45));
+    operator.dpadRight.whileTrue(s_Arm.posDegCmd(45));
+
+    operator.dpadDown.whileTrue(s_Elevator.positionMidCmd());
 
     // Ramp
-    operator.leftBumper.whileTrue(s_Arm.posCmd(-40000));
+    operator.leftBumper.whileTrue(s_Arm.posDegCmd(90));
     // 3rd
-    operator.rightBumper.whileTrue(s_Arm.posCmd(40000));
+    operator.rightBumper.whileTrue(s_Arm.posDegCmd(-90));
+    // Todo: find something to assign to left/right bumper (manual control overrides)?
     s_Arm.setDefaultCommand(s_Arm.doubleMoveOrHoldCmd(operator.leftTrigger, operator.rightTrigger));
   }
 

@@ -94,7 +94,8 @@ public final class Constants {
 
     /* Swerve Profiling Values */
     /** Meters per Second */
-    // FYI this does not change teleop behavior
+    // FYI this does not change teleop behavior only auto
+    // TODO measure these better
     public static final double maxSpeed = 3.0; // 4.5 //TODO: This must be tuned to specific robot
     /** Radians per Second */
     // was 2
@@ -183,8 +184,9 @@ public final class Constants {
     public static final double stopSpeed = 0;
 
     public static final double base = 0;
+    public static final double middle = 27000;
     public static final double max = 44000;
-    public static final double revolutionsPerMeter = 40 * 2048; // (APPROXIMATE)
+    public static final double revolutionsPerMeter = 40 * 2048; // (APPROXIMATE, DO NOT USE)
     public static final double metersPerRevolution = 1 / revolutionsPerMeter;
   }
 

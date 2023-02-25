@@ -20,16 +20,16 @@ public class Arm extends SubsystemBase {
   public Arm() {
     armPivot = new TalonFX(Constants.Arm.armPivotID);
     armPivot.configFactoryDefault();
-    armPivot.configForwardSoftLimitEnable(false);
-    armPivot.configForwardSoftLimitThreshold(degreesToTicks(90));
-    armPivot.configReverseSoftLimitEnable(false);
-    armPivot.configReverseSoftLimitThreshold(degreesToTicks(-90));
+    armPivot.configForwardSoftLimitEnable(true);
+    armPivot.configForwardSoftLimitThreshold(degreesToTicks(95));
+    armPivot.configReverseSoftLimitEnable(true);
+    armPivot.configReverseSoftLimitThreshold(degreesToTicks(-95));
 
     // TODO Needs to be tuned for follower motors
     armPivot.config_kP(0, 1);
     armPivot.config_kD(0, 10);
     armPivot.config_kF(0, 0.0565);
-    armPivot.configMotionAcceleration(6000);
+    armPivot.configMotionAcceleration(8000);
     armPivot.configMotionCruiseVelocity(10000);
 
     armPivot.setStatusFramePeriod(
@@ -69,10 +69,7 @@ public class Arm extends SubsystemBase {
     return armPivot.getSelectedSensorPosition();
   }
 
-  private double lastPowerSet = 0;
-
   public void move(double speed) {
-    lastPowerSet = speed;
     armPivot.set(ControlMode.PercentOutput, speed);
   }
 
@@ -95,6 +92,10 @@ public class Arm extends SubsystemBase {
 
   public Command posCmd(double position) {
     return startEnd(() -> pos(position), () -> move(0));
+  }
+
+  public Command posDegCmd(double positionDeg) {
+    return posCmd(degreesToTicks(positionDeg));
   }
 
   // This is probably not the best way to do this, but it works:

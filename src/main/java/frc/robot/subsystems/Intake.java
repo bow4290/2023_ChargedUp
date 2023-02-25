@@ -37,6 +37,10 @@ public class Intake extends SubsystemBase {
     rightIntake.enableVoltageCompensation(11);
     rightIntake.setIdleMode(IdleMode.kBrake);
 
+    // Prevent smoking bot
+    leftIntake.setSmartCurrentLimit(5);
+    rightIntake.setSmartCurrentLimit(5);
+
     solenoid =
         new DoubleSolenoid(
             Constants.Intake.pneumaticType,
