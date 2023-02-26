@@ -9,7 +9,7 @@ import frc.robot.subsystems.Swerve;
 public class BalanceThing extends PIDCommand {
   public BalanceThing(Swerve swerve) {
     super(
-        new PIDController(2, 0, 20),
+        new PIDController(2.3, 0.01, 10),
         // Based on pitch
         swerve::getTiltMagnitude,
         // We want to gain a pitch of 0

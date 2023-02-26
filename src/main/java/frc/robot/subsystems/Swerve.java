@@ -153,6 +153,8 @@ public class Swerve extends SubsystemBase {
     return new Rotation2d(grav[0], grav[1]);
   }
 
+  double previousDegrees;
+
   @Override
   public void periodic() {
     Rotation2d yaw = getYaw();
@@ -164,6 +166,7 @@ public class Swerve extends SubsystemBase {
 
     if (res.isPresent()) {
       EstimatedRobotPose camPose = res.get();
+      // System.out.println("vision thing " + camPose.estimatedPose.toPose2d().toString());
       swerveOdometry.addVisionMeasurement(
           camPose.estimatedPose.toPose2d(), camPose.timestampSeconds);
     }
@@ -177,8 +180,13 @@ public class Swerve extends SubsystemBase {
           "Mod " + mod.moduleNumber + " Velocity", mod.getState().speedMetersPerSecond);
     }
 
+    double currentDegrees = yaw.getDegrees();
+    double velocity = Math.toRadians((currentDegrees - previousDegrees) * 50);
+    previousDegrees = currentDegrees;
+
     SmartDashboard.putNumber("Gyro yaw", yaw.getDegrees());
     SmartDashboard.putNumber("Gyro pitch", getPitch());
+    SmartDashboard.putNumber("Velocities", velocity);
     SmartDashboard.putNumber("Robot X", pose.getX());
     SmartDashboard.putNumber("Robot Y", pose.getY());
 
