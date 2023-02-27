@@ -21,7 +21,7 @@ public class GoToPoint extends SequentialCommandGroup {
             .setKinematics(Constants.Swerve.swerveKinematics);
 
     // An example trajectory to follow.  All units in meters.
-    Trajectory trajectory = TrajectoryGenerator.generateTrajectory(List.of(from, to), config);
+    Trajectory trajectory = TrajectoryGenerator.generateTrajectory(from, List.of(), to, config);
 
     var thetaController =
         new ProfiledPIDController(
