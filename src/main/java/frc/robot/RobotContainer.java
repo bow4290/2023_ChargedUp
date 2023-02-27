@@ -95,35 +95,46 @@ public class RobotContainer {
 
     driver.y.onTrue(new InstantCommand(s_Swerve::zeroGyro));
     driver.b.whileTrue(new BalanceThing(s_Swerve));
-
+    
+    /*driver.a.whileTrue(
+    new GoToPoint(
+        s_Swerve,
+        s_Swerve.getPose(),
+        new Pose2d(new Translation2d(1.9, 2.75), new Rotation2d(0))));*/
+    // s
     // It is not intended for the driver to manually operate the elevator during normal robot
     // operation.
     // This should only be used in the event of an unexpected situation.
-    DoubleSupplier combined =
-        () ->
-            operator.leftTrigger.getAsDouble() * Constants.Elevator.retractSpeed
-                + operator.rightTrigger.getAsDouble() * Constants.Elevator.extendSpeed;
+    /*DoubleSupplier combined =
+          () ->
+              driver.leftTrigger.getAsDouble() * Constants.Elevator.retractSpeed
+                  + driver.rightTrigger.getAsDouble() * Constants.Elevator.extendSpeed;
 
-    new Trigger(() -> Math.abs(combined.getAsDouble()) > Constants.Elevator.elevatorDeadband)
-        .whileTrue(s_Elevator.moveCmd(combined));
+      new Trigger(() -> Math.abs(combined.getAsDouble()) > Constants.Elevator.elevatorDeadband)
+          .whileTrue(s_Elevator.moveCmd(combined));
+    */
   }
 
   private void operatorConfiguration() {
-    operator.leftMiddle.onTrue(s_Intake.pistonsConeCmd());
-    operator.rightMiddle.onTrue(s_Intake.pistonsCubeCmd());
+    // operator.leftMiddle.onTrue(s_Intake.pistonsConeCmd());
+    // operator.rightMiddle.onTrue(s_Intake.pistonsCubeCmd());
 
-    operator.a.whileTrue(s_Intake.spinInCmd());
-    operator.x.whileTrue(s_Intake.spinEjectCmd());
+    // operator.a.whileTrue(s_Intake.spinInCmd());
+    // operator.x.whileTrue(s_Intake.spinEjectCmd());
     operator.y.onTrue(s_Elevator.positionMaxCmd());
     operator.b.onTrue(s_Elevator.positionBaseCmd());
 
     operator.dpadUp.onTrue(s_Elbow.posDegCmd(0));
     operator.dpadLeft.onTrue(s_Elbow.posDegCmd(-45));
     operator.dpadRight.onTrue(s_Elbow.posDegCmd(45));
-    operator.dpadDown.onTrue(s_Elevator.positionMidCmd());
 
-    operator.leftBumper.onTrue(s_Elbow.posDegCmd(90));
-    operator.rightBumper.onTrue(s_Elbow.posDegCmd(-90));
+    operator.dpadDown.onTrue(s_Elevator.positionMidCmd());
+    // -43141
+    // operator.leftBumper.onTrue(s_Elbow.posDegCmd(90)); DO NOT USE
+    // -57.5821
+    operator.rightBumper.onTrue(s_Elbow.posDegCmd(-85));
+    // operator.leftBumper.whileTrue(s_Elevator.moveCmd(Constants.Elevator.retractSpeed));
+    // operator.rightBumper.whileTrue(s_Elevator.moveCmd(Constants.Elevator.extendSpeed));
 
     DoubleSupplier combined =
         () ->

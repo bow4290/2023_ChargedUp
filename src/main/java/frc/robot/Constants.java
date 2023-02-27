@@ -18,8 +18,9 @@ public final class Constants {
   public static final boolean enablePS5 = false;
 
   public static final class Limelight {
+
     public static final Transform3d robotToCam =
-        new Transform3d(new Translation3d(0, 0.381, 0.381), new Rotation3d(0, 0, 0));
+        new Transform3d(new Translation3d(-0.082, -0.2105, 0.58), new Rotation3d(0, 0, 0));
     public static final String camName = "OV5647";
   }
 
@@ -94,14 +95,12 @@ public final class Constants {
 
     /* Swerve Profiling Values */
     /** Meters per Second */
-    // FYI this does not change teleop behavior only auto
-    // TODO measure these better
-    public static final double maxSpeed = 3.0; // 4.5 //TODO: This must be tuned to specific robot
-    /** Radians per Second */
-    // was 2
-    public static final double maxAngularVelocity = 2; // TODO: This must be tuned to specific robot
+    // FYI this does not change teleop behavior only auto (or does it ???)
+    // Measured 2023-02-25
+    public static final double maxSpeed = 4.0;
 
-    /* Neutral Modes */
+    public static final double maxAngularVelocity = 5;
+
     public static final NeutralMode angleNeutralMode = NeutralMode.Coast;
     public static final NeutralMode driveNeutralMode = NeutralMode.Brake;
 
@@ -163,8 +162,8 @@ public final class Constants {
   public static final class Arm {
     public static final int armPivotID = 9;
     public static final int armPivot2ID = 11;
-    public static final double frontSpeed = 0.5;
-    public static final double backSpeed = -0.5;
+    public static final double frontSpeed = 0.1;
+    public static final double backSpeed = -0.1;
     public static final double stopSpeed = 0;
 
     // 512/7 ratio, according to build
@@ -174,19 +173,20 @@ public final class Constants {
     public static final double ticksPerDegree = gearRatio * talonCPR / 360;
     public static final double degreesPerTick = 1 / ticksPerDegree;
 
-    public static final double armDeadband = 0.06;
+    public static final double armDeadband = 0.02;
   }
 
   public static final class Elevator {
     public static final int elevatorMotorID = 10;
-    public static final double extendSpeed = 0.25;
-    public static final double retractSpeed = -0.25;
+    public static final double extendSpeed = 0.3;
+    public static final double retractSpeed = -0.3;
     public static final double stopSpeed = 0;
-    public static final double elevatorDeadband = 0.03;
 
+    public static final double elevatorDeadband = 0.03;
+    // 8740
     public static final double base = 0;
-    public static final double middle = 27000;
-    public static final double max = 44000;
+    public static final double middle = 50000;
+    public static final double max = 84000;
     public static final double revolutionsPerMeter = 40 * 2048; // (APPROXIMATE, DO NOT USE)
     public static final double metersPerRevolution = 1 / revolutionsPerMeter;
   }

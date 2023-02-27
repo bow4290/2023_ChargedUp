@@ -21,16 +21,15 @@ public class Elbow extends SubsystemBase {
     elbowPivot = new TalonFX(Constants.Arm.armPivotID);
     elbowPivot.configFactoryDefault();
     elbowPivot.configForwardSoftLimitEnable(true);
-    elbowPivot.configForwardSoftLimitThreshold(degreesToTicks(95));
+    elbowPivot.configForwardSoftLimitThreshold(degreesToTicks(45));
     elbowPivot.configReverseSoftLimitEnable(true);
     elbowPivot.configReverseSoftLimitThreshold(degreesToTicks(-95));
 
-    // TODO Needs to be tuned for follower motors
-    elbowPivot.config_kP(0, 1);
-    elbowPivot.config_kD(0, 10);
-    elbowPivot.config_kF(0, 0.0565);
+    elbowPivot.config_kP(0, 0.5);
+    elbowPivot.config_kD(0, 5);
+    elbowPivot.config_kF(0, 0.04);
     elbowPivot.configMotionAcceleration(8000);
-    elbowPivot.configMotionCruiseVelocity(10000);
+    elbowPivot.configMotionCruiseVelocity(6000);
 
     elbowPivot.setStatusFramePeriod(
         StatusFrame.Status_1_General, 5); // This might make following more accurate?
@@ -48,6 +47,8 @@ public class Elbow extends SubsystemBase {
     // - Phoenix docs
     elbowPivot2.setStatusFramePeriod(StatusFrame.Status_1_General, 100);
     elbowPivot2.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 100);
+
+    elbowPivot.configNeutralDeadband(0.02);
 
     SmartDashboard.putData("Arm", this);
 
@@ -80,13 +81,12 @@ public class Elbow extends SubsystemBase {
   }
 
   public void retainPosition() {
-    move(0); // THIS IS ONLY FOR TEST PURPOSES TO SEE IF BOTH FALCONS CAN BRAKE
-    // armPivot.set(ControlMode.MotionMagic, getPosition());
+    // move(0); // THIS IS ONLY FOR TEST PURPOSES TO SEE IF BOTH FALCONS CAN BRAKE
+    elbowPivot.set(ControlMode.MotionMagic, getPosition());
   }
 
   public Command retainPositionCmd() {
-    // NOTE: CHANGE THIS TO A startEnd IF YOU ARE USING MOTION MAGIC FOR THIS
-    return runEnd(this::retainPosition, () -> move(0));
+    return startEnd(this::retainPosition, () -> move(0));
   }
 
   public Command moveCmd(DoubleSupplier speed) {
