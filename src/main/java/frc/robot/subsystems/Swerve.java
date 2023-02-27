@@ -25,7 +25,10 @@ public class Swerve extends SubsystemBase {
   public SwerveModule[] mSwerveMods;
   public Pigeon2 gyro;
 
+  public Timer timeSinceLastVisionMeasurement;
+
   public Swerve() {
+    timeSinceLastVisionMeasurement = new Timer();
     gyro = new Pigeon2(Constants.Swerve.pigeonID);
     gyro.configFactoryDefault();
     gyro.configMountPose(AxisDirection.NegativeY, AxisDirection.PositiveZ);
@@ -169,6 +172,7 @@ public class Swerve extends SubsystemBase {
       // System.out.println("vision thing " + camPose.estimatedPose.toPose2d().toString());
       swerveOdometry.addVisionMeasurement(
           camPose.estimatedPose.toPose2d(), camPose.timestampSeconds);
+      timeSinceLastVisionMeasurement.reset();
     }
 
     for (SwerveModule mod : mSwerveMods) {
@@ -186,9 +190,11 @@ public class Swerve extends SubsystemBase {
 
     SmartDashboard.putNumber("Gyro yaw", yaw.getDegrees());
     SmartDashboard.putNumber("Gyro pitch", getPitch());
-    SmartDashboard.putNumber("Velocities", velocity);
+    SmartDashboard.putNumber("Turning velocity", velocity);
     SmartDashboard.putNumber("Robot X", pose.getX());
     SmartDashboard.putNumber("Robot Y", pose.getY());
+    SmartDashboard.putNumber(
+        "Time since last vision measurement", timeSinceLastVisionMeasurement.get());
 
     double[] grav = new double[3];
     gyro.getGravityVector(grav);

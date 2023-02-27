@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.autos.*;
 import frc.robot.commands.swerve.BalanceThing;
+import frc.robot.commands.swerve.GoToNearestScoringLocation;
 import frc.robot.commands.swerve.TeleopSwerve;
 import frc.robot.subsystems.*;
 import java.io.File;
@@ -95,12 +96,13 @@ public class RobotContainer {
 
     driver.y.onTrue(new InstantCommand(s_Swerve::zeroGyro));
     driver.b.whileTrue(new BalanceThing(s_Swerve));
-    
+
     /*driver.a.whileTrue(
     new GoToPoint(
         s_Swerve,
-        s_Swerve.getPose(),
+        s_Swerve.getPose(), // WOW I JUST FIGURED OUT WHY THIS ISN'T WORKING
         new Pose2d(new Translation2d(1.9, 2.75), new Rotation2d(0))));*/
+    driver.a.whileTrue(new GoToNearestScoringLocation(s_Swerve));
     // s
     // It is not intended for the driver to manually operate the elevator during normal robot
     // operation.
