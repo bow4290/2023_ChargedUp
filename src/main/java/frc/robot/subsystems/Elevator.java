@@ -33,12 +33,13 @@ public class Elevator extends SubsystemBase {
   @Override
   public void initSendable(SendableBuilder builder) {
     super.initSendable(builder);
+    /*
     builder.addDoubleProperty("Power", elevatorMotor::getMotorOutputPercent, null);
     builder.addStringProperty("Mode", () -> elevatorMotor.getControlMode().toString(), null);
     builder.addDoubleProperty("Target Pos", elevatorMotor::getActiveTrajectoryPosition, null);
     builder.addDoubleProperty("Pos", elevatorMotor::getSelectedSensorPosition, null);
     builder.addDoubleProperty("Target Vel", elevatorMotor::getActiveTrajectoryVelocity, null);
-    builder.addDoubleProperty("Vel", elevatorMotor::getSelectedSensorVelocity, null);
+    builder.addDoubleProperty("Vel", elevatorMotor::getSelectedSensorVelocity, null);*/
   }
 
   public void move(double speed) {
