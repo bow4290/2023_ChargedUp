@@ -180,6 +180,9 @@ public final class Constants {
     public static final double degreesPerTick = 1 / ticksPerDegree;
 
     public static final double armDeadband = 0.02;
+    // I hate this language.
+    public static double rotationEps = 1.0 * ticksPerDegree;
+    public static double velocityEps = 5.0 * ticksPerDegree;
   }
 
   public static final class Elevator {

@@ -94,7 +94,9 @@ public class Elbow extends SubsystemBase {
   }
 
   public Command posCmd(double position) {
-    return startEnd(() -> pos(position), () -> move(0));
+    return startEnd(() -> pos(position), () -> move(0)).until(() -> 
+    (Math.abs(getPosition() - elbowPivot.getActiveTrajectoryPosition()) < Constants.Arm.rotationEps) &&
+    (Math.abs(elbowPivot.getSelectedSensorVelocity()) < Constants.Arm.velocityEps));
   }
 
   public Command posDegCmd(double positionDeg) {
