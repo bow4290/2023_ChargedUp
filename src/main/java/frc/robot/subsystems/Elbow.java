@@ -59,13 +59,16 @@ public class Elbow extends SubsystemBase {
   @Override
   public void initSendable(SendableBuilder builder) {
     super.initSendable(builder);
-    builder.addDoubleProperty("Power", elbowPivot::getMotorOutputPercent, null);
+    // We need to figure out how to get this working again
+   /* builder.addDoubleProperty("Power", elbowPivot::getMotorOutputPercent, null);
     builder.addStringProperty("Mode", () -> elbowPivot.getControlMode().toString(), null);
     builder.addDoubleProperty("Target Pos", elbowPivot::getActiveTrajectoryPosition, null);
     builder.addDoubleProperty("Pos", this::getPosition, null);
     builder.addDoubleProperty("Target Vel", elbowPivot::getActiveTrajectoryVelocity, null);
     builder.addDoubleProperty("Vel", elbowPivot::getSelectedSensorVelocity, null);
     builder.addDoubleProperty("Degrees", () -> getPosition() * Constants.Arm.degreesPerTick, null);
+
+    */
   }
 
   public double getPosition() {
