@@ -8,27 +8,33 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
-// import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Elbow;
+import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Swerve;
 import java.util.HashMap;
 
 public class topAutoLeft extends SequentialCommandGroup {
-  public topAutoLeft(Swerve s_Swerve) {
-    var pathGroup = PathPlanner.loadPathGroup("topAutoLeft", new PathConstraints(3, 3));
+  public topAutoLeft(Swerve s_Swerve, Elbow s_Elbow, Elevator s_Elevator, Intake s_Intake) {
+    var pathGroup = PathPlanner.loadPathGroup("topAutoLeft", new PathConstraints(2, 1));
 
     // This is just an example event map. It would be better to have a constant, global event map
     // in your code that will be used by all path following commands.
     HashMap<String, Command> eventMap = new HashMap<>();
-    /*   eventMap.put(
-    "topCone",
-    s_Arm
-        .posCmd(0)
-        .until(
-            () ->
-                Math.abs(s_Arm.getPosition())
-                    < 100.0)); // TODO Find out a better way to do this
-    s_Elevator
-        .posCmd(0);*/
+    eventMap.put(
+        "topCone",
+        new SequentialCommandGroup(
+            s_Elbow
+                .posDegCmd(-45)
+                .until(
+                    () ->
+                        Math.abs(s_Elbow.posdegrees() + 45)
+                            < 2.0), // TODO Find out a better way to do this
+            s_Elevator
+                .positionMidCmd()
+                .until(
+                    () -> Math.abs(Constants.Elevator.middle - s_Elevator.getPosition()) < 100.0),
+            s_Intake.pistonsCubeCmd()));
 
     var thetaController =
         new ProfiledPIDController(

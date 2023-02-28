@@ -20,7 +20,13 @@ public final class Constants {
   public static final class Limelight {
 
     public static final Transform3d robotToCam =
-        new Transform3d(new Translation3d(-0.082, -0.2105, 0.58), new Rotation3d(0, 0, 0));
+        new Transform3d(
+            new Translation3d(
+                -0.082,
+                -0.2105,
+                // 0,
+                0.58),
+            new Rotation3d(0, 0, 0));
     public static final String camName = "OV5647";
   }
 
@@ -98,8 +104,8 @@ public final class Constants {
     // FYI this does not change teleop behavior only auto (or does it ???)
     // Measured 2023-02-25
     public static final double maxSpeed = 4.0;
-
-    public static final double maxAngularVelocity = 5;
+    // WARNING IF YOU TURN THIS TOO HIGH IT TIPS THE BOT AND EXPLODES
+    public static final double maxAngularVelocity = 3;
 
     public static final NeutralMode angleNeutralMode = NeutralMode.Coast;
     public static final NeutralMode driveNeutralMode = NeutralMode.Brake;
@@ -186,7 +192,7 @@ public final class Constants {
     // 8740
     public static final double base = 0;
     public static final double middle = 50000;
-    public static final double max = 84000;
+    public static final double max = 80000;
     public static final double revolutionsPerMeter = 40 * 2048; // (APPROXIMATE, DO NOT USE)
     public static final double metersPerRevolution = 1 / revolutionsPerMeter;
   }

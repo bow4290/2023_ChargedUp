@@ -89,13 +89,16 @@ public class GoToNearestScoringLocation extends CommandBase {
 
     Rotation2d thing2;
 
-    if (Math.abs(startPos.getRotation().getDegrees()) < 180) {
+    /*  if (Math.abs(startPos.getRotation().getDegrees()) < 180) {
       thing2 = new Rotation2d(0);
     } else {
       thing2 = Rotation2d.fromDegrees(180);
     }
+    */
+    thing2 = startPos.getRotation();
+    System.out.println("Starting position rotation " + thing2.getDegrees());
 
-    finalPos = new Pose2d(new Translation2d(startPos.getX(), selected), thing2);
+    finalPos = new Pose2d(new Translation2d(1.9, selected), thing2);
     genTrajectory();
 
     m_timer.restart();

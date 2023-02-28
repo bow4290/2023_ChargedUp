@@ -105,6 +105,12 @@ public class Elbow extends SubsystemBase {
     elbowPivot.setSelectedSensorPosition(0);
   }
 
+  public double posdegrees() {
+    return getPosition() * Constants.Arm.degreesPerTick;
+  }
+
   @Override
-  public void periodic() {}
+  public void periodic() {
+    SmartDashboard.putNumber("elbow pos", posdegrees());
+  }
 }

@@ -37,6 +37,9 @@ public class GenericGamepad {
   // Equivalent to Start on Xbox or Options on PS4
   public Trigger rightMiddle;
 
+  public Trigger leftTriggerB;
+  public Trigger rightTriggerB;
+
   public GenericGamepad(CommandPS4Controller controller) {
     a = controller.cross();
     b = controller.circle();
@@ -47,6 +50,8 @@ public class GenericGamepad {
     rightBumper = controller.R1();
     leftTrigger = controller::getL2Axis;
     rightTrigger = controller::getR2Axis;
+    leftTriggerB = controller.L2();
+    rightTriggerB = controller.R2();
 
     leftY = controller::getLeftY;
     leftX = controller::getLeftX;
@@ -75,6 +80,8 @@ public class GenericGamepad {
     rightBumper = controller.rightBumper();
     leftTrigger = controller::getLeftTriggerAxis;
     rightTrigger = controller::getRightTriggerAxis;
+    rightTriggerB = controller.rightTrigger();
+    leftTriggerB = controller.leftTrigger();
 
     leftY = controller::getLeftY;
     leftX = controller::getLeftX;

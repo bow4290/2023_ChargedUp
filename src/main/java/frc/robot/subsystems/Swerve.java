@@ -29,6 +29,8 @@ public class Swerve extends SubsystemBase {
 
   public Swerve() {
     timeSinceLastVisionMeasurement = new Timer();
+    timeSinceLastVisionMeasurement.start();
+
     gyro = new Pigeon2(Constants.Swerve.pigeonID);
     gyro.configFactoryDefault();
     gyro.configMountPose(AxisDirection.NegativeY, AxisDirection.PositiveZ);
@@ -169,7 +171,7 @@ public class Swerve extends SubsystemBase {
 
     if (res.isPresent()) {
       EstimatedRobotPose camPose = res.get();
-      // System.out.println("vision thing " + camPose.estimatedPose.toPose2d().toString());
+      System.out.println("vision thing " + camPose.estimatedPose.toPose2d().toString());
       swerveOdometry.addVisionMeasurement(
           camPose.estimatedPose.toPose2d(), camPose.timestampSeconds);
       timeSinceLastVisionMeasurement.reset();

@@ -7,7 +7,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.autos.*;
 import frc.robot.commands.swerve.BalanceThing;
 import frc.robot.commands.swerve.GoToNearestScoringLocation;
@@ -15,7 +14,6 @@ import frc.robot.commands.swerve.TeleopSwerve;
 import frc.robot.subsystems.*;
 import java.io.File;
 import java.nio.file.Files;
-import java.util.function.DoubleSupplier;
 import org.photonvision.PhotonPoseEstimator;
 
 public class RobotContainer {
@@ -46,8 +44,10 @@ public class RobotContainer {
             }));
 
     chooser.setDefaultOption("move forward", new exampleAuto(s_Swerve, s_Elbow));
+    chooser.addOption(
+        "top auto left test", new topAutoLeft(s_Swerve, s_Elbow, s_Elevator, s_Intake));
     chooser.addOption("do nothing", new InstantCommand(() -> {}));
-
+    SmartDashboard.putData("choose auto", chooser);
     // DO NOT UNCOMMENT THE FOLLOWING LINES
     // robot.explode();
     // Robot-on-fire incident counter so far: 1
@@ -118,33 +118,49 @@ public class RobotContainer {
   }
 
   private void operatorConfiguration() {
-    // operator.leftMiddle.onTrue(s_Intake.pistonsConeCmd());
-    // operator.rightMiddle.onTrue(s_Intake.pistonsCubeCmd());
+    operator.x.whileTrue(s_Intake.pistonsCubeCmd().andThen(s_Intake.spinInCmd()));
+    operator.y.whileTrue(s_Intake.pistonsConeCmd().andThen(s_Intake.spinInCmd()));
+    operator.b.whileTrue(s_Intake.pistonsCubeCmd().andThen(s_Intake.spinEjectCmd()));
+    operator.a.whileTrue(s_Elbow.posDegCmd(0).alongWith(s_Elevator.positionBaseCmd()));
+    operator.dpadDown.whileTrue(s_Elbow.posDegCmd(-85).alongWith(s_Elevator.positionBaseCmd()));
+    operator.dpadLeft.whileTrue(s_Elevator.positionBaseCmd());
+    operator.dpadUp.whileTrue(s_Elevator.positionMidCmd());
+    operator.dpadRight.whileTrue(s_Elevator.positionMaxCmd());
+    // 2nd row
+    operator.leftBumper.whileTrue(s_Elbow.posDegCmd(-45));
+    // reverse
+    operator.leftTriggerB.whileTrue(s_Elbow.posDegCmd(45));
+    // operator
+    operator.rightBumper.whileTrue(s_Elbow.posDegCmd(-45));
+    // ramp
+    operator.rightTriggerB.whileTrue(s_Elbow.posDegCmd(-50));
+    operator.leftMiddle.onTrue(s_Intake.pistonsConeCmd());
+    operator.rightMiddle.onTrue(s_Intake.pistonsCubeCmd());
 
     // operator.a.whileTrue(s_Intake.spinInCmd());
     // operator.x.whileTrue(s_Intake.spinEjectCmd());
-    operator.y.onTrue(s_Elevator.positionMaxCmd());
-    operator.b.onTrue(s_Elevator.positionBaseCmd());
+    // operator.y.onTrue(s_Elevator.positionMaxCmd());
+    // operator.b.onTrue(s_Elevator.positionBaseCmd());
 
-    operator.dpadUp.onTrue(s_Elbow.posDegCmd(0));
-    operator.dpadLeft.onTrue(s_Elbow.posDegCmd(-45));
-    operator.dpadRight.onTrue(s_Elbow.posDegCmd(45));
+    // operator.dpadUp.onTrue(s_Elbow.posDegCmd(0));
+    // operator.dpadLeft.onTrue(s_Elbow.posDegCmd(-45));
+    // operator.dpadRight.onTrue(s_Elbow.posDegCmd(45));
 
-    operator.dpadDown.onTrue(s_Elevator.positionMidCmd());
-    // -43141
-    // operator.leftBumper.onTrue(s_Elbow.posDegCmd(90)); DO NOT USE
-    // -57.5821
-    operator.rightBumper.onTrue(s_Elbow.posDegCmd(-85));
-    // operator.leftBumper.whileTrue(s_Elevator.moveCmd(Constants.Elevator.retractSpeed));
-    // operator.rightBumper.whileTrue(s_Elevator.moveCmd(Constants.Elevator.extendSpeed));
+    // operator.dpadDown.onTrue(s_Elevator.positionMidCmd());
+    // // -43141
+    // // operator.leftBumper.onTrue(s_Elbow.posDegCmd(90)); DO NOT USE
+    // // -57.5821
+    // operator.rightBumper.onTrue(s_Elbow.posDegCmd(-85));
+    // // operator.leftBumper.whileTrue(s_Elevator.moveCmd(Constants.Elevator.retractSpeed));
+    // // operator.rightBumper.whileTrue(s_Elevator.moveCmd(Constants.Elevator.extendSpeed));
 
-    DoubleSupplier combined =
-        () ->
-            operator.leftTrigger.getAsDouble() * Constants.Arm.backSpeed
-                + operator.rightTrigger.getAsDouble() * Constants.Arm.frontSpeed;
+    // DoubleSupplier combined =
+    //     () ->
+    //         operator.leftTrigger.getAsDouble() * Constants.Arm.backSpeed
+    //             + operator.rightTrigger.getAsDouble() * Constants.Arm.frontSpeed;
 
-    new Trigger(() -> Math.abs(combined.getAsDouble()) > Constants.Arm.armDeadband)
-        .whileTrue(s_Elbow.moveCmd(combined));
+    // new Trigger(() -> Math.abs(combined.getAsDouble()) > Constants.Arm.armDeadband)
+    //     .whileTrue(s_Elbow.moveCmd(combined));
   }
 
   public Command getAutonomousCommand() {
