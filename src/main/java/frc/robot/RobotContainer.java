@@ -5,9 +5,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.autos.*;
+import frc.robot.commands.swerve.AutoBalance;
 import frc.robot.commands.swerve.BalanceThing;
 import frc.robot.commands.swerve.GoToNearestScoringLocation;
 import frc.robot.commands.swerve.TeleopSwerve;
@@ -45,7 +47,20 @@ public class RobotContainer {
 
     chooser.setDefaultOption("move forward", new exampleAuto(s_Swerve, s_Elbow));
     chooser.addOption(
-        "top auto left test", new topAutoLeft(s_Swerve, s_Elbow, s_Elevator, s_Intake));
+        "top auto close to human",
+        new topAutoLeft("simplehumanpath", s_Swerve, s_Elbow, s_Elevator, s_Intake));
+    chooser.addOption(
+        "top auto far from human",
+        new topAutoLeft("simplefarhumanpath", s_Swerve, s_Elbow, s_Elevator, s_Intake));
+
+    chooser.addOption(
+        "stationary 3rd cone",
+        new SequentialCommandGroup(
+            s_Elbow.posDegCmd(45),
+            s_Elevator.positionMaxCmd(),
+            s_Intake.pistonsCubeCmd(),
+            s_Elbow.posDegCmd(0).alongWith(s_Elevator.positionBaseCmd()),
+            s_Intake.pistonsConeCmd()));
     chooser.addOption("do nothing", new InstantCommand(() -> {}));
     SmartDashboard.putData("choose auto", chooser);
     // DO NOT UNCOMMENT THE FOLLOWING LINES
@@ -103,6 +118,8 @@ public class RobotContainer {
         s_Swerve.getPose(), // WOW I JUST FIGURED OUT WHY THIS ISN'T WORKING
         new Pose2d(new Translation2d(1.9, 2.75), new Rotation2d(0))));*/
     driver.a.whileTrue(new GoToNearestScoringLocation(s_Swerve));
+
+    driver.x.whileTrue(new AutoBalance(s_Swerve));
     // s
     // It is not intended for the driver to manually operate the elevator during normal robot
     // operation.
@@ -127,13 +144,14 @@ public class RobotContainer {
     operator.dpadUp.whileTrue(s_Elevator.positionMidCmd());
     operator.dpadRight.whileTrue(s_Elevator.positionMaxCmd());
     // 2nd row
-    operator.leftBumper.whileTrue(s_Elbow.posDegCmd(-45));
+    operator.leftBumper.whileTrue(s_Elbow.posDegCmd(-38));
     // reverse
-    operator.leftTriggerB.whileTrue(s_Elbow.posDegCmd(45));
+    operator.leftTriggerB.whileTrue(s_Elbow.posDegCmd(39.5));
     // operator
     operator.rightBumper.whileTrue(s_Elbow.posDegCmd(-45));
     // ramp
-    operator.rightTriggerB.whileTrue(s_Elbow.posDegCmd(-50));
+    operator.rightTriggerB.whileTrue(s_Elbow.posDegCmd(-46.5));
+    operator.rightJoystickPushed.whileTrue(s_Elbow.posDegCmd(48.5));
     operator.leftMiddle.onTrue(s_Intake.pistonsConeCmd());
     operator.rightMiddle.onTrue(s_Intake.pistonsCubeCmd());
 

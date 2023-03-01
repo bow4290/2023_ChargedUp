@@ -12,6 +12,7 @@ import java.util.function.DoubleSupplier;
 public class Elbow extends SubsystemBase {
   private final TalonFX elbowPivot;
   private final TalonFX elbowPivot2;
+  private double mmPosition;
 
   public double degreesToTicks(double degrees) {
     return degrees * Constants.Arm.ticksPerDegree;
@@ -21,7 +22,7 @@ public class Elbow extends SubsystemBase {
     elbowPivot = new TalonFX(Constants.Arm.armPivotID);
     elbowPivot.configFactoryDefault();
     elbowPivot.configForwardSoftLimitEnable(true);
-    elbowPivot.configForwardSoftLimitThreshold(degreesToTicks(45));
+    elbowPivot.configForwardSoftLimitThreshold(degreesToTicks(49));
     elbowPivot.configReverseSoftLimitEnable(true);
     elbowPivot.configReverseSoftLimitThreshold(degreesToTicks(-95));
 
@@ -60,7 +61,7 @@ public class Elbow extends SubsystemBase {
   public void initSendable(SendableBuilder builder) {
     super.initSendable(builder);
     // We need to figure out how to get this working again
-   /* builder.addDoubleProperty("Power", elbowPivot::getMotorOutputPercent, null);
+    /* builder.addDoubleProperty("Power", elbowPivot::getMotorOutputPercent, null);
     builder.addStringProperty("Mode", () -> elbowPivot.getControlMode().toString(), null);
     builder.addDoubleProperty("Target Pos", elbowPivot::getActiveTrajectoryPosition, null);
     builder.addDoubleProperty("Pos", this::getPosition, null);
@@ -80,6 +81,7 @@ public class Elbow extends SubsystemBase {
   }
 
   public void pos(double pos) {
+    mmPosition = pos;
     elbowPivot.set(ControlMode.MotionMagic, pos);
   }
 
@@ -89,7 +91,12 @@ public class Elbow extends SubsystemBase {
   }
 
   public Command retainPositionCmd() {
-    return startEnd(this::retainPosition, () -> move(0));
+    return startEnd(
+        () -> {
+          move(0);
+          retainPosition();
+        },
+        () -> move(0));
   }
 
   public Command moveCmd(DoubleSupplier speed) {
@@ -97,9 +104,13 @@ public class Elbow extends SubsystemBase {
   }
 
   public Command posCmd(double position) {
-    return startEnd(() -> pos(position), () -> move(0)).until(() -> 
-    (Math.abs(getPosition() - elbowPivot.getActiveTrajectoryPosition()) < Constants.Arm.rotationEps) &&
-    (Math.abs(elbowPivot.getSelectedSensorVelocity()) < Constants.Arm.velocityEps));
+    return startEnd(() -> pos(position), this::retainPosition)
+        .beforeStarting(() -> mmPosition = position)
+        .until(
+            () ->
+                (Math.abs(getPosition() - mmPosition) < Constants.Arm.rotationEps)
+                    && (Math.abs(elbowPivot.getSelectedSensorVelocity())
+                        < Constants.Arm.velocityEps));
   }
 
   public Command posDegCmd(double positionDeg) {

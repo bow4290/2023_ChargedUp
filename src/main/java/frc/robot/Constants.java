@@ -186,6 +186,8 @@ public final class Constants {
   }
 
   public static final class Elevator {
+    public static double positionEps = 200.0;
+    public static double velocityEps = 100.0;
     public static final int elevatorMotorID = 10;
     public static final double extendSpeed = 0.3;
     public static final double retractSpeed = -0.3;
@@ -195,7 +197,7 @@ public final class Constants {
     // 8740
     public static final double base = 0;
     public static final double middle = 50000;
-    public static final double max = 80000;
+    public static final double max = 82000;
     public static final double revolutionsPerMeter = 40 * 2048; // (APPROXIMATE, DO NOT USE)
     public static final double metersPerRevolution = 1 / revolutionsPerMeter;
   }

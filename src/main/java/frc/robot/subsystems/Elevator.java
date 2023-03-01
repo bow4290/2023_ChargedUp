@@ -47,11 +47,20 @@ public class Elevator extends SubsystemBase {
   }
 
   public void pos(double position) {
+    mmPosition = position;
     elevatorMotor.set(ControlMode.MotionMagic, position);
   }
 
+  private double mmPosition;
+
   public Command positionCmd(double posi) {
-    return run(() -> pos(posi));
+    return run(() -> pos(posi))
+        .beforeStarting(() -> mmPosition = posi)
+        .until(
+            () ->
+                (Math.abs(getPosition() - mmPosition) < Constants.Elevator.positionEps)
+                    && (Math.abs(elevatorMotor.getSelectedSensorVelocity())
+                        < Constants.Elevator.velocityEps));
   }
 
   public Command positionBaseCmd() {

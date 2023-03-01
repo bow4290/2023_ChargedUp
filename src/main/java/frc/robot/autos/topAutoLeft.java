@@ -15,8 +15,9 @@ import frc.robot.subsystems.Swerve;
 import java.util.HashMap;
 
 public class topAutoLeft extends SequentialCommandGroup {
-  public topAutoLeft(Swerve s_Swerve, Elbow s_Elbow, Elevator s_Elevator, Intake s_Intake) {
-    var pathGroup = PathPlanner.loadPathGroup("topAutoLeft", new PathConstraints(2, 1));
+  public topAutoLeft(
+      String name, Swerve s_Swerve, Elbow s_Elbow, Elevator s_Elevator, Intake s_Intake) {
+    var pathGroup = PathPlanner.loadPathGroup(name, new PathConstraints(2, 1));
 
     // This is just an example event map. It would be better to have a constant, global event map
     // in your code that will be used by all path following commands.
@@ -24,17 +25,11 @@ public class topAutoLeft extends SequentialCommandGroup {
     eventMap.put(
         "topCone",
         new SequentialCommandGroup(
-            s_Elbow
-                .posDegCmd(-45)
-                .until(
-                    () ->
-                        Math.abs(s_Elbow.posdegrees() + 45)
-                            < 2.0), // TODO Find out a better way to do this
-            s_Elevator
-                .positionMidCmd()
-                .until(
-                    () -> Math.abs(Constants.Elevator.middle - s_Elevator.getPosition()) < 100.0),
-            s_Intake.pistonsCubeCmd()));
+            s_Elbow.posDegCmd(45),
+            s_Elevator.positionMaxCmd(),
+            s_Intake.pistonsCubeCmd(),
+            s_Elbow.posDegCmd(0).alongWith(s_Elevator.positionBaseCmd()),
+            s_Intake.pistonsConeCmd()));
 
     var thetaController =
         new ProfiledPIDController(
