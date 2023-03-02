@@ -1,6 +1,11 @@
 package frc.robot;
 
+import com.pathplanner.lib.PathConstraints;
+import com.pathplanner.lib.PathPlanner;
+import com.pathplanner.lib.auto.PIDConstants;
+import com.pathplanner.lib.auto.SwerveAutoBuilder;
 import com.pathplanner.lib.server.PathPlannerServer;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -15,7 +20,7 @@ import frc.robot.commands.swerve.TeleopSwerve;
 import frc.robot.subsystems.*;
 import java.io.File;
 import java.nio.file.Files;
-import org.photonvision.PhotonPoseEstimator;
+import java.util.HashMap;
 
 public class RobotContainer {
   /* Subsystems */
@@ -23,12 +28,13 @@ public class RobotContainer {
   private final Intake s_Intake = new Intake();
   private final Elbow s_Elbow = new Elbow();
   private final Elevator s_Elevator = new Elevator();
-  public static PhotonPoseEstimator photonPoseEstimator;
+  private SwerveAutoBuilder autoBuilder;
 
   SendableChooser<Command> chooser = new SendableChooser<>();
   /** The container for the robot. Contains subsystems, IO devices, and commands. */
   public RobotContainer() {
     configureButtons();
+    createAutoBuilder();
     putInfoInDashboard();
 
     // Create a server for PathPlanner so that the robot pathing can be viewed.
@@ -44,14 +50,8 @@ public class RobotContainer {
               s_Elevator.resetToZero();
             }));
 
-    chooser.setDefaultOption("move forward", new exampleAuto(s_Swerve, s_Elbow));
-    chooser.addOption(
-        "top auto close to human",
-        new topAutoLeft("simplehumanpath", s_Swerve, s_Elbow, s_Elevator, s_Intake));
-    chooser.addOption(
-        "top auto far from human",
-        new topAutoLeft("simplefarhumanpath", s_Swerve, s_Elbow, s_Elevator, s_Intake));
-
+    chooser.addOption("top auto close to human", createAuto("simplehumanpath"));
+    chooser.addOption("top auto far from human", createAuto("simplefarhumanpath"));
     chooser.addOption(
         "stationary 3rd cone",
         new SequentialCommandGroup(
@@ -60,11 +60,12 @@ public class RobotContainer {
             s_Intake.pistonsCubeCmd(),
             s_Elbow.posDegCmd(0).alongWith(s_Elevator.positionBaseCmd()),
             s_Intake.pistonsConeCmd()));
+
     chooser.addOption("do nothing", new InstantCommand(() -> {}));
     SmartDashboard.putData("choose auto", chooser);
+
     // DO NOT UNCOMMENT THE FOLLOWING LINES
     // robot.explode();
-    // Robot-on-fire incident counter so far: 1
   }
 
   /**
@@ -138,5 +139,44 @@ public class RobotContainer {
 
   public Command getAutonomousCommand() {
     return chooser.getSelected();
+  }
+
+  private void createAutoBuilder() {
+    HashMap<String, Command> eventMap = new HashMap<>();
+    eventMap.put(
+        "topCone",
+        new SequentialCommandGroup(
+            s_Elbow.posDegCmd(45),
+            s_Elevator.positionMaxCmd(),
+            s_Intake.pistonsCubeCmd(),
+            s_Elbow.posDegCmd(0).alongWith(s_Elevator.positionBaseCmd()),
+            s_Intake.pistonsConeCmd()));
+
+    var thetaController =
+        new ProfiledPIDController(
+            Constants.AutoConstants.kPThetaController,
+            0,
+            0,
+            Constants.AutoConstants.kThetaControllerConstraints);
+    thetaController.enableContinuousInput(-Math.PI, Math.PI);
+
+    autoBuilder =
+        new SwerveAutoBuilder(
+            s_Swerve::getPose,
+            s_Swerve::resetOdometry,
+            Constants.Swerve.swerveKinematics,
+            new PIDConstants(Constants.AutoConstants.kPYController, 0.0, 0.0),
+            new PIDConstants(Constants.AutoConstants.kPThetaController, 0.0, 0.0),
+            s_Swerve::setModuleStates,
+            eventMap,
+            true, // Automatically mirror path based on alliance
+            s_Swerve);
+  }
+
+  private Command createAuto(String name) {
+
+    var pathGroup = PathPlanner.loadPathGroup(name, new PathConstraints(2, 1));
+
+    return autoBuilder.fullAuto(pathGroup);
   }
 }
