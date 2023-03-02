@@ -6,16 +6,20 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import java.util.function.DoubleSupplier;
 
 public class GenericGamepad {
-  // Equivalent to × Blue Cross on PS4
-  public Trigger a;
-  // Equivalent to ○ Red Circle on PS4
-  public Trigger b;
-  // Equivalent to □ Purple Square on PS4
-  public Trigger x;
-  // Equivalent to △ Green Triangle on PS4 (yes, this is slightly confusing)
-  public Trigger y;
+  /** Equivalent to × Blue Cross on PS4 */
+  public Trigger cross_a;
+  /** Equivalent to ○ Red Circle on PS4 */
+  public Trigger circle_b;
+  /** Equivalent to □ Purple Square on PS4 */
+  public Trigger square_x;
+  /** Equivalent to △ Green Triangle on PS4 */
+  public Trigger triangle_y;
+
+  // Also known as L1 on PS4
   public Trigger leftBumper;
+  // Also known as
   public Trigger rightBumper;
+
   public Trigger dpadUp;
   public Trigger dpadLeft;
   public Trigger dpadRight;
@@ -40,11 +44,19 @@ public class GenericGamepad {
   public Trigger leftTriggerB;
   public Trigger rightTriggerB;
 
+  public static GenericGamepad from(int port, boolean isPS4) {
+    if (isPS4) {
+      return new GenericGamepad(new CommandPS4Controller(port));
+    } else {
+      return new GenericGamepad(new CommandXboxController(port));
+    }
+  }
+
   public GenericGamepad(CommandPS4Controller controller) {
-    a = controller.cross();
-    b = controller.circle();
-    x = controller.square();
-    y = controller.triangle();
+    cross_a = controller.cross();
+    circle_b = controller.circle();
+    square_x = controller.square();
+    triangle_y = controller.triangle();
 
     leftBumper = controller.L1();
     rightBumper = controller.R1();
@@ -71,10 +83,10 @@ public class GenericGamepad {
   }
 
   public GenericGamepad(CommandXboxController controller) {
-    a = controller.a();
-    b = controller.b();
-    x = controller.x();
-    y = controller.y();
+    cross_a = controller.a();
+    circle_b = controller.b();
+    square_x = controller.x();
+    triangle_y = controller.y();
 
     leftBumper = controller.leftBumper();
     rightBumper = controller.rightBumper();

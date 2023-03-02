@@ -1,17 +1,16 @@
 package frc.robot;
 
+import com.pathplanner.lib.server.PathPlannerServer;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.autos.*;
 import frc.robot.commands.swerve.AutoBalance;
 import frc.robot.commands.swerve.BalanceThing;
-import frc.robot.commands.swerve.GoToNearestScoringLocation;
 import frc.robot.commands.swerve.TeleopSwerve;
 import frc.robot.subsystems.*;
 import java.io.File;
@@ -19,7 +18,6 @@ import java.nio.file.Files;
 import org.photonvision.PhotonPoseEstimator;
 
 public class RobotContainer {
-
   /* Subsystems */
   private final Swerve s_Swerve = new Swerve();
   private final Intake s_Intake = new Intake();
@@ -33,11 +31,14 @@ public class RobotContainer {
     configureButtons();
     putInfoInDashboard();
 
+    // Create a server for PathPlanner so that the robot pathing can be viewed.
+    PathPlannerServer.startServer(5811);
+
     SmartDashboard.putData(
         "Reset Swerve Modules To Absolute", s_Swerve.resetModulesToAbsoluteCommand());
     SmartDashboard.putData(
-        "Reset Elbow/Elevator to Zero",
-        new InstantCommand(
+        "Reset Elbow and Elevator to Zero",
+        Commands.runOnce(
             () -> {
               s_Elbow.resetToZero();
               s_Elevator.resetToZero();
@@ -66,6 +67,10 @@ public class RobotContainer {
     // Robot-on-fire incident counter so far: 1
   }
 
+  /**
+   * build.gradle automatically records some information (date, git user, git commit, changed files)
+   * whenever the code is built.
+   */
   private void putInfoInDashboard() {
     var deployDir = Filesystem.getDeployDirectory();
     var deployInfo = "Unable to find, for some reason";
@@ -77,21 +82,14 @@ public class RobotContainer {
   }
 
   /* Controllers */
-  // TODO: It should be possible to detect whether a gamepad is PS4 or Xbox(Logitech) based on the
-  // button count
+  // TODO: Detect if a gamepad is PS4/Logitech based on button count?
   private final int driverPort = 0;
-  private final boolean driverDualshock = true;
+  private final boolean driverPS4 = true;
   private final int operatorPort = 1;
-  private final boolean operatorDualshock = true;
+  private final boolean operatorPS4 = true;
 
-  private final GenericGamepad driver =
-      driverDualshock
-          ? new GenericGamepad(new CommandPS4Controller(driverPort))
-          : new GenericGamepad(new CommandXboxController(driverPort));
-  private final GenericGamepad operator =
-      operatorDualshock
-          ? new GenericGamepad(new CommandPS4Controller(operatorPort))
-          : new GenericGamepad(new CommandXboxController(operatorPort));
+  private final GenericGamepad driver = GenericGamepad.from(driverPort, driverPS4);
+  private final GenericGamepad operator = GenericGamepad.from(operatorPort, operatorPS4);
 
   private void configureButtons() {
     driverConfiguration();
@@ -107,36 +105,20 @@ public class RobotContainer {
             () -> -driver.rightX.getAsDouble(),
             driver.leftBumper::getAsBoolean));
 
-    driver.y.onTrue(new InstantCommand(s_Swerve::zeroGyro));
-    driver.b.whileTrue(new BalanceThing(s_Swerve));
+    driver.triangle_y.onTrue(new InstantCommand(s_Swerve::zeroGyro));
+    driver.circle_b.whileTrue(new BalanceThing(s_Swerve));
 
-    /*driver.a.whileTrue(
-    new GoToPoint(
-        s_Swerve,
-        s_Swerve.getPose(), // WOW I JUST FIGURED OUT WHY THIS ISN'T WORKING
-        new Pose2d(new Translation2d(1.9, 2.75), new Rotation2d(0))));*/
-    driver.a.whileTrue(new GoToNearestScoringLocation(s_Swerve));
+    // Temporarily disabled while it still needs to be fixed-ish
+    // driver.cross_a.whileTrue(new GoToNearestScoringLocation(s_Swerve));
 
-    driver.x.whileTrue(new AutoBalance(s_Swerve));
-    // s
-    // It is not intended for the driver to manually operate the elevator during normal robot
-    // operation.
-    // This should only be used in the event of an unexpected situation.
-    /*DoubleSupplier combined =
-          () ->
-              driver.leftTrigger.getAsDouble() * Constants.Elevator.retractSpeed
-                  + driver.rightTrigger.getAsDouble() * Constants.Elevator.extendSpeed;
-
-      new Trigger(() -> Math.abs(combined.getAsDouble()) > Constants.Elevator.elevatorDeadband)
-          .whileTrue(s_Elevator.moveCmd(combined));
-    */
+    driver.square_x.whileTrue(new AutoBalance(s_Swerve));
   }
 
   private void operatorConfiguration() {
-    operator.x.whileTrue(s_Intake.pistonsCubeCmd().andThen(s_Intake.spinInCmd()));
-    operator.y.whileTrue(s_Intake.pistonsConeCmd().andThen(s_Intake.spinInCmd()));
-    operator.b.whileTrue(s_Intake.pistonsCubeCmd().andThen(s_Intake.spinEjectCmd()));
-    operator.a.whileTrue(s_Elbow.posDegCmd(0).alongWith(s_Elevator.positionBaseCmd()));
+    operator.square_x.whileTrue(s_Intake.pistonsCubeCmd().andThen(s_Intake.spinInCmd()));
+    operator.triangle_y.whileTrue(s_Intake.pistonsConeCmd().andThen(s_Intake.spinInCmd()));
+    operator.circle_b.whileTrue(s_Intake.pistonsCubeCmd().andThen(s_Intake.spinEjectCmd()));
+    operator.cross_a.whileTrue(s_Elbow.posDegCmd(0).alongWith(s_Elevator.positionBaseCmd()));
     operator.dpadDown.whileTrue(s_Elbow.posDegCmd(-85).alongWith(s_Elevator.positionBaseCmd()));
     operator.dpadLeft.whileTrue(s_Elevator.positionBaseCmd());
     operator.dpadUp.whileTrue(s_Elevator.positionMidCmd());
@@ -152,31 +134,6 @@ public class RobotContainer {
     operator.rightJoystickPushed.whileTrue(s_Elbow.posDegCmd(48.5));
     operator.leftMiddle.onTrue(s_Intake.pistonsConeCmd());
     operator.rightMiddle.onTrue(s_Intake.pistonsCubeCmd());
-
-    // operator.a.whileTrue(s_Intake.spinInCmd());
-    // operator.x.whileTrue(s_Intake.spinEjectCmd());
-    // operator.y.onTrue(s_Elevator.positionMaxCmd());
-    // operator.b.onTrue(s_Elevator.positionBaseCmd());
-
-    // operator.dpadUp.onTrue(s_Elbow.posDegCmd(0));
-    // operator.dpadLeft.onTrue(s_Elbow.posDegCmd(-45));
-    // operator.dpadRight.onTrue(s_Elbow.posDegCmd(45));
-
-    // operator.dpadDown.onTrue(s_Elevator.positionMidCmd());
-    // // -43141
-    // // operator.leftBumper.onTrue(s_Elbow.posDegCmd(90)); DO NOT USE
-    // // -57.5821
-    // operator.rightBumper.onTrue(s_Elbow.posDegCmd(-85));
-    // // operator.leftBumper.whileTrue(s_Elevator.moveCmd(Constants.Elevator.retractSpeed));
-    // // operator.rightBumper.whileTrue(s_Elevator.moveCmd(Constants.Elevator.extendSpeed));
-
-    // DoubleSupplier combined =
-    //     () ->
-    //         operator.leftTrigger.getAsDouble() * Constants.Arm.backSpeed
-    //             + operator.rightTrigger.getAsDouble() * Constants.Arm.frontSpeed;
-
-    // new Trigger(() -> Math.abs(combined.getAsDouble()) > Constants.Arm.armDeadband)
-    //     .whileTrue(s_Elbow.moveCmd(combined));
   }
 
   public Command getAutonomousCommand() {
