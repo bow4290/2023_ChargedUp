@@ -25,13 +25,11 @@ public class RobotContainer {
   private final Intake s_Intake = new Intake();
   private final Elbow s_Elbow = new Elbow();
   private final Elevator s_Elevator = new Elevator();
-  private final Vision s_Vision = new Vision();
   public static PhotonPoseEstimator photonPoseEstimator;
 
   SendableChooser<Command> chooser = new SendableChooser<>();
   /** The container for the robot. Contains subsystems, IO devices, and commands. */
   public RobotContainer() {
-    photonPoseEstimator = s_Vision.photonPoseEstimator; // TODO: find a better way to integrate this
     configureButtons();
     putInfoInDashboard();
 

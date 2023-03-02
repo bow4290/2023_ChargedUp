@@ -14,23 +14,17 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
-import frc.robot.RobotContainer;
-import frc.robot.SwerveModule;
+import frc.robot.*;
 import java.util.Optional;
-import org.photonvision.EstimatedRobotPose;
 
 public class Swerve extends SubsystemBase {
   public SwerveDrivePoseEstimator swerveOdometry;
   public SwerveModule[] mSwerveMods;
   public Pigeon2 gyro;
 
-  public Timer timeSinceLastVisionMeasurement;
+  private Vision vision = new Vision();
 
   public Swerve() {
-    timeSinceLastVisionMeasurement = new Timer();
-    timeSinceLastVisionMeasurement.start();
-
     gyro = new Pigeon2(Constants.Swerve.pigeonID);
     gyro.configFactoryDefault();
     gyro.configMountPose(AxisDirection.NegativeY, AxisDirection.PositiveZ);
@@ -158,7 +152,19 @@ public class Swerve extends SubsystemBase {
     return new Rotation2d(grav[0], grav[1]);
   }
 
-  double previousDegrees;
+  double previousRadians;
+
+  /**
+   * Returns velocity in radians per second. This is intended to be used for dashboard graphing,
+   * etc. not anything that relies on accuracy
+   */
+  private double getBadAngularVelocityEstimate(Rotation2d yaw) {
+    double currentRadians = yaw.getRadians();
+    previousRadians = currentRadians;
+
+    double velocity = (currentRadians - previousRadians) * (1.0 / Robot.kDefaultPeriod);
+    return velocity;
+  }
 
   @Override
   public void periodic() {
@@ -166,15 +172,11 @@ public class Swerve extends SubsystemBase {
     Pose2d pose = getPose();
 
     swerveOdometry.update(yaw, getModulePositions());
-    RobotContainer.photonPoseEstimator.setReferencePose(pose);
-    Optional<EstimatedRobotPose> res = RobotContainer.photonPoseEstimator.update();
 
-    if (res.isPresent()) {
-      EstimatedRobotPose camPose = res.get();
-      System.out.println("vision thing " + camPose.estimatedPose.toPose2d().toString());
-      swerveOdometry.addVisionMeasurement(
-          camPose.estimatedPose.toPose2d(), camPose.timestampSeconds);
-      timeSinceLastVisionMeasurement.reset();
+    Optional<Vision.PoseEstimate> poseEst = vision.getEstimatedPose();
+    if (poseEst.isPresent()) {
+      Vision.PoseEstimate est = poseEst.get();
+      swerveOdometry.addVisionMeasurement(est.estimatedPose, est.timestampSeconds);
     }
 
     for (SwerveModule mod : mSwerveMods) {
@@ -186,20 +188,16 @@ public class Swerve extends SubsystemBase {
           "Mod " + mod.moduleNumber + " Velocity", mod.getState().speedMetersPerSecond);
     }
 
-    double currentDegrees = yaw.getDegrees();
-    double velocity = Math.toRadians((currentDegrees - previousDegrees) * 50);
-    previousDegrees = currentDegrees;
+    SmartDashboard.putNumber("Turning velocity", getBadAngularVelocityEstimate(yaw));
 
     SmartDashboard.putNumber("Gyro yaw", yaw.getDegrees());
     SmartDashboard.putNumber("Gyro pitch", getPitch());
-    SmartDashboard.putNumber("Turning velocity", velocity);
+
     SmartDashboard.putNumber("Robot X", pose.getX());
     SmartDashboard.putNumber("Robot Y", pose.getY());
-    SmartDashboard.putNumber(
-        "Time since last vision measurement", timeSinceLastVisionMeasurement.get());
 
-    double[] grav = new double[3];
-    gyro.getGravityVector(grav);
-    SmartDashboard.putNumber("grav", Math.sqrt(grav[0] * grav[0] + grav[1] * grav[1]));
+    SmartDashboard.putNumber("Time since last vision measurement", vision.lastVisionTime());
+
+    SmartDashboard.putNumber("Gravity", getTiltMagnitude());
   }
 }
