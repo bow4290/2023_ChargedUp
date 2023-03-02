@@ -13,7 +13,7 @@ public class AutoBalance extends SequentialCommandGroup {
     super(
         new TeleopSwerve(s_Swerve, () -> -1, () -> 0, () -> 1, () -> false)
             .until(new Trigger(() -> s_Swerve.getTiltMagnitude() > 0.19).debounce(0.3))
-            .withTimeout(3),
+            .withTimeout(1),
         new BalanceThing(s_Swerve));
   }
 }
