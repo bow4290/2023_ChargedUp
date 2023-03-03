@@ -50,8 +50,10 @@ public class RobotContainer {
               s_Elevator.resetToZero();
             }));
 
-    chooser.addOption("top auto close to human", createAuto("simplehumanpath"));
-    chooser.addOption("top auto far from human", createAuto("simplefarhumanpath"));
+    chooser.addOption("auto second cube node from lodaing", createAuto("simplehumanpath"));
+    chooser.addOption("auto fifth cube node from loading", createAuto("simplefarhumanpath"));
+    chooser.addOption("auto second cube node from loading + BALANCE", createAuto("simplehumanpath plus balance"));
+    chooser.addOption("auto fifth cube node from loading + BALANCE", createAuto("simplefarhumanpath plus balance"));
     chooser.addOption(
         "stationary 3rd cone",
         new SequentialCommandGroup(
@@ -143,6 +145,7 @@ public class RobotContainer {
 
   private void createAutoBuilder() {
     HashMap<String, Command> eventMap = new HashMap<>();
+
     eventMap.put(
         "topCone",
         new SequentialCommandGroup(
@@ -151,6 +154,19 @@ public class RobotContainer {
             s_Intake.pistonsCubeCmd(),
             s_Elbow.posDegCmd(0).alongWith(s_Elevator.positionBaseCmd()),
             s_Intake.pistonsConeCmd()));
+
+    eventMap.put(
+        "topCube",
+        new SequentialCommandGroup(
+            s_Elbow.posDegCmd(45),
+            s_Elevator.positionMaxCmd(),
+            s_Intake.spinEjectCmd().withTimeout(0.6),
+            s_Elbow.posDegCmd(0).alongWith(s_Elevator.positionBaseCmd())));
+
+    eventMap.put(
+      "balance",
+      new AutoBalance(s_Swerve)
+    );
 
     var thetaController =
         new ProfiledPIDController(
@@ -174,9 +190,9 @@ public class RobotContainer {
   }
 
   private Command createAuto(String name) {
-
     var pathGroup = PathPlanner.loadPathGroup(name, new PathConstraints(2, 1));
 
-    return autoBuilder.fullAuto(pathGroup);
+    return 
+      new InstantCommand(s_Swerve::gyro180).andThen(autoBuilder.fullAuto(pathGroup));
   }
 }
