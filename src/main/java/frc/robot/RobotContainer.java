@@ -50,11 +50,14 @@ public class RobotContainer {
               s_Elevator.resetToZero();
             }));
 
-    chooser.addOption("auto second cube node from lodaing", createAuto("simplehumanpath"));
-    chooser.addOption("auto fifth cube node from loading", createAuto("simplefarhumanpath"));
-    chooser.addOption("auto second cube node from loading + BALANCE", createAuto("simplehumanpath plus balance"));
-    chooser.addOption("auto fifth cube node from loading + BALANCE", createAuto("simplefarhumanpath plus balance"));
+    chooser.addOption("auto second cone node from lodaing", createAuto("simplehumanpath"));
+    chooser.addOption("auto fifth cone node from loading", createAuto("simplefarhumanpath"));
     chooser.addOption(
+        "auto second cone node from loading + BALANCE", createAuto("simplehumanpath plus balance"));
+    chooser.addOption(
+        "auto fifth cone node from loading + BALANCE",
+        createAuto("simplefarhumanpath plus balance"));
+    chooser.setDefaultOption(
         "stationary 3rd cone",
         new SequentialCommandGroup(
             s_Elbow.posDegCmd(45),
@@ -122,19 +125,21 @@ public class RobotContainer {
     operator.triangle_y.whileTrue(s_Intake.pistonsConeCmd().andThen(s_Intake.spinInCmd()));
     operator.circle_b.whileTrue(s_Intake.pistonsCubeCmd().andThen(s_Intake.spinEjectCmd()));
     operator.cross_a.whileTrue(s_Elbow.posDegCmd(0).alongWith(s_Elevator.positionBaseCmd()));
-    operator.dpadDown.whileTrue(s_Elbow.posDegCmd(-85).alongWith(s_Elevator.positionBaseCmd()));
+    operator.dpadDown.whileTrue(s_Elbow.posDegCmd(-87).alongWith(s_Elevator.positionBaseCmd()));
     operator.dpadLeft.whileTrue(s_Elevator.positionBaseCmd());
     operator.dpadUp.whileTrue(s_Elevator.positionMidCmd());
     operator.dpadRight.whileTrue(s_Elevator.positionMaxCmd());
     // 2nd row
-    operator.leftBumper.whileTrue(s_Elbow.posDegCmd(-38));
+    operator.leftBumper.whileTrue(s_Elbow.posDegCmd(-44));
     // reverse
-    operator.leftTriggerB.whileTrue(s_Elbow.posDegCmd(39.5));
+    operator.leftTriggerB.whileTrue(s_Elbow.posDegCmd(42));
     // operator
-    operator.rightBumper.whileTrue(s_Elbow.posDegCmd(-45));
+    operator.rightBumper.whileTrue(s_Elbow.posDegCmd(-48));
     // ramp
     operator.rightTriggerB.whileTrue(s_Elbow.posDegCmd(-46.5));
-    operator.rightJoystickPushed.whileTrue(s_Elbow.posDegCmd(48.5));
+    operator.rightJoystickPushed.whileTrue(s_Elbow.posDegCmd(49.5));
+    operator.leftJoystickPushed.whileTrue(
+        s_Elbow.posDegCmd(-88).alongWith(s_Elevator.positionBaseCmd()));
     operator.leftMiddle.onTrue(s_Intake.pistonsConeCmd());
     operator.rightMiddle.onTrue(s_Intake.pistonsCubeCmd());
   }
@@ -149,12 +154,12 @@ public class RobotContainer {
     eventMap.put(
         "topCone",
         new SequentialCommandGroup(
-            s_Elbow.posDegCmd(45),
             s_Elevator.positionMaxCmd(),
+            s_Elbow.posDegCmd(45),
             s_Intake.pistonsCubeCmd(),
             s_Elbow.posDegCmd(0).alongWith(s_Elevator.positionBaseCmd()),
             s_Intake.pistonsConeCmd()));
-
+    // WARNING: TOPCUBE IS UNTESTED
     eventMap.put(
         "topCube",
         new SequentialCommandGroup(
@@ -163,10 +168,7 @@ public class RobotContainer {
             s_Intake.spinEjectCmd().withTimeout(0.6),
             s_Elbow.posDegCmd(0).alongWith(s_Elevator.positionBaseCmd())));
 
-    eventMap.put(
-      "balance",
-      new AutoBalance(s_Swerve)
-    );
+    eventMap.put("balance", new AutoBalance(s_Swerve));
 
     var thetaController =
         new ProfiledPIDController(
@@ -192,7 +194,6 @@ public class RobotContainer {
   private Command createAuto(String name) {
     var pathGroup = PathPlanner.loadPathGroup(name, new PathConstraints(2, 1));
 
-    return 
-      new InstantCommand(s_Swerve::gyro180).andThen(autoBuilder.fullAuto(pathGroup));
+    return new InstantCommand(s_Swerve::gyro180).andThen(autoBuilder.fullAuto(pathGroup));
   }
 }
