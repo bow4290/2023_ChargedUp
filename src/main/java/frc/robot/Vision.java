@@ -65,7 +65,7 @@ public class Vision {
       timeSinceLastVision.reset();
     }
 
-    return Optional.of(position);
+    return Optional.ofNullable(position);
   }
 
   public double lastVisionTime() {

@@ -166,12 +166,30 @@ public class Swerve extends SubsystemBase {
     return velocity;
   }
 
+  double[] previousDistances = new double[] {0, 0, 0, 0};
+
   @Override
   public void periodic() {
     Rotation2d yaw = getYaw();
     Pose2d pose = getPose();
 
-    swerveOdometry.update(yaw, getModulePositions());
+    SwerveModulePosition[] poses = getModulePositions();
+    swerveOdometry.update(yaw, poses);
+
+    int modNumber = 0;
+    for (SwerveModulePosition p : poses) {
+      modNumber++;
+      double dist = p.distanceMeters;
+      SmartDashboard.putNumber(
+          "Mod " + modNumber + " Cancoder", mSwerveMods[modNumber - 1].getCanCoder().getDegrees());
+      SmartDashboard.putNumber(
+          /* Bad estimate, only for graphing/etc */
+          "Mod " + modNumber + " Est. Velocity",
+          (dist - previousDistances[modNumber - 1]) * (1.0 / Robot.kDefaultPeriod));
+      SmartDashboard.putNumber("Mod " + modNumber + " distance", dist);
+      SmartDashboard.putNumber("Mod " + modNumber + " Angle", p.angle.getDegrees());
+      previousDistances[modNumber - 1] = dist;
+    }
 
     Optional<Vision.PoseEstimate> poseEst = vision.getEstimatedPose();
     if (poseEst.isPresent()) {
@@ -179,25 +197,16 @@ public class Swerve extends SubsystemBase {
       swerveOdometry.addVisionMeasurement(est.estimatedPose, est.timestampSeconds);
     }
 
-    for (SwerveModule mod : mSwerveMods) {
-      SmartDashboard.putNumber(
-          "Mod " + mod.moduleNumber + " Cancoder", mod.getCanCoder().getDegrees());
-      SmartDashboard.putNumber(
-          "Mod " + mod.moduleNumber + " Integrated", mod.getPosition().angle.getDegrees());
-      SmartDashboard.putNumber(
-          "Mod " + mod.moduleNumber + " Velocity", mod.getState().speedMetersPerSecond);
-    }
-
     SmartDashboard.putNumber("Turning velocity", getBadAngularVelocityEstimate(yaw));
 
     SmartDashboard.putNumber("Gyro yaw", yaw.getDegrees());
-    SmartDashboard.putNumber("Gyro pitch", getPitch());
+    // SmartDashboard.putNumber("Gyro pitch", getPitch());
 
     SmartDashboard.putNumber("Robot X", pose.getX());
     SmartDashboard.putNumber("Robot Y", pose.getY());
 
     SmartDashboard.putNumber("Time since last vision measurement", vision.lastVisionTime());
 
-    SmartDashboard.putNumber("Gravity", getTiltMagnitude());
+    // SmartDashboard.putNumber("Gravity", getTiltMagnitude());
   }
 }
