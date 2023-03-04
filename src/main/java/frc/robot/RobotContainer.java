@@ -15,7 +15,6 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.autos.*;
 import frc.robot.commands.swerve.AutoBalance;
-import frc.robot.commands.swerve.BalanceThing;
 import frc.robot.commands.swerve.TeleopSwerve;
 import frc.robot.subsystems.*;
 import java.io.File;
@@ -50,6 +49,9 @@ public class RobotContainer {
               s_Elevator.resetToZero();
             }));
 
+    SmartDashboard.putData("Pistons to Cone", s_Intake.pistonsConeCmd().ignoringDisable(true));
+    SmartDashboard.putData("Pistons to Cube", s_Intake.pistonsCubeCmd().ignoringDisable(true));
+
     chooser.addOption("auto second cone node from lodaing", createAuto("simplehumanpath"));
     chooser.addOption("auto fifth cone node from loading", createAuto("simplefarhumanpath"));
     chooser.addOption(
@@ -57,6 +59,13 @@ public class RobotContainer {
     chooser.addOption(
         "auto fifth cone node from loading + BALANCE",
         createAuto("simplefarhumanpath plus balance"));
+    chooser.addOption("auto sixth cone node + BALANCE", createAuto("sixthconepath plus balance"));
+    chooser.addOption("auto sixth cone node", createAuto("sixthconepath"));
+    chooser.addOption("auto first cube node BALAncE", createAuto("firstcubepath plus balance"));
+    chooser.addOption("auto first cube node", createAuto("firstcubepath"));
+    chooser.addOption("auto third cube node BALAncE", createAuto("thirdcubepath plus balance"));
+    chooser.addOption("auto third cube node", createAuto("thirdcubepath"));
+
     chooser.setDefaultOption(
         "stationary 3rd cone",
         new SequentialCommandGroup(
@@ -112,7 +121,7 @@ public class RobotContainer {
             driver.leftBumper::getAsBoolean));
 
     driver.triangle_y.onTrue(new InstantCommand(s_Swerve::zeroGyro));
-    driver.circle_b.whileTrue(new BalanceThing(s_Swerve));
+    // driver.circle_b.whileTrue(new BalanceThing(s_Swerve));
 
     // Temporarily disabled while it still needs to be fixed-ish
     // driver.cross_a.whileTrue(new GoToNearestScoringLocation(s_Swerve));
@@ -121,26 +130,38 @@ public class RobotContainer {
   }
 
   private void operatorConfiguration() {
+    // Pistons to cube, intake spin in
     operator.square_x.whileTrue(s_Intake.pistonsCubeCmd().andThen(s_Intake.spinInCmd()));
+    // Pistons to cone, intake spin in
     operator.triangle_y.whileTrue(s_Intake.pistonsConeCmd().andThen(s_Intake.spinInCmd()));
+    // Pistons to cube, intake spin out (eject)
     operator.circle_b.whileTrue(s_Intake.pistonsCubeCmd().andThen(s_Intake.spinEjectCmd()));
+    // Arm to vertical, elevator to base
     operator.cross_a.whileTrue(s_Elbow.posDegCmd(0).alongWith(s_Elevator.positionBaseCmd()));
+    // Intake position from battery side
     operator.dpadDown.whileTrue(s_Elbow.posDegCmd(-87).alongWith(s_Elevator.positionBaseCmd()));
+    // Elevator to base
     operator.dpadLeft.whileTrue(s_Elevator.positionBaseCmd());
+    // Elevator to mid
     operator.dpadUp.whileTrue(s_Elevator.positionMidCmd());
+    // Elevator to max
     operator.dpadRight.whileTrue(s_Elevator.positionMaxCmd());
-    // 2nd row
+    // Arm back battery side for 2nd row
     operator.leftBumper.whileTrue(s_Elbow.posDegCmd(-44));
-    // reverse
+    // Arm out front side for 3rd row
     operator.leftTriggerB.whileTrue(s_Elbow.posDegCmd(42));
-    // operator
+    // Arm out battery side, slightly less?
     operator.rightBumper.whileTrue(s_Elbow.posDegCmd(-48));
-    // ramp
+    // Arm out battery side for human ramp?
     operator.rightTriggerB.whileTrue(s_Elbow.posDegCmd(-46.5));
+    // Arm out front side for human ramp?
     operator.rightJoystickPushed.whileTrue(s_Elbow.posDegCmd(49.5));
+    // Intake but slightly lower
     operator.leftJoystickPushed.whileTrue(
         s_Elbow.posDegCmd(-88).alongWith(s_Elevator.positionBaseCmd()));
+    // Pistons to cone
     operator.leftMiddle.onTrue(s_Intake.pistonsConeCmd());
+    // Pistons to cube
     operator.rightMiddle.onTrue(s_Intake.pistonsCubeCmd());
   }
 
@@ -154,6 +175,7 @@ public class RobotContainer {
     eventMap.put(
         "topCone",
         new SequentialCommandGroup(
+            s_Intake.pistonsConeCmd(),
             s_Elevator.positionMaxCmd(),
             s_Elbow.posDegCmd(45),
             s_Intake.pistonsCubeCmd(),
@@ -163,9 +185,10 @@ public class RobotContainer {
     eventMap.put(
         "topCube",
         new SequentialCommandGroup(
-            s_Elbow.posDegCmd(45),
+            s_Intake.pistonsCubeCmd(),
             s_Elevator.positionMaxCmd(),
-            s_Intake.spinEjectCmd().withTimeout(0.6),
+            s_Elbow.posDegCmd(45),
+            s_Intake.spinEjectCmd().withTimeout(1),
             s_Elbow.posDegCmd(0).alongWith(s_Elevator.positionBaseCmd())));
 
     eventMap.put("balance", new AutoBalance(s_Swerve));
@@ -193,7 +216,8 @@ public class RobotContainer {
 
   private Command createAuto(String name) {
     var pathGroup = PathPlanner.loadPathGroup(name, new PathConstraints(2, 1));
-
-    return new InstantCommand(s_Swerve::gyro180).andThen(autoBuilder.fullAuto(pathGroup));
+    // THIS WAS NOT NECESSARY
+    return // new InstantCommand(s_Swerve::gyro180).andThen
+    (autoBuilder.fullAuto(pathGroup));
   }
 }

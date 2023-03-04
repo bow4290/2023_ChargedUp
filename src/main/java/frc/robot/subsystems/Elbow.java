@@ -22,7 +22,7 @@ public class Elbow extends SubsystemBase {
     elbowPivot = new TalonFX(Constants.Arm.armPivotID);
     elbowPivot.configFactoryDefault();
     elbowPivot.configForwardSoftLimitEnable(true);
-    elbowPivot.configForwardSoftLimitThreshold(degreesToTicks(49));
+    elbowPivot.configForwardSoftLimitThreshold(degreesToTicks(50));
     elbowPivot.configReverseSoftLimitEnable(true);
     elbowPivot.configReverseSoftLimitThreshold(degreesToTicks(-95));
 
