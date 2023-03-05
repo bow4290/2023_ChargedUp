@@ -60,7 +60,8 @@ public class Elevator extends SubsystemBase {
             () ->
                 (Math.abs(getPosition() - mmPosition) < Constants.Elevator.positionEps)
                     && (Math.abs(elevatorMotor.getSelectedSensorVelocity())
-                        < Constants.Elevator.velocityEps));
+                        < Constants.Elevator.velocityEps))
+        .withTimeout(2.5);
   }
 
   public Command positionBaseCmd() {

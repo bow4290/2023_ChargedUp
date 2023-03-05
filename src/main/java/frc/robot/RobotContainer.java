@@ -13,9 +13,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.autos.*;
-import frc.robot.commands.swerve.AutoBalance;
-import frc.robot.commands.swerve.TeleopSwerve;
+// import frc.robot.autos.*;
+import frc.robot.commands.swerve.*;
 import frc.robot.subsystems.*;
 import java.io.File;
 import java.nio.file.Files;
@@ -61,12 +60,15 @@ public class RobotContainer {
         createAuto("simplefarhumanpath plus balance"));
     chooser.addOption("auto sixth cone node + BALANCE", createAuto("sixthconepath plus balance"));
     chooser.addOption("auto sixth cone node", createAuto("sixthconepath"));
-    chooser.addOption("auto first cube node BALAncE", createAuto("firstcubepath plus balance"));
+    chooser.setDefaultOption(
+        "auto first cube node BALAncE", createAuto("firstcubepath plus balance"));
     chooser.addOption("auto first cube node", createAuto("firstcubepath"));
     chooser.addOption("auto third cube node BALAncE", createAuto("thirdcubepath plus balance"));
     chooser.addOption("auto third cube node", createAuto("thirdcubepath"));
 
-    chooser.setDefaultOption(
+    // chooser.addOption("AUTO MID CUBE AND BALANCE FROM INTERIOR", createAuto("cubebalancd"));
+
+    chooser.addOption(
         "stationary 3rd cone",
         new SequentialCommandGroup(
             // s_Intake.pistonsConeCmd(),
@@ -77,7 +79,7 @@ public class RobotContainer {
             s_Intake.pistonsConeCmd()));
 
     chooser.addOption("do nothing", new InstantCommand(() -> {}));
-    SmartDashboard.putData("choose auto", chooser);
+    SmartDashboard.putData("choose auto " + (int) (Math.random() * 100), chooser);
 
     // DO NOT UNCOMMENT THE FOLLOWING LINES
     // robot.explode();
@@ -156,7 +158,7 @@ public class RobotContainer {
     // Arm out battery side for human ramp?
     operator.rightTriggerB.whileTrue(s_Elbow.posDegCmd(-46.5));
     // Arm out front side for human ramp?
-    operator.rightJoystickPushed.whileTrue(s_Elbow.posDegCmd(49.5));
+    operator.rightJoystickPushed.whileTrue(s_Elbow.posDegCmd(50));
     // Intake but slightly lower
     operator.leftJoystickPushed.whileTrue(
         s_Elbow.posDegCmd(-88).alongWith(s_Elevator.positionBaseCmd()));
@@ -193,6 +195,7 @@ public class RobotContainer {
             s_Elbow.posDegCmd(0).alongWith(s_Elevator.positionBaseCmd())));
 
     eventMap.put("balance", new AutoBalance(s_Swerve));
+    eventMap.put("balanceminus", new AutoBalanceMinus(s_Swerve));
 
     var thetaController =
         new ProfiledPIDController(
@@ -216,7 +219,7 @@ public class RobotContainer {
   }
 
   private Command createAuto(String name) {
-    var pathGroup = PathPlanner.loadPathGroup(name, new PathConstraints(3, 1.5));
+    var pathGroup = PathPlanner.loadPathGroup(name, new PathConstraints(2.5, 2));
     // THIS WAS NOT NECESSARY
     return // new InstantCommand(s_Swerve::gyro180).andThen
     (autoBuilder.fullAuto(pathGroup));

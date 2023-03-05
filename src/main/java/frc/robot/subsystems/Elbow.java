@@ -111,7 +111,8 @@ public class Elbow extends SubsystemBase {
             () ->
                 (Math.abs(getPosition() - mmPosition) < Constants.Arm.rotationEps)
                     && (Math.abs(elbowPivot.getSelectedSensorVelocity())
-                        < Constants.Arm.velocityEps));
+                        < Constants.Arm.velocityEps))
+        .withTimeout(2.5);
   }
 
   public Command posDegCmd(double positionDeg) {
