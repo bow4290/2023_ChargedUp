@@ -48,6 +48,7 @@ public class Elbow extends SubsystemBase {
     // - Phoenix docs
     elbowPivot2.setStatusFramePeriod(StatusFrame.Status_1_General, 100);
     elbowPivot2.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 100);
+    elbowPivot2.setNeutralMode(NeutralMode.Brake);
 
     elbowPivot.configNeutralDeadband(0.02);
 

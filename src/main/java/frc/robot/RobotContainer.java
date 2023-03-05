@@ -69,8 +69,9 @@ public class RobotContainer {
     chooser.setDefaultOption(
         "stationary 3rd cone",
         new SequentialCommandGroup(
-            s_Elbow.posDegCmd(45),
+            // s_Intake.pistonsConeCmd(),
             s_Elevator.positionMaxCmd(),
+            s_Elbow.posDegCmd(45),
             s_Intake.pistonsCubeCmd(),
             s_Elbow.posDegCmd(0).alongWith(s_Elevator.positionBaseCmd()),
             s_Intake.pistonsConeCmd()));
@@ -175,7 +176,7 @@ public class RobotContainer {
     eventMap.put(
         "topCone",
         new SequentialCommandGroup(
-            s_Intake.pistonsConeCmd(),
+            // s_Intake.pistonsConeCmd(),
             s_Elevator.positionMaxCmd(),
             s_Elbow.posDegCmd(45),
             s_Intake.pistonsCubeCmd(),
@@ -185,10 +186,10 @@ public class RobotContainer {
     eventMap.put(
         "topCube",
         new SequentialCommandGroup(
-            s_Intake.pistonsCubeCmd(),
+            // s_Intake.pistonsCubeCmd(),
             s_Elevator.positionMaxCmd(),
             s_Elbow.posDegCmd(45),
-            s_Intake.spinEjectCmd().withTimeout(1),
+            s_Intake.spinEjectCmd().withTimeout(0.5),
             s_Elbow.posDegCmd(0).alongWith(s_Elevator.positionBaseCmd())));
 
     eventMap.put("balance", new AutoBalance(s_Swerve));
@@ -215,7 +216,7 @@ public class RobotContainer {
   }
 
   private Command createAuto(String name) {
-    var pathGroup = PathPlanner.loadPathGroup(name, new PathConstraints(2, 1));
+    var pathGroup = PathPlanner.loadPathGroup(name, new PathConstraints(3, 1.5));
     // THIS WAS NOT NECESSARY
     return // new InstantCommand(s_Swerve::gyro180).andThen
     (autoBuilder.fullAuto(pathGroup));

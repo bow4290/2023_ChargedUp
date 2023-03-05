@@ -9,7 +9,7 @@ import frc.robot.subsystems.Swerve;
 public class BalanceThing extends PIDCommand {
   public BalanceThing(Swerve swerve) {
     super(
-        new PIDController(2.3, 0.01, 10),
+        new PIDController(2.3, 0.01, 7),
         // Based on pitch
         swerve::getTiltMagnitude,
         // We want to gain a pitch of 0
@@ -17,7 +17,7 @@ public class BalanceThing extends PIDCommand {
         // Output moves bot
         output -> {
           output = Math.abs(output);
-          if (output > 0.05) {
+          if (output > 0.06) {
             Rotation2d rot = swerve.getTiltDirection();
             swerve.drive(
                 new Translation2d(output * rot.getCos(), output * rot.getSin()), 0, false, true);

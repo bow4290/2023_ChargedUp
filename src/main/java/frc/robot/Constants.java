@@ -105,7 +105,7 @@ public final class Constants {
     // Measured 2023-02-25
     public static final double maxSpeed = 4.0;
     // WARNING IF YOU TURN THIS TOO HIGH IT TIPS THE BOT AND EXPLODES
-    public static final double maxAngularVelocity = 3;
+    public static final double maxAngularVelocity = 4.5;
 
     public static final NeutralMode angleNeutralMode = NeutralMode.Coast;
     public static final NeutralMode driveNeutralMode = NeutralMode.Brake;
