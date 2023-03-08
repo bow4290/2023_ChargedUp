@@ -13,7 +13,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-// import frc.robot.autos.*;
 import frc.robot.commands.swerve.*;
 import frc.robot.subsystems.*;
 import java.io.File;
@@ -21,20 +20,18 @@ import java.nio.file.Files;
 import java.util.HashMap;
 
 public class RobotContainer {
-  /* Subsystems */
   private final Swerve s_Swerve = new Swerve();
   private final Intake s_Intake = new Intake();
   private final Elbow s_Elbow = new Elbow();
   private final Elevator s_Elevator = new Elevator();
   private SwerveAutoBuilder autoBuilder;
+  private AutoCommands autoCommands = new AutoCommands(s_Swerve);
 
   SendableChooser<Command> chooser = new SendableChooser<>();
-  /** The container for the robot. Contains subsystems, IO devices, and commands. */
   public RobotContainer() {
     configureButtons();
     createAutoBuilder();
     putInfoInDashboard();
-
     // Create a server for PathPlanner so that the robot pathing can be viewed.
     PathPlannerServer.startServer(5811);
 
@@ -79,26 +76,12 @@ public class RobotContainer {
             s_Intake.pistonsConeCmd()));
 
     chooser.addOption("do nothing", new InstantCommand(() -> {}));
-    SmartDashboard.putData("choose auto " + (int) (Math.random() * 100), chooser);
+
+    SmartDashboard.putData("CHOOSE_AUTO", chooser);
 
     // DO NOT UNCOMMENT THE FOLLOWING LINES
     // robot.explode();
   }
-
-  /**
-   * build.gradle automatically records some information (date, git user, git commit, changed files)
-   * whenever the code is built.
-   */
-  private void putInfoInDashboard() {
-    var deployDir = Filesystem.getDeployDirectory();
-    var deployInfo = "Unable to find, for some reason";
-    try {
-      deployInfo = Files.readString(new File(deployDir, "info.txt").toPath());
-    } catch (Exception e) {
-    }
-    SmartDashboard.putString("Code Last Deployed", deployInfo);
-  }
-
   /* Controllers */
   // TODO: Detect if a gamepad is PS4/Logitech based on button count?
   private final int driverPort = 0;
@@ -176,23 +159,10 @@ public class RobotContainer {
     HashMap<String, Command> eventMap = new HashMap<>();
 
     eventMap.put(
-        "topCone",
-        new SequentialCommandGroup(
-            // s_Intake.pistonsConeCmd(),
-            s_Elevator.positionMaxCmd(),
-            s_Elbow.posDegCmd(45),
-            s_Intake.pistonsCubeCmd(),
-            s_Elbow.posDegCmd(0).alongWith(s_Elevator.positionBaseCmd()),
-            s_Intake.pistonsConeCmd()));
-    // WARNING: TOPCUBE IS UNTESTED
+        "topCone", autoCommands.topCone()
+        );
     eventMap.put(
-        "topCube",
-        new SequentialCommandGroup(
-            // s_Intake.pistonsCubeCmd(),
-            s_Elevator.positionMaxCmd(),
-            s_Elbow.posDegCmd(45),
-            s_Intake.spinEjectCmd().withTimeout(0.5),
-            s_Elbow.posDegCmd(0).alongWith(s_Elevator.positionBaseCmd())));
+        "topCube", autoCommands.topCube());
 
     eventMap.put("balance", new AutoBalance(s_Swerve));
     eventMap.put("balanceminus", new AutoBalanceMinus(s_Swerve));
@@ -219,9 +189,22 @@ public class RobotContainer {
   }
 
   private Command createAuto(String name) {
-    var pathGroup = PathPlanner.loadPathGroup(name, new PathConstraints(2.5, 2));
-    // THIS WAS NOT NECESSARY
-    return // new InstantCommand(s_Swerve::gyro180).andThen
-    (autoBuilder.fullAuto(pathGroup));
+    var pathGroup = PathPlanner.loadPathGroup(name, new PathConstraints(3, 2));
+    return autoBuilder.fullAuto(pathGroup).andThen(new InstantCommand(s_Swerve::gyroFlip180));
   }
+
+  /**
+   * build.gradle automatically records some information (date, git user, git commit, changed files)
+   * whenever the code is built.
+   */
+  private void putInfoInDashboard() {
+    var deployDir = Filesystem.getDeployDirectory();
+    var deployInfo = "Unable to find, for some reason";
+    try {
+      deployInfo = Files.readString(new File(deployDir, "info.txt").toPath());
+    } catch (Exception e) {
+    }
+    SmartDashboard.putString("Code Last Deployed", deployInfo);
+  }
+
 }

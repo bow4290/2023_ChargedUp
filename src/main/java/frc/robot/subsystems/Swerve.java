@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.sensors.Pigeon2;
 import com.ctre.phoenix.sensors.Pigeon2.AxisDirection;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -12,6 +13,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.*;
@@ -85,11 +87,20 @@ public class Swerve extends SubsystemBase {
     }
   }
 
-  public void lockChargeStation() {
+  public void lockModules() {
     for (SwerveModule mod : mSwerveMods) {
       mod.setDesiredState(
-          new SwerveModuleState(0, new Rotation2d(45 * (mod.moduleNumber / 2) * 2 - 1)), false);
+          new SwerveModuleState(0,
+                  new Rotation2d(
+                          90 * Math.ceil((mod.moduleNumber % 3)/2) - 45
+                          )
+          ), false
+      );
     }
+  }
+
+  public Command lockModulesCommand() {
+    return run(this::lockModules);
   }
 
   public Pose2d getPose() {
@@ -120,8 +131,8 @@ public class Swerve extends SubsystemBase {
     gyro.setYaw(0);
   }
 
-  public void gyro180() {
-    gyro.setYaw(180);
+  public void gyroFlip180() {
+    gyro.setYaw(gyro.getYaw() + 180);
   }
 
   public Rotation2d getYaw() {

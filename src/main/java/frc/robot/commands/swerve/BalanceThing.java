@@ -22,7 +22,7 @@ public class BalanceThing extends PIDCommand {
             swerve.drive(
                 new Translation2d(output * rot.getCos(), output * rot.getSin()), 0, false, true);
           } else {
-            swerve.lockChargeStation();
+            swerve.lockModules();
           }
         },
         swerve);
