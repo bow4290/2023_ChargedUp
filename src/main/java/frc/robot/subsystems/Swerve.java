@@ -94,6 +94,10 @@ public class Swerve extends SubsystemBase {
     }
   }
 
+  public void lockModules(Boolean input) {
+    lockModules(); // Make lockModules possible to use in FunctionalCommands
+  }
+
   public Command lockModulesCommand() {
     return run(this::lockModules);
   }
@@ -136,10 +140,6 @@ public class Swerve extends SubsystemBase {
         : Rotation2d.fromDegrees(gyro.getYaw());
   }
 
-  public double getPitch() {
-    return gyro.getPitch();
-  }
-
   public void resetModulesToAbsolute() {
     for (SwerveModule mod : mSwerveMods) {
       mod.resetToAbsolute();
@@ -150,15 +150,19 @@ public class Swerve extends SubsystemBase {
     return runOnce(this::resetModulesToAbsolute);
   }
 
-  public double getTiltMagnitude() {
+  public double[] getGravity() {
     double[] grav = new double[3];
     gyro.getGravityVector(grav);
+    return grav;
+  }
+
+  public double getTiltMagnitude() {
+    double[] grav = getGravity();
     return Math.sqrt(grav[0] * grav[0] + grav[1] * grav[1]);
   }
 
   public Rotation2d getTiltDirection() {
-    double[] grav = new double[3];
-    gyro.getGravityVector(grav);
+    double[] grav = getGravity();
     return new Rotation2d(grav[0], grav[1]);
   }
 
@@ -186,19 +190,20 @@ public class Swerve extends SubsystemBase {
     SwerveModulePosition[] poses = getModulePositions();
     swerveOdometry.update(yaw, poses);
 
-    int modNumber = 0;
+    int modNumber = -1;
     for (SwerveModulePosition p : poses) {
+      SwerveModule mod = mSwerveMods[modNumber];
       modNumber++;
       double dist = p.distanceMeters;
-      SmartDashboard.putNumber(
-          "Mod " + modNumber + " Cancoder", mSwerveMods[modNumber - 1].getCanCoder().getDegrees());
+      SmartDashboard.putNumber("Mod " + modNumber + " Cancoder", mod.getCanCoder().getDegrees());
       SmartDashboard.putNumber(
           /* Bad estimate, only for graphing/etc */
           "Mod " + modNumber + " Est. Velocity",
-          (dist - previousDistances[modNumber - 1]) * (1.0 / Robot.kDefaultPeriod));
+          (dist - previousDistances[modNumber]) * (1.0 / Robot.kDefaultPeriod));
       SmartDashboard.putNumber("Mod " + modNumber + " distance", dist);
       SmartDashboard.putNumber("Mod " + modNumber + " Angle", p.angle.getDegrees());
-      previousDistances[modNumber - 1] = dist;
+      SmartDashboard.putNumber("Mod " + modNumber + " Drive current", mod.getDriveCurrent());
+      previousDistances[modNumber] = dist;
     }
 
     Optional<Vision.PoseEstimate> poseEst = vision.getEstimatedPose();
@@ -210,13 +215,10 @@ public class Swerve extends SubsystemBase {
     SmartDashboard.putNumber("Turning velocity", getBadAngularVelocityEstimate(yaw));
 
     SmartDashboard.putNumber("Gyro yaw", yaw.getDegrees());
-    // SmartDashboard.putNumber("Gyro pitch", getPitch());
 
     SmartDashboard.putNumber("Robot X", pose.getX());
     SmartDashboard.putNumber("Robot Y", pose.getY());
 
     SmartDashboard.putNumber("Time since last vision measurement", vision.lastVisionTime());
-
-    // SmartDashboard.putNumber("Gravity", getTiltMagnitude());
   }
 }

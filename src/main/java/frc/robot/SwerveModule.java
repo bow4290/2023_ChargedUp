@@ -143,4 +143,8 @@ public class SwerveModule {
             Constants.Swerve.driveGearRatio),
         getAngle());
   }
+
+  public double getDriveCurrent() {
+    return mDriveMotor.getSupplyCurrent();
+  }
 }

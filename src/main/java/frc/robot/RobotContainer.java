@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.swerve.*;
 import frc.robot.subsystems.*;
 import java.io.File;
@@ -64,17 +63,8 @@ public class RobotContainer {
     chooser.addOption("auto third cube node BALAncE", createAuto("thirdcubepath plus balance"));
     chooser.addOption("auto third cube node", createAuto("thirdcubepath"));
 
-    // chooser.addOption("AUTO MID CUBE AND BALANCE FROM INTERIOR", createAuto("cubebalancd"));
-
-    chooser.addOption(
-        "stationary 3rd cone",
-        new SequentialCommandGroup(
-            // s_Intake.pistonsConeCmd(),
-            s_Elevator.positionMaxCmd(),
-            s_Elbow.posDegCmd(45),
-            s_Intake.pistonsCubeCmd(),
-            s_Elbow.posDegCmd(0).alongWith(s_Elevator.positionBaseCmd()),
-            s_Intake.pistonsConeCmd()));
+    chooser.addOption("Stationary third level cone", autoCommands.topCone());
+    chooser.addOption("Stationary third level cube", autoCommands.topCube());
 
     chooser.addOption("do nothing", new InstantCommand(() -> {}));
 
@@ -112,6 +102,8 @@ public class RobotContainer {
 
     // Temporarily disabled while it still needs to be fixed-ish
     // driver.cross_a.whileTrue(new GoToNearestScoringLocation(s_Swerve));
+    driver.cross_a.whileTrue(autoCommands.attemptBalance());
+    driver.circle_b.whileTrue(s_Swerve.lockModulesCommand());
 
     driver.square_x.whileTrue(new AutoBalance(s_Swerve));
   }
