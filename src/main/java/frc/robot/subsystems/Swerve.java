@@ -2,7 +2,6 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.sensors.Pigeon2;
 import com.ctre.phoenix.sensors.Pigeon2.AxisDirection;
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -90,12 +89,8 @@ public class Swerve extends SubsystemBase {
   public void lockModules() {
     for (SwerveModule mod : mSwerveMods) {
       mod.setDesiredState(
-          new SwerveModuleState(0,
-                  new Rotation2d(
-                          90 * Math.ceil((mod.moduleNumber % 3)/2) - 45
-                          )
-          ), false
-      );
+          new SwerveModuleState(0, new Rotation2d(90 * Math.ceil((mod.moduleNumber % 3) / 2) - 45)),
+          false);
     }
   }
 

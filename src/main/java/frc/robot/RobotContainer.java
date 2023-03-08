@@ -25,9 +25,10 @@ public class RobotContainer {
   private final Elbow s_Elbow = new Elbow();
   private final Elevator s_Elevator = new Elevator();
   private SwerveAutoBuilder autoBuilder;
-  private AutoCommands autoCommands = new AutoCommands(s_Swerve);
+  private AutoCommands autoCommands = new AutoCommands(s_Swerve, s_Intake, s_Elbow, s_Elevator);
 
   SendableChooser<Command> chooser = new SendableChooser<>();
+
   public RobotContainer() {
     configureButtons();
     createAutoBuilder();
@@ -158,11 +159,8 @@ public class RobotContainer {
   private void createAutoBuilder() {
     HashMap<String, Command> eventMap = new HashMap<>();
 
-    eventMap.put(
-        "topCone", autoCommands.topCone()
-        );
-    eventMap.put(
-        "topCube", autoCommands.topCube());
+    eventMap.put("topCone", autoCommands.topCone());
+    eventMap.put("topCube", autoCommands.topCube());
 
     eventMap.put("balance", new AutoBalance(s_Swerve));
     eventMap.put("balanceminus", new AutoBalanceMinus(s_Swerve));
@@ -206,5 +204,4 @@ public class RobotContainer {
     }
     SmartDashboard.putString("Code Last Deployed", deployInfo);
   }
-
 }
