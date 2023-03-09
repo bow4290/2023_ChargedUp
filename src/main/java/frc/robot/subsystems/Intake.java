@@ -13,71 +13,42 @@ import frc.robot.Constants;
 import java.util.List;
 
 public class Intake extends SubsystemBase {
-  private final CANSparkMax leftIntake;
-  private final CANSparkMax rightIntake;
-  private final DoubleSolenoid solenoid;
+  private final CANSparkMax intake;
 
   public double lastPowerSet = 0;
 
-  public enum IntakePistonStatus {
-    Cone,
-    Cube
-  }
+  private final SparkMaxPIDController PID;
 
-  public IntakePistonStatus status;
-
-  private final SparkMaxPIDController leftPID;
-  private final SparkMaxPIDController rightPID;
-
-  private final RelativeEncoder leftPos;
-  private final RelativeEncoder rightPos;
+  private final RelativeEncoder pos;
 
   public Intake() {
-    leftIntake = new CANSparkMax(Constants.Intake.leftIntakeID, MotorType.kBrushless);
-    rightIntake = new CANSparkMax(Constants.Intake.rightIntakeID, MotorType.kBrushless);
+    intake = new CANSparkMax(Constants.Intake.leftIntakeID, MotorType.kBrushless);
 
-    leftPID = leftIntake.getPIDController();
-    rightPID = rightIntake.getPIDController();
+    PID = intake.getPIDController();
 
-    leftPos = leftIntake.getEncoder();
-    rightPos = rightIntake.getEncoder();
+    pos = intake.getEncoder();
+    intake.restoreFactoryDefaults();
+    intake.setInverted(false);
+    intake.enableVoltageCompensation(11);
+    intake.setIdleMode(IdleMode.kBrake);
+    // Prevent smoking bot?
+    intake.setSmartCurrentLimit(8);
 
-    List.of(leftIntake, rightIntake)
-        .forEach(
-            motor -> {
-              motor.restoreFactoryDefaults();
-              motor.setInverted(false);
-              motor.enableVoltageCompensation(11);
-              motor.setIdleMode(IdleMode.kBrake);
-              // Prevent smoking bot?
-              motor.setSmartCurrentLimit(5);
-            });
+    PID.setP(0.1); // Probably needs to be tuned or something!
+    // Edit: it did not actually need to be tuned, it works decently well
+    PID.setOutputRange(-0.3, 0.3);
 
-    List.of(leftPID, rightPID)
-        .forEach(
-            pid -> {
-              pid.setP(0.1); // Probably needs to be tuned or something!
-              pid.setOutputRange(-0.3, 0.3);
-            });
-
-    solenoid =
-        new DoubleSolenoid(
-            Constants.Intake.pneumaticType,
-            Constants.Intake.solenoidPortForward,
-            Constants.Intake.solenoidPortReverse);
 
     setDefaultCommand(retainPositionCmd());
   }
 
   public void spin(double intakeSpeed) {
     lastPowerSet = intakeSpeed;
-    leftIntake.set(intakeSpeed);
-    rightIntake.set(-intakeSpeed);
+    intake.set(intakeSpeed);
   }
 
   public void stayAtPosition() {
-    leftPID.setReference(leftPos.getPosition(), CANSparkMax.ControlType.kPosition);
-    rightPID.setReference(rightPos.getPosition(), CANSparkMax.ControlType.kPosition);
+    PID.setReference(pos.getPosition(), CANSparkMax.ControlType.kPosition);
   }
 
   public Command retainPositionCmd() {
@@ -86,25 +57,6 @@ public class Intake extends SubsystemBase {
 
   public void stopSpinning() {
     spin(0);
-  }
-
-  public void setSolenoid(IntakePistonStatus status) {
-    DoubleSolenoid.Value solenoidValue =
-        status == IntakePistonStatus.Cone
-            ? DoubleSolenoid.Value.kForward
-            : DoubleSolenoid.Value.kReverse;
-    this.status = status;
-
-    solenoid.set(solenoidValue);
-    System.out.println("SOLENOID " + solenoidValue.toString());
-  }
-
-  public Command pistonsCubeCmd() {
-    return runOnce(() -> setSolenoid(IntakePistonStatus.Cube));
-  }
-
-  public Command pistonsConeCmd() {
-    return runOnce(() -> setSolenoid(IntakePistonStatus.Cone));
   }
 
   public Command spinInCmd() {
