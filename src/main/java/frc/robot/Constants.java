@@ -165,24 +165,42 @@ public final class Constants {
     public static final double stopSpeed = 0;
   }
 
-  public static final class Arm {
-    public static final int armPivotID = 9;
-    public static final int armPivot2ID = 11;
+  public static final class Elbow {
+    public static final int elbowPivotID = 9;
+    public static final int elbowPivot2ID = 11;
+
+    // Previously used for teleop. Currently not used
     public static final double frontSpeed = 0.1;
     public static final double backSpeed = -0.1;
     public static final double stopSpeed = 0;
 
+    // motion magic stuff
+    public static final double motionVelocity = 8000;
+    public static final double motionAcceleration = 8000;
+    public static final int motionSmoothing = 3;
+
+    public static final double kP = 0.4;
+    public static final double kD = 5;
+    public static final double kF = 0.04;
+
+    // These are approximated, not actually measured!
+    // Also, as previously mentioned the degree values are inaccurate
+    public static final double forwardLimit = 50;
+    public static final double backwardLimit = -95;
+
     // 512/7 ratio, according to build
     // Testing determined the ratio is probably closer to 1024/7 so just use that
+    // Further testing determined that is not the actual gear ratio so be aware that it is an
+    // approximation
     public static final double gearRatio = 1024 / 7;
     public static final double talonCPR = 2048;
     public static final double ticksPerDegree = gearRatio * talonCPR / 360;
     public static final double degreesPerTick = 1 / ticksPerDegree;
 
-    public static final double armDeadband = 0.02;
-    // I hate this language.
-    public static double rotationEps = 1.0 * ticksPerDegree;
-    public static double velocityEps = 5.0 * ticksPerDegree;
+    public static double rotationEps = 0.5 * ticksPerDegree;
+    public static double velocityEps = 1 * ticksPerDegree;
+
+    public static final double autoTimeout = 2;
   }
 
   public static final class Elevator {
@@ -198,7 +216,7 @@ public final class Constants {
     public static final double base = 0;
     public static final double middle = 50000;
     public static final double max = 82000;
-    public static final double revolutionsPerMeter = 40 * 2048; // (APPROXIMATE, DO NOT USE)
+    public static final double revolutionsPerMeter = 40 * 2048; // (VERY APPROXIMATE, DO NOT USE)
     public static final double metersPerRevolution = 1 / revolutionsPerMeter;
   }
 

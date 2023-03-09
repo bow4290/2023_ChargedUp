@@ -116,9 +116,10 @@ public class RobotContainer {
     // Pistons to cube, intake spin out (eject)
     operator.circle_b.whileTrue(s_Intake.pistonsCubeCmd().andThen(s_Intake.spinEjectCmd()));
     // Arm to vertical, elevator to base
-    operator.cross_a.whileTrue(s_Elbow.posDegCmd(0).alongWith(s_Elevator.positionBaseCmd()));
+    operator.cross_a.whileTrue(s_Elbow.posManualDegCmd(0).alongWith(s_Elevator.positionBaseCmd()));
     // Intake position from battery side
-    operator.dpadDown.whileTrue(s_Elbow.posDegCmd(-87).alongWith(s_Elevator.positionBaseCmd()));
+    operator.dpadDown.whileTrue(
+        s_Elbow.posManualDegCmd(-87).alongWith(s_Elevator.positionBaseCmd()));
     // Elevator to base
     operator.dpadLeft.whileTrue(s_Elevator.positionBaseCmd());
     // Elevator to mid
@@ -126,18 +127,18 @@ public class RobotContainer {
     // Elevator to max
     operator.dpadRight.whileTrue(s_Elevator.positionMaxCmd());
     // Arm back battery side for 2nd row
-    operator.leftBumper.whileTrue(s_Elbow.posDegCmd(-44));
+    operator.leftBumper.whileTrue(s_Elbow.posManualDegCmd(-44));
     // Arm out front side for 3rd row
-    operator.leftTriggerB.whileTrue(s_Elbow.posDegCmd(42));
+    operator.leftTriggerB.whileTrue(s_Elbow.posManualDegCmd(42));
     // Arm out battery side, slightly less?
-    operator.rightBumper.whileTrue(s_Elbow.posDegCmd(-48));
+    operator.rightBumper.whileTrue(s_Elbow.posManualDegCmd(-48));
     // Arm out battery side for human ramp?
-    operator.rightTriggerB.whileTrue(s_Elbow.posDegCmd(-46.5));
+    operator.rightTriggerB.whileTrue(s_Elbow.posManualDegCmd(-46.5));
     // Arm out front side for human ramp?
-    operator.rightJoystickPushed.whileTrue(s_Elbow.posDegCmd(50));
+    operator.rightJoystickPushed.whileTrue(s_Elbow.posManualDegCmd(50));
     // Intake but slightly lower
     operator.leftJoystickPushed.whileTrue(
-        s_Elbow.posDegCmd(-88).alongWith(s_Elevator.positionBaseCmd()));
+        s_Elbow.posManualDegCmd(-88).alongWith(s_Elevator.positionBaseCmd()));
     // Pistons to cone
     operator.leftMiddle.onTrue(s_Intake.pistonsConeCmd());
     // Pistons to cube

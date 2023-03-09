@@ -15,22 +15,24 @@ public class Elbow extends SubsystemBase {
   private double mmPosition;
 
   public double degreesToTicks(double degrees) {
-    return degrees * Constants.Arm.ticksPerDegree;
+    return degrees * Constants.Elbow.ticksPerDegree;
   }
 
   public Elbow() {
-    elbowPivot = new TalonFX(Constants.Arm.armPivotID);
+    elbowPivot = new TalonFX(Constants.Elbow.elbowPivotID);
+
     elbowPivot.configFactoryDefault();
     elbowPivot.configForwardSoftLimitEnable(true);
-    elbowPivot.configForwardSoftLimitThreshold(degreesToTicks(50));
+    elbowPivot.configForwardSoftLimitThreshold(degreesToTicks(Constants.Elbow.forwardLimit));
     elbowPivot.configReverseSoftLimitEnable(true);
-    elbowPivot.configReverseSoftLimitThreshold(degreesToTicks(-95));
+    elbowPivot.configReverseSoftLimitThreshold(degreesToTicks(Constants.Elbow.backwardLimit));
 
-    elbowPivot.config_kP(0, 0.5);
-    elbowPivot.config_kD(0, 5);
-    elbowPivot.config_kF(0, 0.04);
-    elbowPivot.configMotionAcceleration(8000);
-    elbowPivot.configMotionCruiseVelocity(6000);
+    elbowPivot.config_kP(0, Constants.Elbow.kP);
+    elbowPivot.config_kD(0, Constants.Elbow.kD);
+    elbowPivot.config_kF(0, Constants.Elbow.kF);
+    elbowPivot.configMotionAcceleration(Constants.Elbow.motionAcceleration);
+    elbowPivot.configMotionCruiseVelocity(Constants.Elbow.motionVelocity);
+    elbowPivot.configMotionSCurveStrength(Constants.Elbow.motionSmoothing);
 
     elbowPivot.setStatusFramePeriod(
         StatusFrame.Status_1_General, 5); // This might make following more accurate?
@@ -38,7 +40,7 @@ public class Elbow extends SubsystemBase {
     elbowPivot.setInverted(true);
     elbowPivot.setNeutralMode(NeutralMode.Brake);
 
-    elbowPivot2 = new TalonFX(Constants.Arm.armPivot2ID);
+    elbowPivot2 = new TalonFX(Constants.Elbow.elbowPivot2ID);
     elbowPivot2.configFactoryDefault();
     elbowPivot2.follow(elbowPivot);
     elbowPivot2.setInverted(
@@ -54,7 +56,8 @@ public class Elbow extends SubsystemBase {
 
     SmartDashboard.putData("Arm", this);
 
-    setDefaultCommand(retainPositionCmd());
+    setDefaultCommand(
+        retainPositionCmd()); // Note that because of command groups this doesn't happen in auto
   }
 
   // SmartDashboard stuff
@@ -87,48 +90,56 @@ public class Elbow extends SubsystemBase {
   }
 
   public void retainPosition() {
-    // move(0); // THIS IS ONLY FOR TEST PURPOSES TO SEE IF BOTH FALCONS CAN BRAKE
+    // move(0); // This was for testing, to put falcons into coast
     elbowPivot.set(ControlMode.MotionMagic, getPosition());
   }
 
   public Command retainPositionCmd() {
     return startEnd(
         () -> {
-          move(0);
+          move(0); // This is necessary, otherwise there are weird issues for some reason with armr
           retainPosition();
         },
         () -> move(0));
-  }
-
-  public Command moveCmd(DoubleSupplier speed) {
-    return runEnd(() -> move(speed.getAsDouble()), () -> move(0));
-  }
-
-  public Command posCmd(double position) {
-    return startEnd(() -> pos(position), this::retainPosition)
-        .beforeStarting(() -> mmPosition = position)
-        .until(
-            () ->
-                (Math.abs(getPosition() - mmPosition) < Constants.Arm.rotationEps)
-                    && (Math.abs(elbowPivot.getSelectedSensorVelocity())
-                        < Constants.Arm.velocityEps))
-        .withTimeout(2.5);
-  }
-
-  public Command posDegCmd(double positionDeg) {
-    return posCmd(degreesToTicks(positionDeg));
   }
 
   public void resetToZero() {
     elbowPivot.setSelectedSensorPosition(0);
   }
 
-  public double posdegrees() {
-    return getPosition() * Constants.Arm.degreesPerTick;
+  public double posDegrees() {
+    return getPosition() * Constants.Elbow.degreesPerTick;
+  }
+
+  public Command moveCmd(DoubleSupplier speed) {
+    return runEnd(() -> move(speed.getAsDouble()), () -> move(0));
+  }
+
+  public Command posManualCmd(double position) {
+    return startEnd(() -> pos(position), this::retainPosition);
+  }
+
+  public Command posManualDegCmd(double positionDeg) {
+    return posManualCmd(degreesToTicks(positionDeg));
+  }
+
+  public Command posAutoCmd(double position) {
+    return runOnce(() -> pos(position))
+        .until(this::atPosition)
+        .withTimeout(Constants.Elbow.autoTimeout);
+  }
+
+  public Command posAutoDegCmd(double positionDeg) {
+    return posAutoCmd(degreesToTicks(positionDeg));
+  }
+
+  public Boolean atPosition() {
+    return Math.abs(elbowPivot.getClosedLoopError()) < Constants.Elbow.rotationEps
+        && Math.abs(elbowPivot.getSelectedSensorVelocity()) < Constants.Elbow.velocityEps;
   }
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("elbow pos", posdegrees());
+    SmartDashboard.putNumber("elbow pos", posDegrees());
   }
 }
