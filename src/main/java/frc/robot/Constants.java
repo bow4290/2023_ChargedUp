@@ -200,18 +200,27 @@ public final class Constants {
     public static double rotationEps = 0.5 * ticksPerDegree;
     public static double velocityEps = 1 * ticksPerDegree;
 
-    public static final double autoTimeout = 2;
+    public static final double autoTimeout = 2.5;
   }
 
   public static final class Elevator {
-    public static double positionEps = 200.0;
-    public static double velocityEps = 100.0;
+    public static double positionEps = 250;
+    public static double velocityEps = 250;
     public static final int elevatorMotorID = 10;
+    // Values previously used in teleop
     public static final double extendSpeed = 0.3;
     public static final double retractSpeed = -0.3;
     public static final double stopSpeed = 0;
-
     public static final double elevatorDeadband = 0.03;
+    // Motion magic stuff
+    public static final double motionVelocity = 11000;
+    public static final double motionAcceleration = 11000;
+    public static final int motionSmoothing = 3;
+    public static final double kP = 0.3;
+    public static final double kD = 2;
+    public static final double kF = 0.058;
+
+    public static final double autoTimeout = 2;
     // 8740
     public static final double base = 0;
     public static final double middle = 50000;

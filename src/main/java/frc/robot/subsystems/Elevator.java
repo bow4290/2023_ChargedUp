@@ -17,13 +17,18 @@ public class Elevator extends SubsystemBase {
     elevatorMotor = new TalonFX(Constants.Elevator.elevatorMotorID);
 
     elevatorMotor.configFactoryDefault();
-    elevatorMotor.config_kP(0, 0.3);
-    elevatorMotor.config_kF(0, 0.058);
-    elevatorMotor.config_kD(0, 2);
-    elevatorMotor.configMotionAcceleration(10000);
-    elevatorMotor.configMotionCruiseVelocity(10000);
+
+    elevatorMotor.config_kP(0, Constants.Elevator.kP);
+    elevatorMotor.config_kD(0, Constants.Elevator.kD);
+    elevatorMotor.config_kF(0, Constants.Elevator.kF);
+
+    elevatorMotor.configMotionAcceleration(Constants.Elevator.motionAcceleration);
+    elevatorMotor.configMotionCruiseVelocity(Constants.Elevator.motionVelocity);
+    elevatorMotor.configMotionSCurveStrength(Constants.Elevator.motionSmoothing);
+
     elevatorMotor.setInverted(false);
     elevatorMotor.setNeutralMode(NeutralMode.Brake);
+
     setDefaultCommand(moveCmd(0));
 
     SmartDashboard.putData("Elevator", this);
@@ -47,33 +52,31 @@ public class Elevator extends SubsystemBase {
   }
 
   public void pos(double position) {
-    mmPosition = position;
     elevatorMotor.set(ControlMode.MotionMagic, position);
   }
 
-  private double mmPosition;
-
-  public Command positionCmd(double posi) {
-    return run(() -> pos(posi))
-        .beforeStarting(() -> mmPosition = posi)
-        .until(
-            () ->
-                (Math.abs(getPosition() - mmPosition) < Constants.Elevator.positionEps)
-                    && (Math.abs(elevatorMotor.getSelectedSensorVelocity())
-                        < Constants.Elevator.velocityEps))
-        .withTimeout(2.5);
+  public Command posBaseAutoCmd() {
+    return posAutoCmd(Constants.Elevator.base);
   }
 
-  public Command positionBaseCmd() {
-    return positionCmd(Constants.Elevator.base);
+  public Command posMidAutoCmd() {
+    return posAutoCmd(Constants.Elevator.middle);
   }
 
-  public Command positionMidCmd() {
-    return positionCmd(Constants.Elevator.middle);
+  public Command posMaxAutoCmd() {
+    return posAutoCmd(Constants.Elevator.max);
   }
 
-  public Command positionMaxCmd() {
-    return positionCmd(Constants.Elevator.max);
+  public Command posBaseManualCmd() {
+    return posManualCmd(Constants.Elevator.base);
+  }
+
+  public Command posMidManualCmd() {
+    return posManualCmd(Constants.Elevator.middle);
+  }
+
+  public Command posMaxManualCmd() {
+    return posManualCmd(Constants.Elevator.max);
   }
 
   public Command moveCmd(DoubleSupplier speed) {
@@ -90,6 +93,35 @@ public class Elevator extends SubsystemBase {
 
   public double getPosition() {
     return elevatorMotor.getSelectedSensorPosition();
+  }
+
+  public void retainPosition() {
+    // move(0); // This was for testing, to put falcons into coast
+    elevatorMotor.set(ControlMode.MotionMagic, getPosition());
+  }
+
+  public Command retainPositionCmd() {
+    return startEnd(
+        () -> {
+          move(0); // This is necessary, otherwise there are weird issues for some reason
+          retainPosition();
+        },
+        () -> move(0));
+  }
+
+  public Command posManualCmd(double position) {
+    return startEnd(() -> pos(position), this::retainPosition);
+  }
+
+  public Command posAutoCmd(double position) {
+    return startEnd(() -> pos(position), () -> {})
+        .until(this::atPosition)
+        .withTimeout(Constants.Elevator.autoTimeout);
+  }
+
+  public Boolean atPosition() {
+    return Math.abs(elevatorMotor.getClosedLoopError()) < Constants.Elevator.positionEps
+        && Math.abs(elevatorMotor.getSelectedSensorVelocity()) < Constants.Elevator.velocityEps;
   }
 
   @Override

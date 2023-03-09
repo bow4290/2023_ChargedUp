@@ -70,6 +70,8 @@ public class RobotContainer {
 
     SmartDashboard.putData("CHOOSE_AUTO", chooser);
 
+    SmartDashboard.putData(
+        "RESEND CHOOSER", new InstantCommand(() -> SmartDashboard.putData("CHOOSE_AUTO", chooser)));
     // DO NOT UNCOMMENT THE FOLLOWING LINES
     // robot.explode();
   }
@@ -116,16 +118,16 @@ public class RobotContainer {
     // Pistons to cube, intake spin out (eject)
     operator.circle_b.whileTrue(s_Intake.pistonsCubeCmd().andThen(s_Intake.spinEjectCmd()));
     // Arm to vertical, elevator to base
-    operator.cross_a.whileTrue(s_Elbow.posManualDegCmd(0).alongWith(s_Elevator.positionBaseCmd()));
+    operator.cross_a.whileTrue(s_Elbow.posManualDegCmd(0).alongWith(s_Elevator.posBaseManualCmd()));
     // Intake position from battery side
     operator.dpadDown.whileTrue(
-        s_Elbow.posManualDegCmd(-87).alongWith(s_Elevator.positionBaseCmd()));
+        s_Elbow.posManualDegCmd(-87).alongWith(s_Elevator.posBaseManualCmd()));
     // Elevator to base
-    operator.dpadLeft.whileTrue(s_Elevator.positionBaseCmd());
+    operator.dpadLeft.whileTrue(s_Elevator.posBaseManualCmd());
     // Elevator to mid
-    operator.dpadUp.whileTrue(s_Elevator.positionMidCmd());
+    operator.dpadUp.whileTrue(s_Elevator.posMidManualCmd());
     // Elevator to max
-    operator.dpadRight.whileTrue(s_Elevator.positionMaxCmd());
+    operator.dpadRight.whileTrue(s_Elevator.posMaxManualCmd());
     // Arm back battery side for 2nd row
     operator.leftBumper.whileTrue(s_Elbow.posManualDegCmd(-44));
     // Arm out front side for 3rd row
@@ -138,7 +140,7 @@ public class RobotContainer {
     operator.rightJoystickPushed.whileTrue(s_Elbow.posManualDegCmd(50));
     // Intake but slightly lower
     operator.leftJoystickPushed.whileTrue(
-        s_Elbow.posManualDegCmd(-88).alongWith(s_Elevator.positionBaseCmd()));
+        s_Elbow.posManualDegCmd(-88).alongWith(s_Elevator.posBaseManualCmd()));
     // Pistons to cone
     operator.leftMiddle.onTrue(s_Intake.pistonsConeCmd());
     // Pistons to cube

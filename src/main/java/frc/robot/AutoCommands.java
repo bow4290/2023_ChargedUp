@@ -26,12 +26,12 @@ public class AutoCommands {
   }
 
   public Command baseArmAndElevator() {
-    return s_Elbow.posAutoDegCmd(0).alongWith(s_Elevator.positionBaseCmd());
+    return s_Elbow.posAutoDegCmd(0).alongWith(s_Elevator.posBaseAutoCmd());
   }
 
   public Command topCone() {
     return Commands.sequence(
-        s_Elevator.positionMaxCmd(),
+        s_Elevator.posMaxAutoCmd(),
         s_Elbow.posAutoDegCmd(45),
         s_Intake.pistonsCubeCmd(),
         baseArmAndElevator(),
@@ -40,7 +40,7 @@ public class AutoCommands {
 
   public Command topCube() {
     return Commands.sequence(
-        s_Elevator.positionMaxCmd(),
+        s_Elevator.posMaxAutoCmd(),
         s_Elbow.posAutoDegCmd(45),
         s_Intake.spinEjectCmd().withTimeout(0.5),
         baseArmAndElevator());

@@ -124,7 +124,7 @@ public class Elbow extends SubsystemBase {
   }
 
   public Command posAutoCmd(double position) {
-    return run(() -> pos(position))
+    return startEnd(() -> pos(position), () -> {})
         .until(this::atPosition)
         .withTimeout(Constants.Elbow.autoTimeout);
   }
