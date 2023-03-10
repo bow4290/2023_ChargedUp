@@ -164,29 +164,41 @@ public final class Constants {
     public static final double stopSpeed = 0;
   }
 
-  public static final class Arm {
-    public static final int armPivotID = 9;
-    public static final int armPivot2ID = 11;
-    public static final double frontSpeed = 0.1;
-    public static final double backSpeed = -0.1;
-    public static final double stopSpeed = 0;
+  public static final class Elbow {
+    public static final int elbowPivotID = 9;
+    public static final int elbowPivot2ID = 11;
+
+    public static final double motionVelocity = 8000;
+    public static final double motionAcceleration = 8000;
+    public static final int motionSmoothing = 3;
 
     // 512/7 ratio, according to build
     // Testing determined the ratio is probably closer to 1024/7 so just use that
+    // Further testing discovered that is not the actual gear ratio so be aware that it is an
+    // approximation
     public static final double gearRatio = 1024 / 7;
     public static final double talonCPR = 2048;
     public static final double ticksPerDegree = gearRatio * talonCPR / 360;
     public static final double degreesPerTick = 1 / ticksPerDegree;
 
-    public static final double armDeadband = 0.02;
-    // I hate this language.
+    public static final double elbowDeadband = 0.02;
+    // No forward declaration/usage :(
     public static double rotationEps = 1.0 * ticksPerDegree;
     public static double velocityEps = 5.0 * ticksPerDegree;
+
+    public static final double kP = 0.5;
+    public static final double kD = 5;
+    public static final double kF = 0.04;
+
+    public static double forwardLimit = 50;
+    public static double backwardLimit = -95;
+
+    public static double autoTimeout = 2.5;
   }
 
   public static final class Elevator {
-    public static double positionEps = 200.0;
-    public static double velocityEps = 100.0;
+    public static double positionEps = 250.0;
+    public static double velocityEps = 250.0;
     public static final int elevatorMotorID = 10;
     public static final double extendSpeed = 0.3;
     public static final double retractSpeed = -0.3;
@@ -199,6 +211,16 @@ public final class Constants {
     public static final double max = 82000;
     public static final double revolutionsPerMeter = 40 * 2048; // (APPROXIMATE, DO NOT USE)
     public static final double metersPerRevolution = 1 / revolutionsPerMeter;
+
+    // Motion magic stuff
+    public static final double motionVelocity = 11000;
+    public static final double motionAcceleration = 11000;
+    public static final int motionSmoothing = 3;
+    public static final double kP = 0.3;
+    public static final double kD = 2;
+    public static final double kF = 0.058;
+
+    public static final double autoTimeout = 2;
   }
 
   public static final

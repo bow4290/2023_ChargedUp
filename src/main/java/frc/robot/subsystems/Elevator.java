@@ -17,11 +17,15 @@ public class Elevator extends SubsystemBase {
     elevatorMotor = new TalonFX(Constants.Elevator.elevatorMotorID);
 
     elevatorMotor.configFactoryDefault();
-    elevatorMotor.config_kP(0, 0.3);
-    elevatorMotor.config_kF(0, 0.058);
-    elevatorMotor.config_kD(0, 2);
-    elevatorMotor.configMotionAcceleration(10000);
-    elevatorMotor.configMotionCruiseVelocity(10000);
+
+    elevatorMotor.config_kP(0, Constants.Elevator.kP);
+    elevatorMotor.config_kD(0, Constants.Elevator.kD);
+    elevatorMotor.config_kF(0, Constants.Elevator.kF);
+
+    elevatorMotor.configMotionAcceleration(Constants.Elevator.motionAcceleration);
+    elevatorMotor.configMotionCruiseVelocity(Constants.Elevator.motionVelocity);
+    elevatorMotor.configMotionSCurveStrength(Constants.Elevator.motionSmoothing);
+
     elevatorMotor.setInverted(false);
     elevatorMotor.setNeutralMode(NeutralMode.Brake);
     setDefaultCommand(moveCmd(0));

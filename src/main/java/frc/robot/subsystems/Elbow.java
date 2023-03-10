@@ -15,22 +15,23 @@ public class Elbow extends SubsystemBase {
   private double mmPosition;
 
   public double degreesToTicks(double degrees) {
-    return degrees * Constants.Arm.ticksPerDegree;
+    return degrees * Constants.Elbow.ticksPerDegree;
   }
 
   public Elbow() {
-    elbowPivot = new TalonFX(Constants.Arm.armPivotID);
+    elbowPivot = new TalonFX(Constants.Elbow.elbowPivotID);
     elbowPivot.configFactoryDefault();
     elbowPivot.configForwardSoftLimitEnable(true);
-    elbowPivot.configForwardSoftLimitThreshold(degreesToTicks(50));
+    elbowPivot.configForwardSoftLimitThreshold(degreesToTicks(Constants.Elbow.forwardLimit));
     elbowPivot.configReverseSoftLimitEnable(true);
-    elbowPivot.configReverseSoftLimitThreshold(degreesToTicks(-95));
+    elbowPivot.configReverseSoftLimitThreshold(degreesToTicks(Constants.Elbow.backwardLimit));
 
-    elbowPivot.config_kP(0, 0.5);
-    elbowPivot.config_kD(0, 5);
-    elbowPivot.config_kF(0, 0.04);
-    elbowPivot.configMotionAcceleration(8000);
-    elbowPivot.configMotionCruiseVelocity(6000);
+    elbowPivot.config_kP(0, Constants.Elbow.kP);
+    elbowPivot.config_kD(0, Constants.Elbow.kD);
+    elbowPivot.config_kF(0, Constants.Elbow.kF);
+    elbowPivot.configMotionCruiseVelocity(Constants.Elbow.motionVelocity);
+    elbowPivot.configMotionAcceleration(Constants.Elbow.motionAcceleration);
+    elbowPivot.configMotionSCurveStrength(Constants.Elbow.motionSmoothing);
 
     elbowPivot.setStatusFramePeriod(
         StatusFrame.Status_1_General, 5); // This might make following more accurate?
@@ -38,7 +39,7 @@ public class Elbow extends SubsystemBase {
     elbowPivot.setInverted(true);
     elbowPivot.setNeutralMode(NeutralMode.Brake);
 
-    elbowPivot2 = new TalonFX(Constants.Arm.armPivot2ID);
+    elbowPivot2 = new TalonFX(Constants.Elbow.elbowPivot2ID);
     elbowPivot2.configFactoryDefault();
     elbowPivot2.follow(elbowPivot);
     elbowPivot2.setInverted(
@@ -54,6 +55,7 @@ public class Elbow extends SubsystemBase {
 
     SmartDashboard.putData("Arm", this);
 
+    // Note that because of command groups this doesn't happen in auto
     setDefaultCommand(retainPositionCmd());
   }
 
@@ -68,7 +70,7 @@ public class Elbow extends SubsystemBase {
     builder.addDoubleProperty("Pos", this::getPosition, null);
     builder.addDoubleProperty("Target Vel", elbowPivot::getActiveTrajectoryVelocity, null);
     builder.addDoubleProperty("Vel", elbowPivot::getSelectedSensorVelocity, null);
-    builder.addDoubleProperty("Degrees", () -> getPosition() * Constants.Arm.degreesPerTick, null);
+    builder.addDoubleProperty("Degrees", () -> getPosition() * Constants.Elbow.degreesPerTick, null);
 
     */
   }
@@ -103,10 +105,10 @@ public class Elbow extends SubsystemBase {
         .beforeStarting(() -> mmPosition = pos)
         .until(
             () ->
-                (Math.abs(getPosition() - mmPosition) < Constants.Arm.rotationEps)
+                (Math.abs(getPosition() - mmPosition) < Constants.Elbow.rotationEps)
                     && (Math.abs(elbowPivot.getSelectedSensorVelocity())
-                        < Constants.Arm.velocityEps))
-        .withTimeout(2.5);
+                        < Constants.Elbow.velocityEps))
+        .withTimeout(Constants.Elbow.autoTimeout);
   }
 
   public Command goToDeg(double deg) {
@@ -118,7 +120,7 @@ public class Elbow extends SubsystemBase {
   }
 
   public double getPositionDegrees() {
-    return getPosition() * Constants.Arm.degreesPerTick;
+    return getPosition() * Constants.Elbow.degreesPerTick;
   }
 
   @Override
