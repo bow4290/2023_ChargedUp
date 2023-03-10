@@ -70,6 +70,8 @@ public class RobotContainer {
     chooser.addOption("do nothing", new InstantCommand(() -> {}));
 
     SmartDashboard.putData("CHOOSE_AUTO", chooser);
+    SmartDashboard.putData(
+        "RESEND CHOOSER", new InstantCommand(() -> SmartDashboard.putData("CHOOSE_AUTO", chooser)));
 
     // DO NOT UNCOMMENT THE FOLLOWING LINES
     // robot.explode();

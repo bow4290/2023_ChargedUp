@@ -58,14 +58,15 @@ public class Elevator extends SubsystemBase {
   private double mmPosition;
 
   public Command positionCmd(double pos) {
-    return run(() -> position(pos))
+    return startEnd(() -> position(pos), () -> {})
         .beforeStarting(() -> mmPosition = pos)
-        .until(
-            () ->
-                (Math.abs(getPosition() - mmPosition) < Constants.Elevator.positionEps)
-                    && (Math.abs(elevatorMotor.getSelectedSensorVelocity())
-                        < Constants.Elevator.velocityEps))
-        .withTimeout(2.5);
+        .until(this::isFinished)
+        .withTimeout(Constants.Elevator.autoTimeout);
+  }
+
+  public boolean isFinished() {
+    return (Math.abs(getPosition() - mmPosition) < Constants.Elevator.positionEps)
+        && (Math.abs(elevatorMotor.getSelectedSensorVelocity()) < Constants.Elevator.velocityEps);
   }
 
   public Command goToBase() {

@@ -101,14 +101,15 @@ public class Elbow extends SubsystemBase {
   }
 
   public Command positionCmd(double pos) {
-    return startEnd(() -> position(pos), this::retainPosition)
+    return startEnd(() -> position(pos), () -> {})
         .beforeStarting(() -> mmPosition = pos)
-        .until(
-            () ->
-                (Math.abs(getPosition() - mmPosition) < Constants.Elbow.rotationEps)
-                    && (Math.abs(elbowPivot.getSelectedSensorVelocity())
-                        < Constants.Elbow.velocityEps))
+        .until(this::isFinished)
         .withTimeout(Constants.Elbow.autoTimeout);
+  }
+
+  public boolean isFinished() {
+    return (Math.abs(getPosition() - mmPosition) < Constants.Elbow.rotationEps)
+        && (Math.abs(elbowPivot.getSelectedSensorVelocity()) < Constants.Elbow.velocityEps);
   }
 
   public Command goToDeg(double deg) {
