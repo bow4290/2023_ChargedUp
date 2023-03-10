@@ -46,16 +46,16 @@ public class Elevator extends SubsystemBase {
     elevatorMotor.set(ControlMode.PercentOutput, speed);
   }
 
-  public void pos(double position) {
-    mmPosition = position;
-    elevatorMotor.set(ControlMode.MotionMagic, position);
+  public void position(double pos) {
+    mmPosition = pos;
+    elevatorMotor.set(ControlMode.MotionMagic, pos);
   }
 
   private double mmPosition;
 
-  public Command positionCmd(double posi) {
-    return run(() -> pos(posi))
-        .beforeStarting(() -> mmPosition = posi)
+  public Command positionCmd(double pos) {
+    return run(() -> position(pos))
+        .beforeStarting(() -> mmPosition = pos)
         .until(
             () ->
                 (Math.abs(getPosition() - mmPosition) < Constants.Elevator.positionEps)
@@ -64,15 +64,15 @@ public class Elevator extends SubsystemBase {
         .withTimeout(2.5);
   }
 
-  public Command positionBaseCmd() {
+  public Command goToBase() {
     return positionCmd(Constants.Elevator.base);
   }
 
-  public Command positionMidCmd() {
+  public Command goToMid() {
     return positionCmd(Constants.Elevator.middle);
   }
 
-  public Command positionMaxCmd() {
+  public Command goToMax() {
     return positionCmd(Constants.Elevator.max);
   }
 

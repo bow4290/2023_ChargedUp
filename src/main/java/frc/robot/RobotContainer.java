@@ -6,6 +6,7 @@ import com.pathplanner.lib.auto.PIDConstants;
 import com.pathplanner.lib.auto.SwerveAutoBuilder;
 import com.pathplanner.lib.server.PathPlannerServer;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -105,7 +106,7 @@ public class RobotContainer {
     driver.cross_a.whileTrue(autoCommands.attemptBalance());
     driver.circle_b.whileTrue(s_Swerve.lockModulesCommand());
 
-    driver.square_x.whileTrue(new AutoBalance(s_Swerve));
+    driver.square_x.whileTrue(new AutoBalance(s_Swerve, new Rotation2d(0, 1)));
   }
 
   private void operatorConfiguration() {
@@ -116,28 +117,29 @@ public class RobotContainer {
     // Pistons to cube, intake spin out (eject)
     operator.circle_b.whileTrue(s_Intake.pistonsCubeCmd().andThen(s_Intake.spinEjectCmd()));
     // Arm to vertical, elevator to base
-    operator.cross_a.whileTrue(s_Elbow.posDegCmd(0).alongWith(s_Elevator.positionBaseCmd()));
+    operator.cross_a.whileTrue(s_Elbow.goToDeg(0).alongWith(s_Elevator.goToBase()));
     // Intake position from battery side
-    operator.dpadDown.whileTrue(s_Elbow.posDegCmd(-87).alongWith(s_Elevator.positionBaseCmd()));
+    operator.dpadDown.whileTrue(s_Elbow.goToDeg(-87).alongWith(s_Elevator.goToBase()));
     // Elevator to base
-    operator.dpadLeft.whileTrue(s_Elevator.positionBaseCmd());
+    operator.dpadLeft.whileTrue(s_Elevator.goToBase());
     // Elevator to mid
-    operator.dpadUp.whileTrue(s_Elevator.positionMidCmd());
+    operator.dpadUp.whileTrue(s_Elevator.goToMid());
     // Elevator to max
-    operator.dpadRight.whileTrue(s_Elevator.positionMaxCmd());
+    operator.dpadRight.whileTrue(s_Elevator.goToMax());
     // Arm back battery side for 2nd row
-    operator.leftBumper.whileTrue(s_Elbow.posDegCmd(-44));
+    operator.leftBumper.whileTrue(
+        s_Elbow.goToDeg(-34).alongWith(s_Elevator.goToMid()).andThen(s_Elbow.goToDeg(-44)));
     // Arm out front side for 3rd row
-    operator.leftTriggerB.whileTrue(s_Elbow.posDegCmd(42));
-    // Arm out battery side, slightly less?
-    operator.rightBumper.whileTrue(s_Elbow.posDegCmd(-48));
-    // Arm out battery side for human ramp?
-    operator.rightTriggerB.whileTrue(s_Elbow.posDegCmd(-46.5));
-    // Arm out front side for human ramp?
-    operator.rightJoystickPushed.whileTrue(s_Elbow.posDegCmd(50));
+    operator.leftTriggerB.whileTrue(
+        s_Elbow.goToDeg(35).alongWith(s_Elevator.goToMax()).andThen(s_Elbow.goToDeg(45)));
+    // Arm out battery side, human player double (platform)
+    operator.rightBumper.whileTrue(s_Elbow.goToDeg(-48));
+    // Arm out battery side, human player single (ramp)
+    operator.rightTriggerB.whileTrue(s_Elbow.goToDeg(-46.5));
+    // Arm out front side, human player single (ramp)
+    operator.rightJoystickPushed.whileTrue(s_Elbow.goToDeg(50));
     // Intake but slightly lower
-    operator.leftJoystickPushed.whileTrue(
-        s_Elbow.posDegCmd(-88).alongWith(s_Elevator.positionBaseCmd()));
+    operator.leftJoystickPushed.whileTrue(s_Elbow.goToDeg(-88).alongWith(s_Elevator.goToBase()));
     // Pistons to cone
     operator.leftMiddle.onTrue(s_Intake.pistonsConeCmd());
     // Pistons to cube
@@ -154,8 +156,8 @@ public class RobotContainer {
     eventMap.put("topCone", autoCommands.topCone());
     eventMap.put("topCube", autoCommands.topCube());
 
-    eventMap.put("balance", new AutoBalance(s_Swerve));
-    eventMap.put("balanceminus", new AutoBalanceMinus(s_Swerve));
+    eventMap.put("balance", new AutoBalance(s_Swerve, new Rotation2d(0, 1)));
+    eventMap.put("balanceminus", new AutoBalance(s_Swerve, new Rotation2d(0, -1)));
 
     var thetaController =
         new ProfiledPIDController(
@@ -180,7 +182,7 @@ public class RobotContainer {
 
   private Command createAuto(String name) {
     var pathGroup = PathPlanner.loadPathGroup(name, new PathConstraints(3, 2));
-    return autoBuilder.fullAuto(pathGroup).andThen(new InstantCommand(s_Swerve::gyroFlip180));
+    return autoBuilder.fullAuto(pathGroup);
   }
 
   /**

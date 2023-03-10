@@ -81,32 +81,26 @@ public class Elbow extends SubsystemBase {
     elbowPivot.set(ControlMode.PercentOutput, speed);
   }
 
-  public void pos(double pos) {
+  public void position(double pos) {
     mmPosition = pos;
     elbowPivot.set(ControlMode.MotionMagic, pos);
   }
 
   public void retainPosition() {
-    // move(0); // THIS IS ONLY FOR TEST PURPOSES TO SEE IF BOTH FALCONS CAN BRAKE
     elbowPivot.set(ControlMode.MotionMagic, getPosition());
   }
 
   public Command retainPositionCmd() {
-    return startEnd(
-        () -> {
-          move(0);
-          retainPosition();
-        },
-        () -> move(0));
+    return startEnd(this::retainPosition, () -> move(0));
   }
 
   public Command moveCmd(DoubleSupplier speed) {
     return runEnd(() -> move(speed.getAsDouble()), () -> move(0));
   }
 
-  public Command posCmd(double position) {
-    return startEnd(() -> pos(position), this::retainPosition)
-        .beforeStarting(() -> mmPosition = position)
+  public Command positionCmd(double pos) {
+    return startEnd(() -> position(pos), this::retainPosition)
+        .beforeStarting(() -> mmPosition = pos)
         .until(
             () ->
                 (Math.abs(getPosition() - mmPosition) < Constants.Arm.rotationEps)
@@ -115,20 +109,20 @@ public class Elbow extends SubsystemBase {
         .withTimeout(2.5);
   }
 
-  public Command posDegCmd(double positionDeg) {
-    return posCmd(degreesToTicks(positionDeg));
+  public Command goToDeg(double deg) {
+    return positionCmd(degreesToTicks(deg));
   }
 
   public void resetToZero() {
     elbowPivot.setSelectedSensorPosition(0);
   }
 
-  public double posdegrees() {
+  public double getPositionDegrees() {
     return getPosition() * Constants.Arm.degreesPerTick;
   }
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("elbow pos", posdegrees());
+    SmartDashboard.putNumber("elbow pos", getPositionDegrees());
   }
 }

@@ -26,13 +26,12 @@ public class AutoCommands {
   }
 
   public Command baseArmAndElevator() {
-    return s_Elbow.posDegCmd(0).alongWith(s_Elevator.positionBaseCmd());
+    return s_Elbow.goToDeg(0).alongWith(s_Elevator.goToBase());
   }
 
   public Command topCone() {
     return Commands.sequence(
-        s_Elevator.positionMaxCmd(),
-        s_Elbow.posDegCmd(45),
+        s_Elbow.goToDeg(35).alongWith(s_Elevator.goToMax()).andThen(s_Elbow.goToDeg(45)),
         s_Intake.pistonsCubeCmd(),
         baseArmAndElevator(),
         s_Intake.pistonsConeCmd());
@@ -40,8 +39,7 @@ public class AutoCommands {
 
   public Command topCube() {
     return Commands.sequence(
-        s_Elevator.positionMaxCmd(),
-        s_Elbow.posDegCmd(45),
+        s_Elevator.goToMax().alongWith(s_Elbow.goToDeg(45)),
         s_Intake.spinEjectCmd().withTimeout(0.5),
         baseArmAndElevator());
   }
@@ -57,7 +55,7 @@ public class AutoCommands {
           measurer.addMeasurement(magnitude);
           SmartDashboard.putNumber("mag rate", measurer.getRate());
           if (magnitude > 0.05 || measurer.getRate() < 0.5) {
-            s_Swerve.drive(new Translation2d(rot.getCos(), rot.getSin()), 0, false, true);
+            s_Swerve.drive(new Translation2d(rot.getCos(), rot.getSin()), 0, false, false);
           } else {
             s_Swerve.lockModules();
           }

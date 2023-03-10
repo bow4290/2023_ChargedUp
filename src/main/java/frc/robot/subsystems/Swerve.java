@@ -1,7 +1,7 @@
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.sensors.Pigeon2;
 import com.ctre.phoenix.sensors.Pigeon2.AxisDirection;
+import com.ctre.phoenix.sensors.WPI_Pigeon2;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -21,12 +21,12 @@ import java.util.Optional;
 public class Swerve extends SubsystemBase {
   public SwerveDrivePoseEstimator swerveOdometry;
   public SwerveModule[] mSwerveMods;
-  public Pigeon2 gyro;
+  public WPI_Pigeon2 gyro;
 
   private Vision vision = new Vision();
 
   public Swerve() {
-    gyro = new Pigeon2(Constants.Swerve.pigeonID);
+    gyro = new WPI_Pigeon2(Constants.Swerve.pigeonID);
     gyro.configFactoryDefault();
     gyro.configMountPose(AxisDirection.NegativeY, AxisDirection.PositiveZ);
     zeroGyro();
@@ -56,6 +56,7 @@ public class Swerve extends SubsystemBase {
 
   public void drive(
       Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop) {
+    var speeds = new ChassisSpeeds(translation.getX(), translation.getY(), rotation);
     // fieldRelative: When true, the positional inputs are oriented to the field.
     // Pressing up moves the robot up relative to the field, regardless of the robot's rotation.
     // When false, think of it like strafing. Pressing up will move the robot forward,
@@ -66,9 +67,8 @@ public class Swerve extends SubsystemBase {
     SwerveModuleState[] swerveModuleStates =
         Constants.Swerve.swerveKinematics.toSwerveModuleStates(
             fieldRelative
-                ? ChassisSpeeds.fromFieldRelativeSpeeds(
-                    translation.getX(), translation.getY(), rotation, getYaw())
-                : new ChassisSpeeds(translation.getX(), translation.getY(), rotation));
+                ? ChassisSpeeds.fromFieldRelativeSpeeds(speeds, getPose().getRotation())
+                : speeds);
     // Normalizes wheel speeds by the max (wheel) speed.
     SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.Swerve.maxSpeed);
 
@@ -135,9 +135,7 @@ public class Swerve extends SubsystemBase {
   }
 
   public Rotation2d getYaw() {
-    return (Constants.Swerve.invertGyro)
-        ? Rotation2d.fromDegrees(360 - gyro.getYaw())
-        : Rotation2d.fromDegrees(gyro.getYaw());
+    return gyro.getRotation2d();
   }
 
   public void resetModulesToAbsolute() {
@@ -185,15 +183,12 @@ public class Swerve extends SubsystemBase {
   @Override
   public void periodic() {
     Rotation2d yaw = getYaw();
-    Pose2d pose = getPose();
-
     SwerveModulePosition[] poses = getModulePositions();
     swerveOdometry.update(yaw, poses);
 
-    int modNumber = -1;
+    int modNumber = 0;
     for (SwerveModulePosition p : poses) {
       SwerveModule mod = mSwerveMods[modNumber];
-      modNumber++;
       double dist = p.distanceMeters;
       SmartDashboard.putNumber("Mod " + modNumber + " Cancoder", mod.getCanCoder().getDegrees());
       SmartDashboard.putNumber(
@@ -204,6 +199,7 @@ public class Swerve extends SubsystemBase {
       SmartDashboard.putNumber("Mod " + modNumber + " Angle", p.angle.getDegrees());
       SmartDashboard.putNumber("Mod " + modNumber + " Drive current", mod.getDriveCurrent());
       previousDistances[modNumber] = dist;
+      modNumber++;
     }
 
     Optional<Vision.PoseEstimate> poseEst = vision.getEstimatedPose();
@@ -216,6 +212,7 @@ public class Swerve extends SubsystemBase {
 
     SmartDashboard.putNumber("Gyro yaw", yaw.getDegrees());
 
+    Pose2d pose = getPose();
     SmartDashboard.putNumber("Robot X", pose.getX());
     SmartDashboard.putNumber("Robot Y", pose.getY());
 
