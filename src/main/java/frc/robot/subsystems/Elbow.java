@@ -89,6 +89,7 @@ public class Elbow extends SubsystemBase {
   }
 
   public void retainPosition() {
+    move(0);
     elbowPivot.set(ControlMode.MotionMagic, getPosition());
   }
 

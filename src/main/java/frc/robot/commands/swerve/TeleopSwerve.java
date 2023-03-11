@@ -41,6 +41,7 @@ public class TeleopSwerve extends CommandBase {
 
     /* Drive */
     s_Swerve.drive(
+        // Intentionally flipped (I think?)
         new Translation2d(forwardBackwardVal, leftRightVal).times(Constants.Swerve.maxSpeed),
         rotationVal * Constants.Swerve.maxAngularVelocity,
         !robotCentricSup.getAsBoolean(),

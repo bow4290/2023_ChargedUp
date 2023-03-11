@@ -66,6 +66,7 @@ public class RobotContainer {
 
     chooser.addOption("Stationary third level cone", autoCommands.topCone());
     chooser.addOption("Stationary third level cube", autoCommands.topCube());
+    chooser.addOption("5th cone + pickup", createAuto("5th cone + pickup"));
 
     chooser.addOption("do nothing", new InstantCommand(() -> {}));
 
@@ -95,9 +96,18 @@ public class RobotContainer {
     s_Swerve.setDefaultCommand(
         new TeleopSwerve(
             s_Swerve,
-            () -> -driver.leftY.getAsDouble(),
-            () -> -driver.leftX.getAsDouble(),
-            () -> -driver.rightX.getAsDouble(),
+            () -> {
+              double input = -driver.leftY.getAsDouble();
+              return Math.copySign(Math.pow(input, Constants.driveSens), input);
+            },
+            () -> {
+              double input = -driver.leftX.getAsDouble();
+              return Math.copySign(Math.pow(input, Constants.driveSens), input);
+            },
+            () -> {
+              double input = -driver.rightX.getAsDouble();
+              return Math.copySign(Math.pow(input, Constants.turnSens), input);
+            },
             driver.leftBumper::getAsBoolean));
 
     driver.triangle_y.onTrue(new InstantCommand(s_Swerve::zeroGyro));
@@ -129,11 +139,9 @@ public class RobotContainer {
     // Elevator to max
     operator.dpadRight.whileTrue(s_Elevator.goToMax());
     // Arm back battery side for 2nd row
-    operator.leftBumper.whileTrue(
-        s_Elbow.goToDeg(-34).alongWith(s_Elevator.goToMid()).andThen(s_Elbow.goToDeg(-44)));
+    operator.leftBumper.whileTrue(s_Elbow.goToDeg(-48).alongWith(s_Elevator.goToMid()));
     // Arm out front side for 3rd row
-    operator.leftTriggerB.whileTrue(
-        s_Elbow.goToDeg(35).alongWith(s_Elevator.goToMax()).andThen(s_Elbow.goToDeg(45)));
+    operator.leftTriggerB.whileTrue(s_Elbow.goToDeg(45).alongWith(s_Elevator.goToMax()));
     // Arm out battery side, human player double (platform)
     operator.rightBumper.whileTrue(s_Elbow.goToDeg(-48));
     // Arm out battery side, human player single (ramp)
@@ -158,8 +166,18 @@ public class RobotContainer {
     eventMap.put("topCone", autoCommands.topCone());
     eventMap.put("topCube", autoCommands.topCube());
 
-    eventMap.put("balance", new AutoBalance(s_Swerve, new Rotation2d(0, 1)));
-    eventMap.put("balanceminus", new AutoBalance(s_Swerve, new Rotation2d(0, -1)));
+    eventMap.put("balance", new AutoBalance(s_Swerve, new Rotation2d(0, -1)));
+    eventMap.put("balanceminus", new AutoBalance(s_Swerve, new Rotation2d(0, 1)));
+    eventMap.put(
+        "intake",
+        s_Intake
+            .pistonsCubeCmd()
+            .andThen(
+                s_Elbow
+                    .goToDeg(-87)
+                    .alongWith(s_Elevator.goToBase())
+                    .alongWith(s_Intake.spinInCmd().withTimeout(8))));
+    eventMap.put("intakeUp", s_Elbow.goToDeg(0).alongWith(s_Elevator.goToBase()));
 
     var thetaController =
         new ProfiledPIDController(

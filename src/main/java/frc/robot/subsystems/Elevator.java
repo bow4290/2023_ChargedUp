@@ -98,5 +98,7 @@ public class Elevator extends SubsystemBase {
   }
 
   @Override
-  public void periodic() {}
+  public void periodic() {
+    SmartDashboard.putNumber("Elevator Position", getPosition());
+  }
 }

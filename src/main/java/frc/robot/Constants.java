@@ -15,6 +15,8 @@ import frc.lib.util.SwerveModuleConstants;
 
 public final class Constants {
   public static final double stickDeadband = 0.1;
+  public static final double driveSens = 1.0;
+  public static final double turnSens = 1.0;
   public static final boolean enablePS5 = false;
 
   public static final class Limelight {
@@ -154,12 +156,11 @@ public final class Constants {
   public static final class Intake {
     public static final int leftIntakeID = 13;
     public static final int rightIntakeID = 12;
-    // TODO: these are placeholder values
-    public static final int solenoidPortForward = 0;
-    public static final int solenoidPortReverse = 2;
+    public static final int solenoidPortForward = 2;
+    public static final int solenoidPortReverse = 0;
     public static final PneumaticsModuleType pneumaticType = PneumaticsModuleType.CTREPCM;
 
-    public static final double inSpeed = -0.6;
+    public static final double inSpeed = -1;
     public static final double ejectSpeed = 0.3;
     public static final double stopSpeed = 0;
   }
@@ -168,8 +169,8 @@ public final class Constants {
     public static final int elbowPivotID = 9;
     public static final int elbowPivot2ID = 11;
 
-    public static final double motionVelocity = 8000;
-    public static final double motionAcceleration = 8000;
+    public static final double motionVelocity = 12000;
+    public static final double motionAcceleration = 10000;
     public static final int motionSmoothing = 3;
 
     // 512/7 ratio, according to build
@@ -208,14 +209,14 @@ public final class Constants {
     // 8740
     public static final double base = 0;
     public static final double middle = 50000;
-    public static final double max = 82000;
+    public static final double max = 81000;
     public static final double revolutionsPerMeter = 40 * 2048; // (APPROXIMATE, DO NOT USE)
     public static final double metersPerRevolution = 1 / revolutionsPerMeter;
 
     // Motion magic stuff
-    public static final double motionVelocity = 11000;
-    public static final double motionAcceleration = 11000;
-    public static final int motionSmoothing = 3;
+    public static final double motionVelocity = 15000;
+    public static final double motionAcceleration = 20000;
+    public static final int motionSmoothing = 1;
     public static final double kP = 0.3;
     public static final double kD = 2;
     public static final double kF = 0.058;

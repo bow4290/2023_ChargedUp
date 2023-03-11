@@ -90,7 +90,7 @@ public class Swerve extends SubsystemBase {
     for (SwerveModule mod : mSwerveMods) {
       mod.setDesiredState(
           new SwerveModuleState(0, new Rotation2d(90 * Math.ceil((mod.moduleNumber % 3) / 2) - 45)),
-          false);
+          true);
     }
   }
 

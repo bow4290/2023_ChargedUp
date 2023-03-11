@@ -31,7 +31,7 @@ public class AutoCommands {
 
   public Command topCone() {
     return Commands.sequence(
-        s_Elbow.goToDeg(35).alongWith(s_Elevator.goToMax()).andThen(s_Elbow.goToDeg(45)),
+        s_Elbow.goToDeg(45).alongWith(s_Elevator.goToMax()),
         s_Intake.pistonsCubeCmd(),
         baseArmAndElevator(),
         s_Intake.pistonsConeCmd());
@@ -54,8 +54,10 @@ public class AutoCommands {
           Rotation2d rot = new Rotation2d(grav[0], grav[1]);
           measurer.addMeasurement(magnitude);
           SmartDashboard.putNumber("mag rate", measurer.getRate());
-          if (magnitude > 0.05 || measurer.getRate() < 0.5) {
-            s_Swerve.drive(new Translation2d(rot.getCos(), rot.getSin()), 0, false, false);
+          if (magnitude > 0.08 && Math.abs(measurer.getRate()) < 0.4) {
+            double mult = 0.6;
+            s_Swerve.drive(
+                new Translation2d(mult * rot.getCos(), mult * rot.getSin()), 0, false, false);
           } else {
             s_Swerve.lockModules();
           }
