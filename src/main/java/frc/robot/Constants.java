@@ -167,6 +167,8 @@ public final class Constants {
   public static final class Elbow {
     public static final int elbowPivotID = 9;
     public static final int elbowPivot2ID = 11;
+    public static final int cancoderID = 5;
+    public static final double magnetOffset = 0;
 
     public static final double motionVelocity = 8000;
     public static final double motionAcceleration = 8000;
@@ -176,24 +178,27 @@ public final class Constants {
     // Testing determined the ratio is probably closer to 1024/7 so just use that
     // Further testing discovered that is not the actual gear ratio so be aware that it is an
     // approximation
-    public static final double gearRatio = 1024 / 7;
+    // Apparently it was a 128/1
+    // 1024/7 is approximately 146:1
+    // (128/1)/(10
+    public static final double gearRatio = 128/1;
     public static final double talonCPR = 2048;
     public static final double ticksPerDegree = gearRatio * talonCPR / 360;
     public static final double degreesPerTick = 1 / ticksPerDegree;
 
     public static final double elbowDeadband = 0.02;
     // No forward declaration/usage :(
-    public static double rotationEps = 1.0 * ticksPerDegree;
-    public static double velocityEps = 5.0 * ticksPerDegree;
+    public static final double rotationEps = 1.0 * ticksPerDegree;
+    public static final double velocityEps = 5.0 * ticksPerDegree;
 
     public static final double kP = 0.5;
     public static final double kD = 5;
     public static final double kF = 0.04;
 
-    public static double forwardLimit = 50;
-    public static double backwardLimit = -95;
+    public static final double forwardLimit = 50;
+    public static final double backwardLimit = -95;
 
-    public static double autoTimeout = 2.5;
+    public static final double autoTimeout = 2.5;
   }
 
   public static final class Elevator {

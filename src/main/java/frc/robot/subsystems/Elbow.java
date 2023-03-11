@@ -2,6 +2,10 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.ctre.phoenix.sensors.AbsoluteSensorRange;
+import com.ctre.phoenix.sensors.CANCoder;
+import com.ctre.phoenix.sensors.CANCoderConfiguration;
+import com.ctre.phoenix.sensors.SensorInitializationStrategy;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -10,6 +14,7 @@ import frc.robot.Constants;
 import java.util.function.DoubleSupplier;
 
 public class Elbow extends SubsystemBase {
+  private final CANCoder angleEncoder;
   private final TalonFX elbowPivot;
   private final TalonFX elbowPivot2;
   private double mmPosition;
@@ -19,6 +24,12 @@ public class Elbow extends SubsystemBase {
   }
 
   public Elbow() {
+    angleEncoder = new CANCoder(Constants.Elbow.cancoderID);
+    angleEncoder.configFactoryDefault();
+    angleEncoder.configAbsoluteSensorRange(AbsoluteSensorRange.Signed_PlusMinus180);
+    angleEncoder.configSensorInitializationStrategy(SensorInitializationStrategy.BootToZero); // Only for testing purposes
+    angleEncoder.configMagnetOffset(Constants.Elbow.magnetOffset);
+
     elbowPivot = new TalonFX(Constants.Elbow.elbowPivotID);
     elbowPivot.configFactoryDefault();
     elbowPivot.configForwardSoftLimitEnable(true);
@@ -75,6 +86,22 @@ public class Elbow extends SubsystemBase {
     */
   }
 
+  public void resetPositionToCancoder() {
+    double p = getAdjustedCancoderPosition();
+    elbowPivot.setSelectedSensorPosition(p);
+  }
+
+  public double getCancoderDegreesPosition() {
+    return angleEncoder.getPosition();
+  }
+
+  /**
+   * Get the cancoder position in falcon units adjusting for gear ratio
+   */
+  public double getAdjustedCancoderPosition() {
+    return (getCancoderDegreesPosition() * (4096 / 360)) * Constants.Elbow.gearRatio ;
+  }
+
   public double getPosition() {
     return elbowPivot.getSelectedSensorPosition();
   }
@@ -126,6 +153,9 @@ public class Elbow extends SubsystemBase {
 
   @Override
   public void periodic() {
+    double p = getCancoderDegreesPosition();
     SmartDashboard.putNumber("elbow pos", getPositionDegrees());
+    SmartDashboard.putNumber("estimated empirical gear ratio", (getPosition() * (360/4096) ) / p);
+    SmartDashboard.putNumber("can coder", p);
   }
 }
