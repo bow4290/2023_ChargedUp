@@ -49,20 +49,34 @@ public class RobotContainer {
     SmartDashboard.putData("Pistons to Cone", s_Intake.pistonsConeCmd().ignoringDisable(true));
     SmartDashboard.putData("Pistons to Cube", s_Intake.pistonsCubeCmd().ignoringDisable(true));
 
-    chooser.addOption("2nd cone", createAuto("2nd cone"));
-    chooser.addOption("5th cone", createAuto("5th cone"));
-    chooser.addOption("6th cone", createAuto("6th cone"));
-    chooser.addOption("1st cube", createAuto("1st cube"));
-    chooser.addOption("3rd cube", createAuto("3rd cube"));
+    var deployDir = Filesystem.getDeployDirectory();
 
-    chooser.addOption("2nd cone + balance", createAuto("2nd cone + balance"));
-    chooser.addOption("5th cone + balance", createAuto("5th cone + balance"));
-    chooser.addOption("6th cone + balance", createAuto("6th cone + balance"));
-    chooser.addOption("1st cube + balance", createAuto("1st cube + balance"));
-    chooser.addOption("3rd cube + balance", createAuto("3rd cube + balance"));
+    try {
+      // Automatically list all the paths and add them all!
+      Files.list(deployDir.toPath().resolve("pathplanner"))
+          .forEach(
+              file -> {
+                var name = file.getName(0).toString().replace(".path", "");
+                chooser.addOption(name, createAuto(name));
+              });
+    } catch (Exception e) {
+      // Add manually, even though this should literally never happen
+      // Maybe it will happen, though?
+      SmartDashboard.putString("WARNING", "UNABLE TO AUTOMATICALLY DO AUTOS");
+      chooser.addOption("2nd cone", createAuto("2nd cone"));
+      chooser.addOption("5th cone", createAuto("5th cone"));
+      chooser.addOption("6th cone", createAuto("6th cone"));
+      chooser.addOption("1st cube", createAuto("1st cube"));
+      chooser.addOption("3rd cube", createAuto("3rd cube"));
 
-    chooser.addOption("5th cone + pickup", createAuto("5th cone + pickup"));
+      chooser.addOption("2nd cone + balance", createAuto("2nd cone + balance"));
+      chooser.addOption("5th cone + balance", createAuto("5th cone + balance"));
+      chooser.addOption("6th cone + balance", createAuto("6th cone + balance"));
+      chooser.addOption("1st cube + balance", createAuto("1st cube + balance"));
+      chooser.addOption("3rd cube + balance", createAuto("3rd cube + balance"));
 
+      chooser.addOption("5th cone + pickup", createAuto("5th cone + pickup"));
+    }
     chooser.addOption("stationary cone", autoCommands.topCone());
     chooser.addOption("stationary cube", autoCommands.topCube());
 
