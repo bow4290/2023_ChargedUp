@@ -49,30 +49,28 @@ public class RobotContainer {
     SmartDashboard.putData("Pistons to Cone", s_Intake.pistonsConeCmd().ignoringDisable(true));
     SmartDashboard.putData("Pistons to Cube", s_Intake.pistonsCubeCmd().ignoringDisable(true));
 
-    chooser.addOption("auto second cone node from lodaing", createAuto("simplehumanpath"));
-    chooser.addOption("auto fifth cone node from loading", createAuto("simplefarhumanpath"));
-    chooser.addOption(
-        "auto second cone node from loading + BALANCE", createAuto("simplehumanpath plus balance"));
-    chooser.addOption(
-        "auto fifth cone node from loading + BALANCE",
-        createAuto("simplefarhumanpath plus balance"));
-    chooser.addOption("auto sixth cone node + BALANCE", createAuto("sixthconepath plus balance"));
-    chooser.addOption("auto sixth cone node", createAuto("sixthconepath"));
-    chooser.setDefaultOption(
-        "auto first cube node BALAncE", createAuto("firstcubepath plus balance"));
-    chooser.addOption("auto first cube node", createAuto("firstcubepath"));
-    chooser.addOption("auto third cube node BALAncE", createAuto("thirdcubepath plus balance"));
-    chooser.addOption("auto third cube node", createAuto("thirdcubepath"));
+    chooser.addOption("2nd cone", createAuto("2nd cone"));
+    chooser.addOption("5th cone", createAuto("5th cone"));
+    chooser.addOption("6th cone", createAuto("6th cone"));
+    chooser.addOption("1st cube", createAuto("1st cube"));
+    chooser.addOption("3rd cube", createAuto("3rd cube"));
 
-    chooser.addOption("Stationary third level cone", autoCommands.topCone());
-    chooser.addOption("Stationary third level cube", autoCommands.topCube());
+    chooser.addOption("2nd cone + balance", createAuto("2nd cone + balance"));
+    chooser.addOption("5th cone + balance", createAuto("5th cone + balance"));
+    chooser.addOption("6th cone + balance", createAuto("6th cone + balance"));
+    chooser.addOption("1st cube + balance", createAuto("1st cube + balance"));
+    chooser.addOption("3rd cube + balance", createAuto("3rd cube + balance"));
+
     chooser.addOption("5th cone + pickup", createAuto("5th cone + pickup"));
 
-    chooser.addOption("do nothing", new InstantCommand(() -> {}));
+    chooser.addOption("stationary cone", autoCommands.topCone());
+    chooser.addOption("stationary cube", autoCommands.topCube());
 
-    SmartDashboard.putData("CHOOSE_AUTO", chooser);
+    chooser.setDefaultOption("do nothing", new InstantCommand(() -> {}));
+
+    SmartDashboard.putData("CHOOSE AUTO", chooser);
     SmartDashboard.putData(
-        "RESEND CHOOSER", new InstantCommand(() -> SmartDashboard.putData("CHOOSE_AUTO", chooser)));
+        "RESEND CHOOSER", new InstantCommand(() -> SmartDashboard.putData("CHOOSE AUTO", chooser)));
 
     // DO NOT UNCOMMENT THE FOLLOWING LINES
     // robot.explode();
@@ -164,19 +162,20 @@ public class RobotContainer {
     HashMap<String, Command> eventMap = new HashMap<>();
 
     eventMap.put("topCone", autoCommands.topCone());
+    eventMap.put("topConeAbridged", autoCommands.topConeAbridged());
     eventMap.put("topCube", autoCommands.topCube());
 
     eventMap.put("balance", new AutoBalance(s_Swerve, new Rotation2d(0, -1)));
     eventMap.put("balanceminus", new AutoBalance(s_Swerve, new Rotation2d(0, 1)));
     eventMap.put(
-        "intake",
+        "intakeCube",
         s_Intake
             .pistonsCubeCmd()
             .andThen(
                 s_Elbow
                     .goToDeg(-87)
                     .alongWith(s_Elevator.goToBase())
-                    .alongWith(s_Intake.spinInCmd().withTimeout(8))));
+                    .alongWith(s_Intake.spinInCmd().withTimeout(5))));
     eventMap.put("intakeUp", s_Elbow.goToDeg(0).alongWith(s_Elevator.goToBase()));
 
     var thetaController =
