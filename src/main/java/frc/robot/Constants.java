@@ -106,7 +106,7 @@ public final class Constants {
     // Measured 2023-02-25
     public static final double maxSpeed = 4.0;
     // WARNING IF YOU TURN THIS TOO HIGH IT TIPS THE BOT AND EXPLODES
-    public static final double maxAngularVelocity = 4.5;
+    public static final double maxAngularVelocity = 5.0;
 
     public static final NeutralMode angleNeutralMode = NeutralMode.Coast;
     public static final NeutralMode driveNeutralMode = NeutralMode.Brake;
@@ -171,7 +171,7 @@ public final class Constants {
 
     public static final double motionVelocity = 12000;
     public static final double motionAcceleration = 10000;
-    public static final int motionSmoothing = 3;
+    public static final int motionSmoothing = 2;
 
     // 512/7 ratio, according to build
     // Testing determined the ratio is probably closer to 1024/7 so just use that
@@ -184,8 +184,9 @@ public final class Constants {
 
     public static final double elbowDeadband = 0.02;
     // No forward declaration/usage :(
-    public static double rotationEps = 1.0 * ticksPerDegree;
-    public static double velocityEps = 5.0 * ticksPerDegree;
+    // ^ not sure what you mean here..
+    public static double rotationEps = 2 * ticksPerDegree;
+    public static double velocityEps = 5 * ticksPerDegree;
 
     public static final double kP = 0.5;
     public static final double kD = 5;
@@ -198,8 +199,8 @@ public final class Constants {
   }
 
   public static final class Elevator {
-    public static double positionEps = 250.0;
-    public static double velocityEps = 250.0;
+    public static double positionEps = 1000;
+    public static double velocityEps = 4000;
     public static final int elevatorMotorID = 10;
     public static final double extendSpeed = 0.3;
     public static final double retractSpeed = -0.3;
@@ -210,13 +211,14 @@ public final class Constants {
     public static final double base = 0;
     public static final double middle = 50000;
     public static final double max = 81000;
+
     public static final double revolutionsPerMeter = 40 * 2048; // (APPROXIMATE, DO NOT USE)
     public static final double metersPerRevolution = 1 / revolutionsPerMeter;
 
     // Motion magic stuff
     public static final double motionVelocity = 15000;
     public static final double motionAcceleration = 20000;
-    public static final int motionSmoothing = 1;
+    public static final int motionSmoothing = 2;
     public static final double kP = 0.3;
     public static final double kD = 2;
     public static final double kF = 0.058;
