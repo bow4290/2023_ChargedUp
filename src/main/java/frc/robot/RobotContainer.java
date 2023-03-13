@@ -217,7 +217,7 @@ public class RobotContainer {
   }
 
   private Command createAuto(String name) {
-    var pathGroup = PathPlanner.loadPathGroup(name, new PathConstraints(3, 2));
+    var pathGroup = PathPlanner.loadPathGroup(name, new PathConstraints(4, 3));
     return autoBuilder.fullAuto(pathGroup);
   }
 
