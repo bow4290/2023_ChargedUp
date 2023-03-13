@@ -49,17 +49,21 @@ public class RobotContainer {
     var deployDir = Filesystem.getDeployDirectory();
 
     try {
+      System.out.println("PATH " + deployDir.toPath().resolve("pathplanner").toString());
       // Automatically list all the paths and add them all!
       Files.list(deployDir.toPath().resolve("pathplanner"))
+          .sorted()
+          .filter(file -> !file.toString().contains("unused"))
           .forEach(
               file -> {
-                var name = file.getName(0).toString().replace(".path", "");
+                var name = file.getName(file.getNameCount() - 1).toString().replace(".path", "");
                 chooser.addOption(name, createAuto(name));
               });
     } catch (Exception e) {
       // Add manually, even though this should literally never happen
       // Maybe it will happen, though?
       SmartDashboard.putString("WARNING", "UNABLE TO AUTOMATICALLY DO AUTOS");
+      e.printStackTrace();
       chooser.addOption("2nd cone", createAuto("2nd cone"));
       chooser.addOption("5th cone", createAuto("5th cone"));
       chooser.addOption("6th cone", createAuto("6th cone"));
