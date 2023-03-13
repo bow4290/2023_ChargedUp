@@ -179,6 +179,8 @@ public class RobotContainer {
     eventMap.put("topCone", autoCommands.topCone());
     eventMap.put("topConeAbridged", autoCommands.topConeAbridged());
     eventMap.put("topCube", autoCommands.topCube());
+    eventMap.put("topCubePreparation", autoCommands.topCube());
+    eventMap.put("eject", s_Intake.autoEjectCmd());
 
     eventMap.put("balance", new AutoBalance(s_Swerve, new Rotation2d(0, -1)));
     eventMap.put("balanceminus", new AutoBalance(s_Swerve, new Rotation2d(0, 1)));

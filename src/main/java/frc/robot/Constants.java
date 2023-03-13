@@ -177,8 +177,8 @@ public final class Constants {
     // Testing determined the ratio is probably closer to 1024/7 so just use that
     // Further testing discovered that is not the actual gear ratio so be aware that it is an
     // approximation
-    // Build also said that the gear ratio might be 128 / 1; this would be more accurate but it would mess
-    // up all the values that we had tuned so just leave it for now
+    // Build also said that the gear ratio might be 128 / 1; this would be more accurate but it
+    // would mess up all the values that we had tuned so just leave it for now
     public static final double gearRatio = 1024 / 7;
     public static final double talonCPR = 2048;
     public static final double ticksPerDegree = gearRatio * talonCPR / 360;

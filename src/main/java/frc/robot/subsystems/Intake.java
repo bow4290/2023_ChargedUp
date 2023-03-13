@@ -108,11 +108,15 @@ public class Intake extends SubsystemBase {
   }
 
   public Command spinInCmd() {
-    return runEnd(() -> spin(Constants.Intake.inSpeed), this::stopSpinning);
+    return runEnd(() -> spin(Constants.Intake.inSpeed), this::retainPositionCmd);
   }
 
   public Command spinEjectCmd() {
     return runEnd(() -> spin(Constants.Intake.ejectSpeed), this::stopSpinning);
+  }
+
+  public Command autoEjectCmd() {
+    return spinEjectCmd().withTimeout(0.5);
   }
 
   @Override

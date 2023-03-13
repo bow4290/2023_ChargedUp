@@ -45,10 +45,11 @@ public class AutoCommands {
   }
 
   public Command topCube() {
-    return Commands.sequence(
-        s_Elevator.goToMax().alongWith(s_Elbow.goToDeg(45)),
-        s_Intake.spinEjectCmd().withTimeout(0.5),
-        baseArmAndElevator());
+    return Commands.sequence(topCubePreparation(), s_Intake.autoEjectCmd(), baseArmAndElevator());
+  }
+
+  public Command topCubePreparation() {
+    return s_Elevator.goToMax().alongWith(s_Elbow.goToDeg(45));
   }
 
   public Command attemptBalance() {
