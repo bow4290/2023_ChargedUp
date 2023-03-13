@@ -46,9 +46,6 @@ public class RobotContainer {
               s_Elevator.resetToZero();
             }));
 
-    SmartDashboard.putData("Pistons to Cone", s_Intake.pistonsConeCmd().ignoringDisable(true));
-    SmartDashboard.putData("Pistons to Cube", s_Intake.pistonsCubeCmd().ignoringDisable(true));
-
     var deployDir = Filesystem.getDeployDirectory();
 
     try {
