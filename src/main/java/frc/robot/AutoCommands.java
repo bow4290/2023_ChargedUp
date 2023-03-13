@@ -61,7 +61,7 @@ public class AutoCommands {
           Rotation2d rot = new Rotation2d(grav[0], grav[1]);
           measurer.addMeasurement(magnitude);
           SmartDashboard.putNumber("mag rate", measurer.getRate());
-          if (magnitude > 0.08 && Math.abs(measurer.getRate()) < 0.4) {
+          if (magnitude > 0.1 && Math.abs(measurer.getRate()) < 0.3) {
             double mult = 0.6;
             s_Swerve.drive(
                 new Translation2d(mult * rot.getCos(), mult * rot.getSin()), 0, false, false);
