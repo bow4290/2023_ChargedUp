@@ -220,9 +220,9 @@ public class RobotContainer {
   private Command createAuto(String name) {
     var pathGroup = PathPlanner.loadPathGroup(name, new PathConstraints(4, 3));
     return Commands.sequence(
-        Commands.print("Starting auto: " + name),
+        Commands.print("Starting auto: " + name), // For debugging / looking through post-match logs
         autoBuilder.fullAuto(pathGroup),
-        Commands.runOnce(s_Swerve::gyroFlip180));
+        Commands.runOnce(s_Swerve::gyroFlip180)); // This is necessary because of the way the gyro starts in a match
   }
 
   /**

@@ -2,13 +2,13 @@
   "waypoints": [
     {
       "anchorPoint": {
-        "x": 1.8306575001775598,
-        "y": 3.86
+        "x": 1.8461180255693848,
+        "y": 1.61
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.8471038209437531,
-        "y": 5.279050205669855
+        "x": 1.7935229429486639,
+        "y": 0.03746022422600321
       },
       "holonomicAngle": 180.0,
       "isReversal": false,
@@ -26,16 +26,16 @@
     },
     {
       "anchorPoint": {
-        "x": 6.53821406774758,
-        "y": 4.597865601981204
+        "x": 6.538446019600373,
+        "y": 0.93
       },
       "prevControl": {
-        "x": 5.840618870473853,
-        "y": 4.582788731549686
+        "x": 6.910424997216871,
+        "y": 0.9735450481805006
       },
       "nextControl": {
-        "x": 7.147550493054511,
-        "y": 4.611034967781686
+        "x": 4.901387830553439,
+        "y": 0.7383607354020261
       },
       "holonomicAngle": 180.0,
       "isReversal": false,
@@ -51,39 +51,12 @@
     },
     {
       "anchorPoint": {
-        "x": 1.83,
-        "y": 4.42
+        "x": 1.85,
+        "y": 1.0598460033725619
       },
       "prevControl": {
-        "x": 1.8843320933169645,
-        "y": 4.956811094177744
-      },
-      "nextControl": {
-        "x": 1.7780854147676446,
-        "y": 3.9070743311915983
-      },
-      "holonomicAngle": 180.0,
-      "isReversal": false,
-      "velOverride": null,
-      "isLocked": false,
-      "isStopPoint": true,
-      "stopEvent": {
-        "names": [
-          "eject"
-        ],
-        "executionBehavior": "sequential",
-        "waitBehavior": "none",
-        "waitTime": 0
-      }
-    },
-    {
-      "anchorPoint": {
-        "x": 2.453773891922784,
-        "y": 3.3165055791917135
-      },
-      "prevControl": {
-        "x": 2.404194183388367,
-        "y": 3.575189883018654
+        "x": 2.0979597497389437,
+        "y": 0.47637111767279106
       },
       "nextControl": null,
       "holonomicAngle": 180.0,
@@ -93,7 +66,7 @@
       "isStopPoint": false,
       "stopEvent": {
         "names": [
-          "balanceminus"
+          "eject"
         ],
         "executionBehavior": "sequential",
         "waitBehavior": "none",
@@ -109,9 +82,21 @@
       ]
     },
     {
-      "position": 0.9886363636363651,
+      "position": 0.99,
       "names": [
         "topCubePreparation"
+      ]
+    },
+    {
+      "position": 0.01,
+      "names": [
+        "intakeCube"
+      ]
+    },
+    {
+      "position": 2.0,
+      "names": [
+        "eject"
       ]
     }
   ]
