@@ -162,7 +162,7 @@ public class RobotContainer {
     // Arm out front side, human player single (ramp) cone
     operator.rightJoystickPushed.whileTrue(s_Elbow.goToDeg(50));
     // Intake but slightly lower
-    operator.leftJoystickPushed.whileTrue(s_Elbow.goToDeg(-88).alongWith(s_Elevator.goToBase()));
+    operator.leftJoystickPushed.whileTrue(s_Elbow.goToDeg(-92).alongWith(s_Elevator.goToBase()));
     // Pistons to cone
     operator.leftMiddle.onTrue(s_Intake.pistonsConeCmd());
     // Pistons to cube

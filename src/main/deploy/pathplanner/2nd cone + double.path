@@ -41,7 +41,7 @@
       "isReversal": false,
       "velOverride": null,
       "isLocked": false,
-      "isStopPoint": false,
+      "isStopPoint": true,
       "stopEvent": {
         "names": [],
         "executionBehavior": "parallel",
@@ -85,7 +85,7 @@
       ]
     },
     {
-      "position": 1.3,
+      "position": 1.030303030303019,
       "names": [
         "topCubePreparation"
       ]
