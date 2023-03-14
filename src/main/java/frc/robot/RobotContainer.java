@@ -219,7 +219,10 @@ public class RobotContainer {
 
   private Command createAuto(String name) {
     var pathGroup = PathPlanner.loadPathGroup(name, new PathConstraints(4, 3));
-    return autoBuilder.fullAuto(pathGroup);
+    return Commands.sequence(
+        Commands.print("Starting auto: " + name),
+        autoBuilder.fullAuto(pathGroup),
+        Commands.runOnce(s_Swerve::gyroFlip180));
   }
 
   /**

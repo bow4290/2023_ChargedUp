@@ -7,8 +7,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.9092089295289703,
-        "y": 5.188762946970338
+        "x": 1.8471038209437531,
+        "y": 5.279050205669855
       },
       "holonomicAngle": 180.0,
       "isReversal": false,
@@ -30,12 +30,12 @@
         "y": 4.597865601981204
       },
       "prevControl": {
-        "x": 5.908812715194875,
-        "y": 4.585630141746395
+        "x": 5.840618870473853,
+        "y": 4.582788731549686
       },
       "nextControl": {
-        "x": 6.981621605414004,
-        "y": 4.60648537261393
+        "x": 7.147550493054511,
+        "y": 4.611034967781686
       },
       "holonomicAngle": 180.0,
       "isReversal": false,
@@ -55,8 +55,35 @@
         "y": 4.42
       },
       "prevControl": {
-        "x": 2.503643540273192,
-        "y": 4.9354715237208255
+        "x": 1.8843320933169645,
+        "y": 4.956811094177744
+      },
+      "nextControl": {
+        "x": 1.7780854147676446,
+        "y": 3.9070743311915983
+      },
+      "holonomicAngle": 180.0,
+      "isReversal": false,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": true,
+      "stopEvent": {
+        "names": [
+          "eject"
+        ],
+        "executionBehavior": "sequential",
+        "waitBehavior": "none",
+        "waitTime": 0
+      }
+    },
+    {
+      "anchorPoint": {
+        "x": 2.453773891922784,
+        "y": 3.3165055791917135
+      },
+      "prevControl": {
+        "x": 2.404194183388367,
+        "y": 3.575189883018654
       },
       "nextControl": null,
       "holonomicAngle": 180.0,
@@ -66,7 +93,7 @@
       "isStopPoint": false,
       "stopEvent": {
         "names": [
-          "eject"
+          "balanceminus"
         ],
         "executionBehavior": "sequential",
         "waitBehavior": "none",
@@ -74,21 +101,5 @@
       }
     }
   ],
-  "maxVelocity": 4.0,
-  "maxAcceleration": 3.0,
-  "isReversed": null,
-  "markers": [
-    {
-      "position": 0.01,
-      "names": [
-        "intakeCube"
-      ]
-    },
-    {
-      "position": 0.99,
-      "names": [
-        "topCubePreparation"
-      ]
-    }
-  ]
+  "markers": []
 }
