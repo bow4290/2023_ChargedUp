@@ -157,9 +157,9 @@ public class RobotContainer {
     operator.leftTriggerB.whileTrue(s_Elbow.goToDeg(45).alongWith(s_Elevator.goToMax()));
     // Arm out battery side, human player double (platform)
     operator.rightBumper.whileTrue(s_Elbow.goToDeg(-48));
-    // Arm out battery side, human player single (ramp)
+    // Arm out battery side, human player single (ramp) cube
     operator.rightTriggerB.whileTrue(s_Elbow.goToDeg(-46.5));
-    // Arm out front side, human player single (ramp)
+    // Arm out front side, human player single (ramp) cone
     operator.rightJoystickPushed.whileTrue(s_Elbow.goToDeg(50));
     // Intake but slightly lower
     operator.leftJoystickPushed.whileTrue(s_Elbow.goToDeg(-88).alongWith(s_Elevator.goToBase()));
