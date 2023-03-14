@@ -142,9 +142,9 @@ public class RobotContainer {
     // Pistons to cube, intake spin out (eject)
     operator.circle_b.whileTrue(s_Intake.pistonsCubeCmd().andThen(s_Intake.spinEjectCmd()));
     // Arm to vertical, elevator to base
-    operator.cross_a.whileTrue(s_Elbow.goToDeg(0).alongWith(s_Elevator.goToBase()));
+    operator.cross_a.whileTrue(s_Elbow.goToDegUnending(0).alongWith(s_Elevator.goToBase()));
     // Intake position from battery side
-    operator.dpadDown.whileTrue(s_Elbow.goToDeg(-87).alongWith(s_Elevator.goToBase()));
+    operator.dpadDown.whileTrue(s_Elbow.goToDegUnending(-87).alongWith(s_Elevator.goToBase()));
     // Elevator to base
     operator.dpadLeft.whileTrue(s_Elevator.goToBase());
     // Elevator to mid
@@ -152,17 +152,18 @@ public class RobotContainer {
     // Elevator to max
     operator.dpadRight.whileTrue(s_Elevator.goToMax());
     // Arm back battery side for 2nd row
-    operator.leftBumper.whileTrue(s_Elbow.goToDeg(-48).alongWith(s_Elevator.goToMid()));
+    operator.leftBumper.whileTrue(s_Elbow.goToDegUnending(-48).alongWith(s_Elevator.goToMid()));
     // Arm out front side for 3rd row
-    operator.leftTriggerB.whileTrue(s_Elbow.goToDeg(45).alongWith(s_Elevator.goToMax()));
+    operator.leftTriggerB.whileTrue(s_Elbow.goToDegUnending(45).alongWith(s_Elevator.goToMax()));
     // Arm out battery side, human player double (platform)
-    operator.rightBumper.whileTrue(s_Elbow.goToDeg(-48));
+    operator.rightBumper.whileTrue(s_Elbow.goToDegUnending(-48));
     // Arm out battery side, human player single (ramp) cube
-    operator.rightTriggerB.whileTrue(s_Elbow.goToDeg(-46.5));
+    operator.rightTriggerB.whileTrue(s_Elbow.goToDegUnending(-46.5));
     // Arm out front side, human player single (ramp) cone
-    operator.rightJoystickPushed.whileTrue(s_Elbow.goToDeg(50));
+    operator.rightJoystickPushed.whileTrue(s_Elbow.goToDegUnending(50));
     // Intake but slightly lower
-    operator.leftJoystickPushed.whileTrue(s_Elbow.goToDeg(-92).alongWith(s_Elevator.goToBase()));
+    operator.leftJoystickPushed.whileTrue(
+        s_Elbow.goToDegUnending(-92).alongWith(s_Elevator.goToBase()));
     // Pistons to cone
     operator.leftMiddle.onTrue(s_Intake.pistonsConeCmd());
     // Pistons to cube

@@ -185,10 +185,9 @@ public final class Constants {
     public static final double degreesPerTick = 1 / ticksPerDegree;
 
     public static final double elbowDeadband = 0.02;
-    // No forward declaration/usage :(
-    // ^ not sure what you mean here..
-    public static double rotationEps = 0.5 * ticksPerDegree;
-    public static double velocityEps = 0.5 * ticksPerDegree;
+
+    public static double rotationEps = 2 * ticksPerDegree;
+    public static double velocityEps = 6 * ticksPerDegree;
 
     public static final double kP = 0.5;
     public static final double kD = 5;

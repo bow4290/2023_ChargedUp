@@ -102,9 +102,12 @@ public class Elbow extends SubsystemBase {
   }
 
   public Command positionCmd(double pos) {
+    return unendingPositionCmd(pos).until(this::isFinished);
+  }
+
+  public Command unendingPositionCmd(double pos) {
     return startEnd(() -> position(pos), () -> {})
         .beforeStarting(() -> mmPosition = pos)
-        .until(this::isFinished)
         .withTimeout(Constants.Elbow.autoTimeout);
   }
 
@@ -115,6 +118,10 @@ public class Elbow extends SubsystemBase {
 
   public Command goToDeg(double deg) {
     return positionCmd(degreesToTicks(deg));
+  }
+
+  public Command goToDegUnending(double deg) {
+    return unendingPositionCmd(degreesToTicks(deg));
   }
 
   public void resetToZero() {
