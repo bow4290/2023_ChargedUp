@@ -101,5 +101,18 @@
       }
     }
   ],
-  "markers": []
+  "markers": [
+    {
+      "position": 0.01,
+      "names": [
+        "intakeCube"
+      ]
+    },
+    {
+      "position": 0.99,
+      "names": [
+        "topCubePreparation"
+      ]
+    }
+  ]
 }

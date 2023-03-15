@@ -183,6 +183,7 @@ public class RobotContainer {
     // TODO: Fix these in the paths
     eventMap.put("topCubePreparation", autoCommands.baseArmAndElevator());
     eventMap.put("eject", autoCommands.topCube());
+    eventMap.put("baseArmAndElevator", autoCommands.baseArmAndElevator());
 
     eventMap.put("balance", new AutoBalance(s_Swerve, new Rotation2d(0, -1)));
     eventMap.put("balanceminus", new AutoBalance(s_Swerve, new Rotation2d(0, 1)));
