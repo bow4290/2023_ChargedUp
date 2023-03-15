@@ -56,7 +56,7 @@ public class Intake extends SubsystemBase {
     List.of(leftPID, rightPID)
         .forEach(
             pid -> {
-              pid.setP(0.1); // Probably needs to be tuned or something!
+              pid.setP(0.2); // Probably needs to be tuned or something!
               pid.setOutputRange(-0.3, 0.3);
             });
 
