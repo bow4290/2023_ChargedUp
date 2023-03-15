@@ -180,8 +180,9 @@ public class RobotContainer {
     eventMap.put("topCone", autoCommands.topCone());
     eventMap.put("topConeAbridged", autoCommands.topConeAbridged());
     eventMap.put("topCube", autoCommands.topCube());
-    eventMap.put("topCubePreparation", autoCommands.topCube());
-    eventMap.put("eject", s_Intake.autoEjectCmd());
+    // TODO: Fix these in the paths
+    eventMap.put("topCubePreparation", autoCommands.baseArmAndElevator());
+    eventMap.put("eject", autoCommands.topCube());
 
     eventMap.put("balance", new AutoBalance(s_Swerve, new Rotation2d(0, -1)));
     eventMap.put("balanceminus", new AutoBalance(s_Swerve, new Rotation2d(0, 1)));
@@ -193,7 +194,7 @@ public class RobotContainer {
                 s_Elbow
                     .goToDeg(-87)
                     .alongWith(s_Elevator.goToBase())
-                    .alongWith(s_Intake.spinInCmd().withTimeout(5))));
+                    .alongWith(s_Intake.spinInCmd().withTimeout(3))));
     eventMap.put("intakeUp", s_Elbow.goToDeg(0).alongWith(s_Elevator.goToBase()));
 
     var thetaController =
@@ -218,11 +219,13 @@ public class RobotContainer {
   }
 
   private Command createAuto(String name) {
-    var pathGroup = PathPlanner.loadPathGroup(name, new PathConstraints(4, 3));
+    var pathGroup = PathPlanner.loadPathGroup(name, new PathConstraints(3, 3));
     return Commands.sequence(
         Commands.print("Starting auto: " + name), // For debugging / looking through post-match logs
         autoBuilder.fullAuto(pathGroup),
-        Commands.runOnce(s_Swerve::gyroFlip180)); // This is necessary because of the way the gyro starts in a match
+        Commands.runOnce(
+            s_Swerve
+                ::gyroFlip180)); // This is necessary because of the way the gyro starts in a match
   }
 
   /**
