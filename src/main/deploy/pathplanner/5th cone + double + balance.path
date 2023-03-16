@@ -2,13 +2,13 @@
   "waypoints": [
     {
       "anchorPoint": {
-        "x": 1.8461180255693848,
-        "y": 1.61
+        "x": 1.8329600295564228,
+        "y": 1.6256743002996503
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.7935229429486639,
-        "y": 0.03746022422600321
+        "x": 1.8329600295564228,
+        "y": 0.20652879413109693
       },
       "holonomicAngle": 180.0,
       "isReversal": false,
@@ -26,16 +26,16 @@
     },
     {
       "anchorPoint": {
-        "x": 6.538446019600373,
-        "y": 0.93
+        "x": 6.53,
+        "y": 0.9390341260108497
       },
       "prevControl": {
-        "x": 6.910424997216871,
-        "y": 0.9735450481805006
+        "x": 5.9156924216610784,
+        "y": 0.9390341260108497
       },
       "nextControl": {
-        "x": 4.901387830553439,
-        "y": 0.7383607354020261
+        "x": 7.139478721040708,
+        "y": 0.9390341260108497
       },
       "holonomicAngle": 180.0,
       "isReversal": false,
@@ -51,25 +51,25 @@
     },
     {
       "anchorPoint": {
-        "x": 1.85,
-        "y": 1.0598460033725619
+        "x": 1.83,
+        "y": 1.06
       },
       "prevControl": {
-        "x": 2.0979597497389437,
-        "y": 0.47637111767279106
+        "x": 1.83,
+        "y": 0.5204463630031682
       },
       "nextControl": {
-        "x": 1.7460910814054875,
-        "y": 1.3043544143705181
+        "x": 1.83,
+        "y": 1.3317437693802137
       },
       "holonomicAngle": 180.0,
       "isReversal": false,
       "velOverride": null,
       "isLocked": false,
-      "isStopPoint": false,
+      "isStopPoint": true,
       "stopEvent": {
         "names": [
-          "eject"
+          "topCubeSecond"
         ],
         "executionBehavior": "sequential",
         "waitBehavior": "none",
@@ -78,12 +78,12 @@
     },
     {
       "anchorPoint": {
-        "x": 2.4637478215928654,
-        "y": 2.17652021067931
+        "x": 2.4604298486901905,
+        "y": 2.24165839081544
       },
       "prevControl": {
-        "x": 1.9133228558123785,
-        "y": 2.0359863818685966
+        "x": 2.4604298486901905,
+        "y": 1.9782656867692068
       },
       "nextControl": null,
       "holonomicAngle": 180.0,
@@ -103,13 +103,13 @@
   ],
   "markers": [
     {
-      "position": 0.01,
+      "position": 0.0,
       "names": [
         "intakeCube"
       ]
     },
     {
-      "position": 0.99,
+      "position": 1.0,
       "names": [
         "topCubePreparation"
       ]

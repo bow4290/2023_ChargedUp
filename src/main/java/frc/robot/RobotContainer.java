@@ -182,24 +182,13 @@ public class RobotContainer {
     eventMap.put("topCube", autoCommands.topCube());
     // TODO: Fix these in the paths
     eventMap.put("topCubePreparation", autoCommands.topCubePreparation());
-    eventMap.put("eject", s_Intake.autoEjectCmd().andThen(autoCommands.baseArmAndElevator()));
+    eventMap.put(
+        "topCubeSecond", s_Intake.autoEjectCmd().andThen(autoCommands.baseArmAndElevator()));
     eventMap.put("baseArmAndElevator", autoCommands.baseArmAndElevator());
 
     eventMap.put("balance", new AutoBalance(s_Swerve, new Rotation2d(0, -1)));
     eventMap.put("balanceminus", new AutoBalance(s_Swerve, new Rotation2d(0, 1)));
-    eventMap.put(
-        "intakeCube",
-        s_Intake
-            .pistonsCubeCmd()
-            .andThen(
-                s_Elbow
-                    .goToDeg(-87)
-                    .alongWith(s_Elevator.goToBase())
-                    .alongWith(
-                        s_Intake
-                            .spinInCmd()
-                            .withTimeout(8)
-                            .andThen(s_Intake.retainPositionCmd()))));
+    eventMap.put("intakeCube", autoCommands.intakeCube());
     eventMap.put("intakeUp", s_Elbow.goToDeg(0).alongWith(s_Elevator.goToBase()));
 
     var thetaController =

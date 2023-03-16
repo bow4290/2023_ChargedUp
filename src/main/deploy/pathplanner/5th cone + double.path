@@ -2,13 +2,13 @@
   "waypoints": [
     {
       "anchorPoint": {
-        "x": 1.95,
-        "y": 1.61
+        "x": 1.8329600295564228,
+        "y": 1.6256743002996503
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.897404917379279,
-        "y": 0.03746022422600321
+        "x": 1.8329600295564228,
+        "y": 0.20652879413109693
       },
       "holonomicAngle": 180.0,
       "isReversal": false,
@@ -26,16 +26,16 @@
     },
     {
       "anchorPoint": {
-        "x": 6.592810610168504,
-        "y": 0.8709815407558383
+        "x": 6.53,
+        "y": 0.9390341260108497
       },
       "prevControl": {
-        "x": 6.964789587785002,
-        "y": 0.9145265889363388
+        "x": 5.9156924216610784,
+        "y": 0.9390341260108497
       },
       "nextControl": {
-        "x": 4.95575242112157,
-        "y": 0.6793422761578644
+        "x": 7.139478721040708,
+        "y": 0.9390341260108497
       },
       "holonomicAngle": 180.0,
       "isReversal": false,
@@ -51,12 +51,12 @@
     },
     {
       "anchorPoint": {
-        "x": 1.85,
-        "y": 1.0598460033725619
+        "x": 1.83,
+        "y": 1.06
       },
       "prevControl": {
-        "x": 2.0979597497389437,
-        "y": 0.47637111767279106
+        "x": 1.83,
+        "y": 0.5204463630031682
       },
       "nextControl": null,
       "holonomicAngle": 180.0,
@@ -66,7 +66,7 @@
       "isStopPoint": false,
       "stopEvent": {
         "names": [
-          "eject"
+          "topCube2ndPart"
         ],
         "executionBehavior": "sequential",
         "waitBehavior": "none",
@@ -76,27 +76,15 @@
   ],
   "markers": [
     {
-      "position": 0.0,
-      "names": [
-        "intakeCube"
-      ]
-    },
-    {
-      "position": 0.99,
+      "position": 1.0,
       "names": [
         "topCubePreparation"
       ]
     },
     {
-      "position": 0.01,
+      "position": 0.0,
       "names": [
         "intakeCube"
-      ]
-    },
-    {
-      "position": 2.0,
-      "names": [
-        "eject"
       ]
     }
   ]

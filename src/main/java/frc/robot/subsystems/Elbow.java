@@ -102,13 +102,14 @@ public class Elbow extends SubsystemBase {
   }
 
   public Command positionCmd(double pos) {
-    return unendingPositionCmd(pos).until(this::isFinished);
+    return unendingPositionCmd(pos)
+        .until(this::isFinished)
+        .withTimeout(Constants.Elbow.autoTimeout);
   }
 
   public Command unendingPositionCmd(double pos) {
-    return startEnd(() -> position(pos), () -> {})
-        .beforeStarting(() -> mmPosition = pos)
-        .withTimeout(Constants.Elbow.autoTimeout);
+    return startEnd(() -> position(pos), () -> {}).beforeStarting(() -> mmPosition = pos);
+    // .withTimeout(Constants.Elbow.autoTimeout);//whoops
   }
 
   public boolean isFinished() {
