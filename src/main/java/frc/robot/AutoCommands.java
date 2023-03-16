@@ -25,23 +25,28 @@ public class AutoCommands {
     this.s_Elevator = s_Elevator;
   }
 
+  public Command spinIntake() {
+    return s_Intake.spinInCmd().withTimeout(8).andThen(s_Intake.retainPositionCmd());
+  }
+
   public Command intakeCube() {
     return s_Intake
         .pistonsCubeCmd()
-        .andThen(
-            s_Elbow
-                .goToDeg(-87)
-                .alongWith(s_Elevator.goToBase())
-                .alongWith(
-                    s_Intake.spinInCmd().withTimeout(6).andThen(s_Intake.retainPositionCmd())));
+        .andThen(s_Elbow.goToDeg(-90).alongWith(s_Elevator.goToBase()).alongWith(spinIntake()));
   }
 
   public Command baseArmAndElevator() {
     return s_Elbow.goToDeg(0).alongWith(s_Elevator.goToBase());
   }
 
+  public Command quickReset() {
+    return baseArmAndElevator().withTimeout(0.5);
+  }
+
   public Command high() {
-    return s_Elevator.goToMax().alongWith(Commands.waitSeconds(0.5).andThen(s_Elbow.goToDeg(45)));
+    return s_Elevator
+        .goToMax()
+        .alongWith(s_Elbow.goToDeg(45).beforeStarting(Commands.waitSeconds(0.5)));
   }
 
   public Command topCone() {
@@ -52,8 +57,7 @@ public class AutoCommands {
   /// Like top cone, but don't put arm back afterwards.
   /// Used in two piece autos because we will bring the arm down while moving.
   public Command topConeAbridged() {
-    return Commands.sequence(
-        high(), s_Intake.pistonsCubeCmd(), baseArmAndElevator().withTimeout(0.5));
+    return Commands.sequence(high(), s_Intake.pistonsCubeCmd(), quickReset());
   }
 
   public Command topCube() {
@@ -61,7 +65,11 @@ public class AutoCommands {
   }
 
   public Command topCubePreparation() {
-    return s_Intake.retainPositionCmd().raceWith(baseArmAndElevator().withTimeout(0.5));
+    return quickReset();
+  }
+
+  public Command topCubeSecond() {
+    return high().andThen(s_Intake.autoEjectCmd(), quickReset());
   }
 
   public Command attemptBalance() {
