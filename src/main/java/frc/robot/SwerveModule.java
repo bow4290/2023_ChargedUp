@@ -76,9 +76,9 @@ public class SwerveModule {
     // robot.
     // If we aren't moving that much, it doesn't matter that it's not in the correct direction.
     Rotation2d angle =
-        (Math.abs(desiredState.speedMetersPerSecond) <= (Constants.Swerve.maxSpeed * 0.01))
-            ? lastAngle
-            : desiredState.angle;
+        /*(Math.abs(desiredState.speedMetersPerSecond) <= (Constants.Swerve.maxSpeed * 0.01))
+        ? lastAngle // I decided to comment this out because it might be causing some weird issues
+        : */ desiredState.angle;
 
     mAngleMotor.set(
         ControlMode.Position,
