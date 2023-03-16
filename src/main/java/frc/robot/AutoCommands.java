@@ -31,7 +31,7 @@ public class AutoCommands {
 
   public Command topCone() {
     return Commands.sequence(
-        s_Elbow.goToDeg(45).alongWith(s_Elevator.goToMax()),
+        s_Elevator.goToMax().alongWith(Commands.waitSeconds(0.5).andThen(s_Elbow.goToDeg(45))),
         s_Intake.pistonsCubeCmd(),
         baseArmAndElevator(),
         s_Intake.pistonsConeCmd());
@@ -41,7 +41,9 @@ public class AutoCommands {
   /// Used in two piece autos because we will bring the arm down while moving.
   public Command topConeAbridged() {
     return Commands.sequence(
-        s_Elbow.goToDeg(45).alongWith(s_Elevator.goToMax()), s_Intake.pistonsCubeCmd());
+        s_Elevator.goToMax().alongWith(Commands.waitSeconds(0.5).andThen(s_Elbow.goToDeg(45))),
+        s_Intake.pistonsCubeCmd(),
+        baseArmAndElevator().withTimeout(0.5));
   }
 
   public Command topCube() {
@@ -62,8 +64,8 @@ public class AutoCommands {
           Rotation2d rot = new Rotation2d(grav[0], grav[1]);
           measurer.addMeasurement(magnitude);
           SmartDashboard.putNumber("mag rate", measurer.getRate());
-          if (magnitude > 0.1 && Math.abs(measurer.getRate()) < 0.3) {
-            double mult = 0.6;
+          if (magnitude > 0.08 && Math.abs(measurer.getRate()) < 0.1) {
+            double mult = 0.4;
             s_Swerve.drive(
                 new Translation2d(mult * rot.getCos(), mult * rot.getSin()), 0, false, false);
           } else {

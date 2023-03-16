@@ -20,8 +20,10 @@ public class Balance extends PIDCommand {
         output -> {
           output = Math.abs(output);
           Rotation2d rot = swerve.getTiltDirection();
+          // if (output > 0.04) {
           swerve.drive(
-              new Translation2d(output * rot.getCos(), output * rot.getSin()), 0, false, false);
+              new Translation2d(output * rot.getCos(), output * rot.getSin()), 0, false, true);
+          // }
         },
         swerve);
     this.swerve = swerve;
