@@ -40,6 +40,10 @@ public class GenericGamepad {
   public Trigger leftMiddle;
   // Equivalent to Start on Xbox or Options on PS4
   public Trigger rightMiddle;
+  // Equivalent to Touchpad on PS4 (NO EQUIVALENT ON XBOX)
+  public Trigger topMiddle;
+  // Equivalent to Options on PS4 (NO EQUIVALENT ON XBOX)
+  public Trigger bottomMiddle;
 
   public Trigger leftTriggerB;
   public Trigger rightTriggerB;
@@ -80,6 +84,9 @@ public class GenericGamepad {
 
     leftMiddle = controller.share();
     rightMiddle = controller.options();
+
+    topMiddle = controller.touchpad();
+    bottomMiddle = controller.PS();
   }
 
   public GenericGamepad(CommandXboxController controller) {
@@ -110,5 +117,8 @@ public class GenericGamepad {
 
     leftMiddle = controller.back();
     rightMiddle = controller.start();
+
+    topMiddle = new Trigger(()->false);
+    bottomMiddle = new Trigger(()->false);
   }
 }
