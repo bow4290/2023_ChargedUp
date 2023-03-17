@@ -173,6 +173,35 @@ public class RobotContainer {
     operator.rightMiddle.onTrue(s_Intake.pistonsCubeCmd());
   }
 
+  private void operatorConfigurationKabir() {
+    // Pistons to cube, intake spin in
+    operator.square_x.onTrue(s_Intake.pistonsCubeCmd());
+    operator.square_x.debounce(0.07).whileTrue(s_Intake.spinInCmd());
+    // Pistons to cone, intake spin in
+    operator.triangle_y.onTrue(s_Intake.pistonsConeCmd());
+    operator.triangle_y.debounce(0.07).whileTrue(s_Intake.spinInCmd());
+    // Eject
+    operator.circle_b.whileTrue(s_Intake.spinEjectCmd());
+    // Base
+    operator.cross_a.whileTrue(s_Elbow.goToDegUnending(0).alongWith(s_Elevator.goToBase()));
+
+    // Ground intake
+    operator.dpadDown.whileTrue(s_Elbow.goToDegUnending(-89).alongWith(s_Elevator.goToBase()));
+
+    // Arm and elevator manual control (by pushing)
+    operator.leftJoystickPushed.whileTrue(s_Elevator.moveCmd(operator.leftX));
+    operator.rightJoystickPushed.whileTrue(s_Elbow.moveCmd(operator.rightX));
+
+    // Ramp BACK
+    operator.leftMiddle.whileTrue(s_Elbow.goToDegUnending(-52));
+    // Ramp FRONT
+    operator.rightMiddle.whileTrue(s_Elbow.goToDegUnending(50));
+
+    //
+
+
+  }
+
   public Command getAutonomousCommand() {
     return chooser.getSelected();
   }
