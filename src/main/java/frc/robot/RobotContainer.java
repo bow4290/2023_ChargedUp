@@ -144,7 +144,7 @@ public class RobotContainer {
     // Arm to vertical, elevator to base
     operator.cross_a.whileTrue(s_Elbow.goToDegUnending(0).alongWith(s_Elevator.goToBase()));
     // Intake position from battery side
-    operator.dpadDown.whileTrue(s_Elbow.goToDegUnending(-87).alongWith(s_Elevator.goToBase()));
+    operator.dpadDown.whileTrue(s_Elbow.goToDegUnending(-89).alongWith(s_Elevator.goToBase()));
     // Elevator to base
     operator.dpadLeft.whileTrue(s_Elevator.goToBase());
     // Elevator to mid
@@ -154,13 +154,16 @@ public class RobotContainer {
     // Arm back battery side for 2nd row
     operator.leftBumper.whileTrue(s_Elbow.goToDegUnending(-48).alongWith(s_Elevator.goToMid()));
     // Arm out front side for 3rd row
-    operator.leftTriggerB.whileTrue(s_Elbow.goToDegUnending(45).alongWith(s_Elevator.goToMax()));
+    operator.leftTriggerB.whileTrue(
+        s_Elevator
+            .goToMax()
+            .alongWith(s_Elbow.goToDegUnending(45).beforeStarting(Commands.waitSeconds(0.3))));
     // Arm out battery side, human player double (platform)
     operator.rightBumper.whileTrue(s_Elbow.goToDegUnending(-48));
     // Arm out battery side, human player single (ramp) cube
-    operator.rightTriggerB.whileTrue(s_Elbow.goToDegUnending(-46.5));
+    operator.rightTriggerB.whileTrue(s_Elbow.goToDegUnending(-52));
     // Arm out front side, human player single (ramp) cone
-    operator.rightJoystickPushed.whileTrue(s_Elbow.goToDegUnending(54));
+    operator.rightJoystickPushed.whileTrue(s_Elbow.goToDegUnending(50));
     // Intake but slightly lower
     operator.leftJoystickPushed.whileTrue(
         s_Elbow.goToDegUnending(-92).alongWith(s_Elevator.goToBase()));
@@ -183,6 +186,7 @@ public class RobotContainer {
     // TODO: Fix these in the paths
     eventMap.put("topCubePreparation", autoCommands.topCubePreparation());
     eventMap.put("topCubeSecond", autoCommands.topCubeSecond());
+    eventMap.put("topCubeMid", s_Elevator.goToMax());
     eventMap.put("baseArmAndElevator", autoCommands.baseArmAndElevator());
 
     eventMap.put("balance", new AutoBalance(s_Swerve, new Rotation2d(0, -1)));

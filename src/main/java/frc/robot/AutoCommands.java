@@ -40,13 +40,13 @@ public class AutoCommands {
   }
 
   public Command quickReset() {
-    return baseArmAndElevator().withTimeout(0.5);
+    return baseArmAndElevator().withTimeout(0.25);
   }
 
   public Command high() {
     return s_Elevator
         .goToMax()
-        .alongWith(s_Elbow.goToDeg(45).beforeStarting(Commands.waitSeconds(0.5)));
+        .alongWith(s_Elbow.goToDeg(45).beforeStarting(Commands.waitSeconds(0.25)));
   }
 
   public Command topCone() {
@@ -83,9 +83,9 @@ public class AutoCommands {
           measurer.addMeasurement(magnitude);
           SmartDashboard.putNumber("mag rate", measurer.getRate());
           if (magnitude > 0.08 && Math.abs(measurer.getRate()) < 0.1) {
-            double mult = 0.4;
+            double mult = 0.5;
             s_Swerve.drive(
-                new Translation2d(mult * rot.getCos(), mult * rot.getSin()), 0, false, false);
+                new Translation2d(mult * rot.getCos(), mult * rot.getSin()), 0, false, true);
           } else {
             s_Swerve.lockModules();
           }
