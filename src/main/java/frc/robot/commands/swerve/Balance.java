@@ -11,7 +11,7 @@ public class Balance extends PIDCommand {
 
   public Balance(Swerve swerve) {
     super(
-        new PIDController(2.0, 0.05, 7),
+        new PIDController(2.3, 0.01, 10),
         // Based on pitch
         swerve::getTiltMagnitude,
         // We want to gain a pitch of 0
