@@ -12,7 +12,7 @@ public class AutoBalance extends SequentialCommandGroup {
     // NOTE: This assumes that the robot is pretty close to, but not already on, the far side of the
     // charge station
     super(
-        new TeleopSwerve(s_Swerve, dir::getSin, dir::getCos, () -> 0, () -> false)
+        new TeleopSwerve(s_Swerve, dir::getSin, dir::getCos, () -> 1, () -> false)
             .until(new Trigger(() -> s_Swerve.getTiltMagnitude() > 0.19).debounce(0.2))
             .withTimeout(0.5),
         new Balance(s_Swerve));
