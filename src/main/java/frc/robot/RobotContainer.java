@@ -202,7 +202,8 @@ public class RobotContainer {
     // Arm and elevator manual control (by pushing)
     operator.leftJoystickPushed.whileTrue(
         s_Elevator.moveCmd(
-            () -> operator.leftY.getAsDouble() * (operator.bottomMiddle.getAsBoolean() ? -1 : -0.3)));
+            () ->
+                operator.leftY.getAsDouble() * (operator.bottomMiddle.getAsBoolean() ? -1 : -0.3)));
     operator.rightJoystickPushed.whileTrue(
         s_Elbow.moveCmd(
             () ->
