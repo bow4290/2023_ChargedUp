@@ -190,14 +190,14 @@ public class Swerve extends SubsystemBase {
     for (SwerveModulePosition p : poses) {
       SwerveModule mod = mSwerveMods[modNumber];
       double dist = p.distanceMeters;
-      //SmartDashboard.putNumber("Mod " + modNumber + " Cancoder", mod.getCanCoder().getDegrees());
+      // SmartDashboard.putNumber("Mod " + modNumber + " Cancoder", mod.getCanCoder().getDegrees());
       SmartDashboard.putNumber(
           /* Bad estimate, only for graphing/etc */
           "Mod " + modNumber + " Est. Velocity",
           (dist - previousDistances[modNumber]) * (1.0 / Robot.kDefaultPeriod));
       SmartDashboard.putNumber("Mod " + modNumber + " distance", dist);
       SmartDashboard.putNumber("Mod " + modNumber + " Angle", p.angle.getDegrees());
-      //SmartDashboard.putNumber("Mod " + modNumber + " Drive current", mod.getDriveCurrent());
+      // SmartDashboard.putNumber("Mod " + modNumber + " Drive current", mod.getDriveCurrent());
       previousDistances[modNumber] = dist;
       modNumber++;
     }
