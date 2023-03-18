@@ -181,11 +181,11 @@ public class RobotContainer {
     operator.leftJoystickPushed.whileTrue(
         s_Elevator.moveCmd(
             () ->
-                operator.leftY.getAsDouble() * (operator.bottomMiddle.getAsBoolean() ? -1 : -0.3)));
+                operator.leftY.getAsDouble() * (operator.topMiddle.getAsBoolean() ? -1 : -0.3)));
     operator.rightJoystickPushed.whileTrue(
         s_Elbow.moveCmd(
             () ->
-                operator.rightX.getAsDouble() * (operator.bottomMiddle.getAsBoolean() ? 1 : 0.2)));
+                operator.rightX.getAsDouble() * (operator.topMiddle.getAsBoolean() ? 1 : 0.2)));
 
   }
 
