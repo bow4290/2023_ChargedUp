@@ -170,8 +170,8 @@ public final class Constants {
     public static final int elbowPivot2ID = 11;
 
     public static final double motionVelocity = 10000;
-    public static final double motionAcceleration = 8000;
-    public static final int motionSmoothing = 3;
+    public static final double motionAcceleration = 7500;
+    public static final int motionSmoothing = 0;
 
     // 512/7 ratio, according to build
     // Testing determined the ratio is probably closer to 1024/7 so just use that
