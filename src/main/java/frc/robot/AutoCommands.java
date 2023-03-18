@@ -46,18 +46,23 @@ public class AutoCommands {
   public Command high() {
     return s_Elevator
         .goToMax()
-        .alongWith(s_Elbow.goToDeg(45).beforeStarting(Commands.waitSeconds(0.25)));
+        .alongWith(s_Elbow.goToDeg(44).beforeStarting(Commands.waitSeconds(0.25)));
   }
 
   public Command topCone() {
     return Commands.sequence(
-        high(), s_Intake.pistonsCubeCmd(), baseArmAndElevator(), s_Intake.pistonsConeCmd());
+        high(),
+        s_Intake.pistonsCubeCmd(),
+        s_Intake.autoEjectCmd(),
+        baseArmAndElevator(),
+        s_Intake.pistonsConeCmd());
   }
 
   /// Like top cone, but don't put arm back afterwards.
   /// Used in two piece autos because we will bring the arm down while moving.
   public Command topConeAbridged() {
-    return Commands.sequence(high(), s_Intake.pistonsCubeCmd(), quickReset());
+    return Commands.sequence(
+        high(), s_Intake.pistonsCubeCmd(), s_Intake.autoEjectCmd(), quickReset());
   }
 
   public Command topCube() {

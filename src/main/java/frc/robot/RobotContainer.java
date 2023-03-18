@@ -56,8 +56,12 @@ public class RobotContainer {
           .filter(file -> !file.toString().contains("unused"))
           .forEach(
               file -> {
-                var name = file.getName(file.getNameCount() - 1).toString().replace(".path", "");
-                chooser.addOption(name, createAuto(name));
+                try {
+                  var name = file.getName(file.getNameCount() - 1).toString().replace(".path", "");
+                  chooser.addOption(name, createAuto(name));
+                } catch (Exception e) {
+                  SmartDashboard.putString("ERROR LOADING " + file.toString(), e.getMessage());
+                }
               });
     } catch (Exception e) {
       // Add manually, even though this should literally never happen
@@ -96,7 +100,7 @@ public class RobotContainer {
   private final boolean driverPS4 = true;
   private final int operatorPort = 1;
   private final boolean operatorPS4 = true;
-  private final boolean operatorKabir = true;
+  private final boolean operatorKabir = false; // IMPORTANT
 
   private final GenericGamepad driver = GenericGamepad.from(driverPort, driverPS4);
   private final GenericGamepad operator = GenericGamepad.from(operatorPort, operatorPS4);
@@ -165,16 +169,23 @@ public class RobotContainer {
     // Arm out battery side, human player single (ramp) cube
     operator.rightTriggerB.whileTrue(s_Elbow.goToDegUnending(-52));
     // Arm out front side, human player single (ramp) cone
-    operator.rightJoystickPushed.whileTrue(s_Elbow.goToDegUnending(50));
+    operator.rightMiddle.whileTrue(s_Elbow.goToDegUnending(50));
     // Intake but slightly lower
-    operator.leftJoystickPushed.whileTrue(
-        s_Elbow.goToDegUnending(-92).alongWith(s_Elevator.goToBase()));
+    operator.leftMiddle.whileTrue(s_Elbow.goToDegUnending(-92).alongWith(s_Elevator.goToBase()));
     // Pistons to cone
-    operator.leftMiddle.onTrue(s_Intake.pistonsConeCmd());
+    /*operator.leftMiddle.onTrue(s_Intake.pistonsConeCmd());
     // Pistons to cube
-    operator.rightMiddle.onTrue(s_Intake.pistonsCubeCmd());
+    operator.rightMiddle.onTrue(s_Intake.pistonsCubeCmd());*/
+
+    operator.leftJoystickPushed.whileTrue(
+        s_Elevator.moveCmd(
+            () -> operator.leftY.getAsDouble() * (operator.topMiddle.getAsBoolean() ? -1 : -0.3)));
+    operator.rightJoystickPushed.whileTrue(
+        s_Elbow.moveCmd(
+            () -> operator.rightX.getAsDouble() * (operator.topMiddle.getAsBoolean() ? 1 : 0.2)));
   }
 
+  /** WARNING DO NOT USE THIS ONE */
   private void operatorConfigurationKabir() {
     // Pistons to cube, intake spin in
     operator.square_x.onTrue(s_Intake.pistonsCubeCmd());
@@ -202,11 +213,10 @@ public class RobotContainer {
     // Arm and elevator manual control (by pushing)
     operator.leftJoystickPushed.whileTrue(
         s_Elevator.moveCmd(
-            () -> operator.leftY.getAsDouble() * (operator.bottomMiddle.getAsBoolean() ? 1 : 0.3)));
+            () -> operator.leftY.getAsDouble() * (operator.topMiddle.getAsBoolean() ? -1 : -0.3)));
     operator.rightJoystickPushed.whileTrue(
         s_Elbow.moveCmd(
-            () ->
-                operator.rightX.getAsDouble() * (operator.bottomMiddle.getAsBoolean() ? 1 : 0.2)));
+            () -> operator.rightX.getAsDouble() * (operator.topMiddle.getAsBoolean() ? 1 : 0.2)));
 
     // Ramp BACK
     operator.leftMiddle.whileTrue(s_Elbow.goToDegUnending(-52));

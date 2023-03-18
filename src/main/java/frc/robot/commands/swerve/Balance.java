@@ -11,7 +11,7 @@ public class Balance extends PIDCommand {
 
   public Balance(Swerve swerve) {
     super(
-        new PIDController(2.3, 0.01, 10),
+        new PIDController(1.9, 0.01, 50),
         // Based on pitch
         swerve::getTiltMagnitude,
         // We want to gain a pitch of 0
@@ -20,10 +20,12 @@ public class Balance extends PIDCommand {
         output -> {
           output = Math.abs(output);
           Rotation2d rot = swerve.getTiltDirection();
-          // if (output > 0.04) {
-          swerve.drive(
-              new Translation2d(output * rot.getCos(), output * rot.getSin()), 0, false, true);
-          // }
+          if (output > 0.04) {
+            swerve.drive(
+                new Translation2d(output * rot.getCos(), output * rot.getSin()), 0, false, true);
+          } else {
+            swerve.drive(new Translation2d(0, 0), 0, false, true);
+          }
         },
         swerve);
     this.swerve = swerve;

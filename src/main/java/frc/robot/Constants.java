@@ -15,8 +15,8 @@ import frc.lib.util.SwerveModuleConstants;
 
 public final class Constants {
   public static final double stickDeadband = 0.1;
-  public static final double driveSens = 2.0;
-  public static final double turnSens = 2.0;
+  public static final double driveSens = 1.0;
+  public static final double turnSens = 1.0;
   public static final boolean enablePS5 = false;
 
   public static final class Limelight {
@@ -169,9 +169,9 @@ public final class Constants {
     public static final int elbowPivotID = 9;
     public static final int elbowPivot2ID = 11;
 
-    public static final double motionVelocity = 12000;
-    public static final double motionAcceleration = 10000;
-    public static final int motionSmoothing = 2;
+    public static final double motionVelocity = 10000;
+    public static final double motionAcceleration = 7500;
+    public static final int motionSmoothing = 0;
 
     // 512/7 ratio, according to build
     // Testing determined the ratio is probably closer to 1024/7 so just use that
@@ -211,7 +211,7 @@ public final class Constants {
     // 8740
     public static final double base = 0;
     public static final double middle = 50000;
-    public static final double max = 84000;
+    public static final double max = 84500;
 
     public static final double revolutionsPerMeter = 40 * 2048; // (APPROXIMATE, DO NOT USE)
     public static final double metersPerRevolution = 1 / revolutionsPerMeter;
