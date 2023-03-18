@@ -171,8 +171,7 @@ public class RobotContainer {
     // Arm out front side, human player single (ramp) cone
     operator.rightMiddle.whileTrue(s_Elbow.goToDegUnending(50));
     // Intake but slightly lower
-    operator.leftMiddle.whileTrue(
-        s_Elbow.goToDegUnending(-92).alongWith(s_Elevator.goToBase()));
+    operator.leftMiddle.whileTrue(s_Elbow.goToDegUnending(-92).alongWith(s_Elevator.goToBase()));
     // Pistons to cone
     /*operator.leftMiddle.onTrue(s_Intake.pistonsConeCmd());
     // Pistons to cube
@@ -180,13 +179,10 @@ public class RobotContainer {
 
     operator.leftJoystickPushed.whileTrue(
         s_Elevator.moveCmd(
-            () ->
-                operator.leftY.getAsDouble() * (operator.topMiddle.getAsBoolean() ? -1 : -0.3)));
+            () -> operator.leftY.getAsDouble() * (operator.topMiddle.getAsBoolean() ? -1 : -0.3)));
     operator.rightJoystickPushed.whileTrue(
         s_Elbow.moveCmd(
-            () ->
-                operator.rightX.getAsDouble() * (operator.topMiddle.getAsBoolean() ? 1 : 0.2)));
-
+            () -> operator.rightX.getAsDouble() * (operator.topMiddle.getAsBoolean() ? 1 : 0.2)));
   }
 
   /** WARNING DO NOT USE THIS ONE */
@@ -217,12 +213,10 @@ public class RobotContainer {
     // Arm and elevator manual control (by pushing)
     operator.leftJoystickPushed.whileTrue(
         s_Elevator.moveCmd(
-            () ->
-                operator.leftY.getAsDouble() * (operator.topMiddle.getAsBoolean() ? -1 : -0.3)));
+            () -> operator.leftY.getAsDouble() * (operator.topMiddle.getAsBoolean() ? -1 : -0.3)));
     operator.rightJoystickPushed.whileTrue(
         s_Elbow.moveCmd(
-            () ->
-                operator.rightX.getAsDouble() * (operator.topMiddle.getAsBoolean() ? 1 : 0.2)));
+            () -> operator.rightX.getAsDouble() * (operator.topMiddle.getAsBoolean() ? 1 : 0.2)));
 
     // Ramp BACK
     operator.leftMiddle.whileTrue(s_Elbow.goToDegUnending(-52));
