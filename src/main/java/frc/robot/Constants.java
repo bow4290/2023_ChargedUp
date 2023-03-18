@@ -211,7 +211,7 @@ public final class Constants {
     // 8740
     public static final double base = 0;
     public static final double middle = 50000;
-    public static final double max = 84000;
+    public static final double max = 85000;
 
     public static final double revolutionsPerMeter = 40 * 2048; // (APPROXIMATE, DO NOT USE)
     public static final double metersPerRevolution = 1 / revolutionsPerMeter;
