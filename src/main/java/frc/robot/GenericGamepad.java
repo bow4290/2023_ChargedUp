@@ -118,7 +118,7 @@ public class GenericGamepad {
     leftMiddle = controller.back();
     rightMiddle = controller.start();
 
-    topMiddle = new Trigger(()->false);
-    bottomMiddle = new Trigger(()->false);
+    topMiddle = new Trigger(() -> false);
+    bottomMiddle = new Trigger(() -> false);
   }
 }
