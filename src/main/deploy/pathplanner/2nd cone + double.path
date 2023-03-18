@@ -66,7 +66,7 @@
       "isStopPoint": false,
       "stopEvent": {
         "names": [
-          "topCubeSecond"
+          "topCube"
         ],
         "executionBehavior": "sequential",
         "waitBehavior": "none",
