@@ -103,8 +103,8 @@ public class RobotContainer {
 
   private void configureButtons() {
     driverConfiguration();
-    if (operatorKabir) operatorConfiguration();
-    else operatorConfigurationKabir();
+    if (operatorKabir) operatorConfigurationKabir();
+    else operatorConfiguration();
   }
 
   private void driverConfiguration() {
@@ -159,7 +159,7 @@ public class RobotContainer {
     operator.leftTriggerB.whileTrue(
         s_Elevator
             .goToMax()
-            .alongWith(s_Elbow.goToDegUnending(45).beforeStarting(Commands.waitSeconds(0.3))));
+            .alongWith(s_Elbow.goToDegUnending(43).beforeStarting(Commands.waitSeconds(0.3))));
     // Arm out battery side, human player double (platform)
     operator.rightBumper.whileTrue(s_Elbow.goToDegUnending(-48));
     // Arm out battery side, human player single (ramp) cube
@@ -190,7 +190,7 @@ public class RobotContainer {
     // Ground intake
     operator.dpadLeft.whileTrue(s_Elbow.goToDegUnending(-89).alongWith(s_Elevator.goToBase()));
     // Ground intake but LOWER!
-    operator.topMiddle.whileTrue(s_Elbow.goToDegUnending(-92).alongWith(s_Elevator.goToBase()));
+    operator.rightBumper.whileTrue(s_Elbow.goToDegUnending(-92).alongWith(s_Elevator.goToBase()));
 
     // Elevator MAX
     operator.dpadUp.whileTrue(s_Elevator.goToMax());
@@ -214,15 +214,15 @@ public class RobotContainer {
     operator.rightMiddle.whileTrue(s_Elbow.goToDegUnending(50));
 
     // Third row FRONT side
-    operator.leftTriggerB.whileTrue(
-        s_Elevator
-            .goToMax()
-            .alongWith(s_Elbow.goToDegUnending(45).beforeStarting(Commands.waitSeconds(0.25))));
-    // Second row BACK side
     operator.rightTriggerB.whileTrue(
         s_Elevator
+            .goToMax()
+            .alongWith(s_Elbow.goToDegUnending(43).beforeStarting(Commands.waitSeconds(0.25))));
+    // Second row BACK side
+    operator.leftTriggerB.whileTrue(
+        s_Elevator
             .goToMid()
-            .alongWith(s_Elbow.goToDegUnending(-48).beforeStarting(Commands.waitSeconds(0.25))));
+            .alongWith(s_Elbow.goToDegUnending(-43).beforeStarting(Commands.waitSeconds(0.25))));
 
     // PLATFORM BACK (Also, don't forget to extend elevator)
     operator.leftBumper.whileTrue(s_Elbow.goToDegUnending(-48));

@@ -15,8 +15,8 @@ import frc.lib.util.SwerveModuleConstants;
 
 public final class Constants {
   public static final double stickDeadband = 0.1;
-  public static final double driveSens = 1.0;
-  public static final double turnSens = 1.0;
+  public static final double driveSens = 2.0;
+  public static final double turnSens = 2.0;
   public static final boolean enablePS5 = false;
 
   public static final class Limelight {
