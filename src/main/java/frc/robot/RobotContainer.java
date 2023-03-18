@@ -56,8 +56,12 @@ public class RobotContainer {
           .filter(file -> !file.toString().contains("unused"))
           .forEach(
               file -> {
-                var name = file.getName(file.getNameCount() - 1).toString().replace(".path", "");
-                chooser.addOption(name, createAuto(name));
+                try {
+                  var name = file.getName(file.getNameCount() - 1).toString().replace(".path", "");
+                  chooser.addOption(name, createAuto(name));
+                } catch (Exception e) {
+                  SmartDashboard.putString("ERROR LOADING " + file.toString(), e.getMessage());
+                }
               });
     } catch (Exception e) {
       // Add manually, even though this should literally never happen
@@ -175,6 +179,7 @@ public class RobotContainer {
     operator.rightMiddle.onTrue(s_Intake.pistonsCubeCmd());
   }
 
+  /** WARNING DO NOT USE THIS ONE */
   private void operatorConfigurationKabir() {
     // Pistons to cube, intake spin in
     operator.square_x.onTrue(s_Intake.pistonsCubeCmd());
