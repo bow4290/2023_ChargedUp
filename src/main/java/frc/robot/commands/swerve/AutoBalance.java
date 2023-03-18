@@ -13,8 +13,8 @@ public class AutoBalance extends SequentialCommandGroup {
     // charge station
     super(
         new TeleopSwerve(s_Swerve, dir::getSin, dir::getCos, () -> 0.7, () -> false)
-            .until(new Trigger(() -> s_Swerve.getTiltMagnitude() > 0.2).debounce(0.75))
-            .withTimeout(1.5),
+            .until(new Trigger(() -> s_Swerve.getTiltMagnitude() > 0.2).debounce(0.6))
+            .withTimeout(1.0),
         new Balance(s_Swerve));
   }
 }
