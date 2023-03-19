@@ -148,7 +148,7 @@ public class RobotContainer {
     // Pistons to cube, intake spin out (eject)
     operator.circle_b.whileTrue(s_Intake.pistonsCubeCmd().andThen(s_Intake.spinEjectCmd()));
     // Arm to vertical, elevator to base
-    operator.cross_a.whileTrue(s_Elbow.goToDegUnending(0).alongWith(s_Elevator.goToBase()));
+    operator.cross_a.whileTrue(s_Elbow.goToDegUnending(0).alongWith(s_Elevator.goToBase().beforeStarting(Commands.waitSeconds(0.5))));
     // Intake position from battery side
     operator.dpadDown.whileTrue(s_Elbow.goToDegUnending(-89).alongWith(s_Elevator.goToBase()));
     // Elevator to base
