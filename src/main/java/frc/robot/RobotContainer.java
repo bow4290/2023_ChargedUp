@@ -97,18 +97,19 @@ public class RobotContainer {
   /* Controllers */
   // TODO: Detect if a gamepad is PS4/Logitech based on button count?
   private final int driverPort = 0;
-  private final boolean driverPS4 = true;
+  private final boolean driverPS4 = false; // testing stuff
   private final int operatorPort = 1;
-  private final boolean operatorPS4 = true;
-  private final boolean operatorKabir = false; // IMPORTANT
+  private final boolean operatorPS4 = false;
+  // private final boolean operatorKabir = false; // IMPORTANT
 
   private final GenericGamepad driver = GenericGamepad.from(driverPort, driverPS4);
   private final GenericGamepad operator = GenericGamepad.from(operatorPort, operatorPS4);
 
   private void configureButtons() {
     driverConfiguration();
-    if (operatorKabir) operatorConfigurationKabir();
-    else operatorConfiguration();
+    // //  if (operatorKabir) operatorConfigurationKabir();
+    // else
+    operatorConfiguration();
   }
 
   private void driverConfiguration() {
@@ -138,6 +139,11 @@ public class RobotContainer {
     driver.circle_b.whileTrue(s_Swerve.lockModulesCommand());
 
     driver.square_x.whileTrue(new AutoBalance(s_Swerve, new Rotation2d(0, 1)));
+
+    s_Intake
+        .intakeHasThing
+        .onTrue(Commands.run(() -> driver.rumble.accept(1.0)))
+        .onFalse(Commands.run(() -> driver.rumble.accept(0.0)));
   }
 
   private void operatorConfiguration() {
@@ -148,7 +154,10 @@ public class RobotContainer {
     // Pistons to cube, intake spin out (eject)
     operator.circle_b.whileTrue(s_Intake.pistonsCubeCmd().andThen(s_Intake.spinEjectCmd()));
     // Arm to vertical, elevator to base
-    operator.cross_a.whileTrue(s_Elbow.goToDegUnending(0).alongWith(s_Elevator.goToBase().beforeStarting(Commands.waitSeconds(0.5))));
+    operator.cross_a.whileTrue(
+        s_Elbow
+            .goToDegUnending(0)
+            .alongWith(s_Elevator.goToBase().beforeStarting(Commands.waitSeconds(0.5))));
     // Intake position from battery side
     operator.dpadDown.whileTrue(s_Elbow.goToDegUnending(-89).alongWith(s_Elevator.goToBase()));
     // Elevator to base
@@ -183,59 +192,6 @@ public class RobotContainer {
     operator.rightJoystickPushed.whileTrue(
         s_Elbow.moveCmd(
             () -> operator.rightX.getAsDouble() * (operator.topMiddle.getAsBoolean() ? 1 : 0.2)));
-  }
-
-  /** WARNING DO NOT USE THIS ONE */
-  private void operatorConfigurationKabir() {
-    // Pistons to cube, intake spin in
-    operator.square_x.onTrue(s_Intake.pistonsCubeCmd());
-    operator.square_x.debounce(0.07).whileTrue(s_Intake.spinInCmd());
-    // Pistons to cone, intake spin in
-    operator.triangle_y.onTrue(s_Intake.pistonsConeCmd());
-    operator.triangle_y.debounce(0.07).whileTrue(s_Intake.spinInCmd());
-    // Eject
-    operator.circle_b.whileTrue(s_Intake.spinEjectCmd());
-    // Base
-    operator.cross_a.whileTrue(s_Elbow.goToDegUnending(0).alongWith(s_Elevator.goToBase()));
-
-    // Ground intake
-    operator.dpadLeft.whileTrue(s_Elbow.goToDegUnending(-89).alongWith(s_Elevator.goToBase()));
-    // Ground intake but LOWER!
-    operator.rightBumper.whileTrue(s_Elbow.goToDegUnending(-92).alongWith(s_Elevator.goToBase()));
-
-    // Elevator MAX
-    operator.dpadUp.whileTrue(s_Elevator.goToMax());
-    // Elevator MID
-    operator.dpadRight.whileTrue(s_Elevator.goToMid());
-    // Elevator BASE
-    operator.dpadDown.whileTrue(s_Elevator.goToBase());
-
-    // Arm and elevator manual control (by pushing)
-    operator.leftJoystickPushed.whileTrue(
-        s_Elevator.moveCmd(
-            () -> operator.leftY.getAsDouble() * (operator.topMiddle.getAsBoolean() ? -1 : -0.3)));
-    operator.rightJoystickPushed.whileTrue(
-        s_Elbow.moveCmd(
-            () -> operator.rightX.getAsDouble() * (operator.topMiddle.getAsBoolean() ? 1 : 0.2)));
-
-    // Ramp BACK
-    operator.leftMiddle.whileTrue(s_Elbow.goToDegUnending(-52));
-    // Ramp FRONT
-    operator.rightMiddle.whileTrue(s_Elbow.goToDegUnending(50));
-
-    // Third row FRONT side
-    operator.rightTriggerB.whileTrue(
-        s_Elevator
-            .goToMax()
-            .alongWith(s_Elbow.goToDegUnending(43).beforeStarting(Commands.waitSeconds(0.25))));
-    // Second row BACK side
-    operator.leftTriggerB.whileTrue(
-        s_Elevator
-            .goToMid()
-            .alongWith(s_Elbow.goToDegUnending(-43).beforeStarting(Commands.waitSeconds(0.25))));
-
-    // PLATFORM BACK (Also, don't forget to extend elevator)
-    operator.leftBumper.whileTrue(s_Elbow.goToDegUnending(-48));
   }
 
   public Command getAutonomousCommand() {
