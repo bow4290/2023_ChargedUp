@@ -5,10 +5,12 @@ import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
+import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants;
 import java.util.List;
 
@@ -32,6 +34,8 @@ public class Intake extends SubsystemBase {
   private final RelativeEncoder leftPos;
   private final RelativeEncoder rightPos;
 
+  private final LinearFilter currentMeasurer = LinearFilter.movingAverage(15);
+
   public Intake() {
     leftIntake = new CANSparkMax(Constants.Intake.leftIntakeID, MotorType.kBrushless);
     rightIntake = new CANSparkMax(Constants.Intake.rightIntakeID, MotorType.kBrushless);
@@ -50,7 +54,7 @@ public class Intake extends SubsystemBase {
               motor.enableVoltageCompensation(11);
               motor.setIdleMode(IdleMode.kBrake);
               // Prevent smoking bot?
-              motor.setSmartCurrentLimit(15);
+              motor.setSmartCurrentLimit(10);
             });
 
     List.of(leftPID, rightPID)
@@ -119,8 +123,16 @@ public class Intake extends SubsystemBase {
     return spinEjectCmd().withTimeout(0.5);
   }
 
+  private double currentFiltered;
+
   @Override
   public void periodic() {
     SmartDashboard.putNumber("Intake Status: ", lastPowerSet);
+    double leftCurrent = leftIntake.getOutputCurrent();
+    SmartDashboard.putNumber("Left Intake Current", leftCurrent);
+    double currentFiltered = currentMeasurer.calculate(leftCurrent);
+    SmartDashboard.putNumber("Left Current Filtered", currentFiltered);
   }
+
+  public Trigger intakeHasThing = new Trigger(() -> currentFiltered > 5).debounce(0.2);
 }

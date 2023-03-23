@@ -1,8 +1,10 @@
 package frc.robot;
 
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import java.util.function.DoubleConsumer;
 import java.util.function.DoubleSupplier;
 
 public class GenericGamepad {
@@ -48,6 +50,8 @@ public class GenericGamepad {
   public Trigger leftTriggerB;
   public Trigger rightTriggerB;
 
+  public DoubleConsumer rumble;
+
   public static GenericGamepad from(int port, boolean isPS4) {
     if (isPS4) {
       return new GenericGamepad(new CommandPS4Controller(port));
@@ -87,6 +91,8 @@ public class GenericGamepad {
 
     topMiddle = controller.touchpad();
     bottomMiddle = controller.PS();
+
+    rumble = (val) -> {};
   }
 
   public GenericGamepad(CommandXboxController controller) {
@@ -120,5 +126,7 @@ public class GenericGamepad {
 
     topMiddle = new Trigger(() -> false);
     bottomMiddle = new Trigger(() -> false);
+
+    rumble = (val) -> controller.getHID().setRumble(RumbleType.kBothRumble, val);
   }
 }
