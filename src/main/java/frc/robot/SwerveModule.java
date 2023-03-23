@@ -2,8 +2,10 @@ package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.DemandType;
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.CANCoder;
+import com.ctre.phoenix.sensors.WPI_CANCoder;
+
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -17,9 +19,9 @@ public class SwerveModule {
   private Rotation2d angleOffset;
   private Rotation2d lastAngle;
 
-  private TalonFX mAngleMotor;
-  private TalonFX mDriveMotor;
-  private CANCoder angleEncoder;
+  private WPI_TalonFX mAngleMotor;
+  private WPI_TalonFX mDriveMotor;
+  private WPI_CANCoder angleEncoder;
 
   SimpleMotorFeedforward feedforward =
       new SimpleMotorFeedforward(
@@ -34,11 +36,11 @@ public class SwerveModule {
     configAngleEncoder();
 
     /* Angle Motor Config */
-    mAngleMotor = new TalonFX(moduleConstants.angleMotorID);
+    mAngleMotor = new WPI_TalonFX(moduleConstants.angleMotorID);
     configAngleMotor();
 
     /* Drive Motor Config */
-    mDriveMotor = new TalonFX(moduleConstants.driveMotorID);
+    mDriveMotor = new WPI_TalonFX(moduleConstants.driveMotorID);
     configDriveMotor();
 
     lastAngle = getState().angle;

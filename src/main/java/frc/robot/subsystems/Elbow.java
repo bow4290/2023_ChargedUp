@@ -1,7 +1,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.*;
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -10,8 +10,8 @@ import frc.robot.Constants;
 import java.util.function.DoubleSupplier;
 
 public class Elbow extends SubsystemBase {
-  private final TalonFX elbowPivot;
-  private final TalonFX elbowPivot2;
+  private final WPI_TalonFX elbowPivot;
+  private final WPI_TalonFX elbowPivot2;
   private double mmPosition;
 
   public double degreesToTicks(double degrees) {
@@ -19,7 +19,7 @@ public class Elbow extends SubsystemBase {
   }
 
   public Elbow() {
-    elbowPivot = new TalonFX(Constants.Elbow.elbowPivotID);
+    elbowPivot = new WPI_TalonFX(Constants.Elbow.elbowPivotID);
     elbowPivot.configFactoryDefault();
     elbowPivot.configForwardSoftLimitEnable(true);
     elbowPivot.configForwardSoftLimitThreshold(degreesToTicks(Constants.Elbow.forwardLimit));
@@ -39,7 +39,7 @@ public class Elbow extends SubsystemBase {
     elbowPivot.setInverted(true);
     elbowPivot.setNeutralMode(NeutralMode.Brake);
 
-    elbowPivot2 = new TalonFX(Constants.Elbow.elbowPivot2ID);
+    elbowPivot2 = new WPI_TalonFX(Constants.Elbow.elbowPivot2ID);
     elbowPivot2.configFactoryDefault();
     elbowPivot2.follow(elbowPivot);
     elbowPivot2.setInverted(

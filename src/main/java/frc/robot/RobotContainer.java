@@ -7,6 +7,7 @@ import com.pathplanner.lib.auto.SwerveAutoBuilder;
 import com.pathplanner.lib.server.PathPlannerServer;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -30,6 +31,8 @@ public class RobotContainer {
   SendableChooser<Command> chooser = new SendableChooser<>();
 
   public RobotContainer() {
+    DriverStation.silenceJoystickConnectionWarning(true); // finally!
+
     configureButtons();
     createAutoBuilder();
     putInfoInDashboard();
@@ -148,7 +151,10 @@ public class RobotContainer {
     // Pistons to cube, intake spin out (eject)
     operator.circle_b.whileTrue(s_Intake.pistonsCubeCmd().andThen(s_Intake.spinEjectCmd()));
     // Arm to vertical, elevator to base
-    operator.cross_a.whileTrue(s_Elbow.goToDegUnending(0).alongWith(s_Elevator.goToBase().beforeStarting(Commands.waitSeconds(0.5))));
+    operator.cross_a.whileTrue(
+        s_Elbow
+            .goToDegUnending(0)
+            .alongWith(s_Elevator.goToBase().beforeStarting(Commands.waitSeconds(0.5))));
     // Intake position from battery side
     operator.dpadDown.whileTrue(s_Elbow.goToDegUnending(-89).alongWith(s_Elevator.goToBase()));
     // Elevator to base

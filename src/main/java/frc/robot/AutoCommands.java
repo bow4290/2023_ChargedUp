@@ -36,7 +36,9 @@ public class AutoCommands {
   }
 
   public Command baseArmAndElevator() {
-    return s_Elbow.goToDeg(0).alongWith(s_Elevator.goToBase().beforeStarting(Commands.waitSeconds(0.4)));
+    return s_Elbow
+        .goToDeg(0)
+        .alongWith(s_Elevator.goToBase().beforeStarting(Commands.waitSeconds(0.4)));
   }
 
   public Command quickReset() {
