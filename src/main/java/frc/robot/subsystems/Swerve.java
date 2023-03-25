@@ -197,7 +197,7 @@ public class Swerve extends SubsystemBase {
           (dist - previousDistances[modNumber]) * (1.0 / Robot.kDefaultPeriod));
       SmartDashboard.putNumber("Mod " + modNumber + " distance", dist);
       SmartDashboard.putNumber("Mod " + modNumber + " Angle", p.angle.getDegrees());
-      // SmartDashboard.putNumber("Mod " + modNumber + " Drive current", mod.getDriveCurrent());
+      SmartDashboard.putNumber("Mod " + modNumber + " Drive current", mod.getDriveCurrent());
       previousDistances[modNumber] = dist;
       modNumber++;
     }

@@ -169,9 +169,9 @@ public final class Constants {
     public static final int elbowPivotID = 9;
     public static final int elbowPivot2ID = 11;
 
-    public static final double motionVelocity = 10000;
-    public static final double motionAcceleration = 7500;
-    public static final int motionSmoothing = 0;
+    public static final double motionVelocity = 8000; // 10000;
+    public static final double motionAcceleration = 4500; // 7500;
+    public static final int motionSmoothing = 3;
 
     // 512/7 ratio, according to build
     // Testing determined the ratio is probably closer to 1024/7 so just use that
@@ -179,7 +179,8 @@ public final class Constants {
     // approximation
     // Build also said that the gear ratio might be 128 / 1; this would be more accurate but it
     // would mess up all the values that we had tuned so just leave it for now
-    public static final double gearRatio = 1024 / 7;
+    // public static final double gearRatio = 1024 / 7;
+    public static final double gearRatio = 128;
     public static final double talonCPR = 2048;
     public static final double ticksPerDegree = gearRatio * talonCPR / 360;
     public static final double degreesPerTick = 1 / ticksPerDegree;
@@ -189,9 +190,9 @@ public final class Constants {
     public static double rotationEps = 2 * ticksPerDegree;
     public static double velocityEps = 6 * ticksPerDegree;
 
-    public static final double kP = 0.5;
-    public static final double kD = 5;
-    public static final double kF = 0.04;
+    public static final double kP = 0.5; // 0.5;
+    public static final double kD = 2.5; // 5;
+    public static final double kF = 0.04; // 0.04;
 
     public static double forwardLimit = 57;
     public static double backwardLimit = -100;

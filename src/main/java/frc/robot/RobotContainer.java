@@ -23,14 +23,16 @@ import java.util.HashMap;
 public class RobotContainer {
   private final Swerve s_Swerve = new Swerve();
   private final Intake s_Intake = new Intake();
-  private final Elbow s_Elbow = new Elbow();
+  private final Elbow s_Elbow;
   private final Elevator s_Elevator = new Elevator();
   private SwerveAutoBuilder autoBuilder;
-  private AutoCommands autoCommands = new AutoCommands(s_Swerve, s_Intake, s_Elbow, s_Elevator);
+  private AutoCommands autoCommands;
 
   SendableChooser<Command> chooser = new SendableChooser<>();
 
   public RobotContainer() {
+    s_Elbow = new Elbow(s_Elevator::getPositionPercent);
+    autoCommands = new AutoCommands(s_Swerve, s_Intake, s_Elbow, s_Elevator);
     DriverStation.silenceJoystickConnectionWarning(true); // finally!
 
     configureButtons();

@@ -2,9 +2,11 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import java.util.function.DoubleSupplier;
@@ -13,12 +15,15 @@ public class Elbow extends SubsystemBase {
   private final WPI_TalonFX elbowPivot;
   private final WPI_TalonFX elbowPivot2;
   private double mmPosition;
+  private DoubleSupplier elevPos;
 
   public double degreesToTicks(double degrees) {
     return degrees * Constants.Elbow.ticksPerDegree;
   }
 
-  public Elbow() {
+  public Elbow(DoubleSupplier elevPos) {
+    this.elevPos = elevPos;
+    SmartDashboard.putNumber("amongus_arm_ctrl", 0.0);
     elbowPivot = new WPI_TalonFX(Constants.Elbow.elbowPivotID);
     elbowPivot.configFactoryDefault();
     elbowPivot.configForwardSoftLimitEnable(true);
@@ -85,16 +90,54 @@ public class Elbow extends SubsystemBase {
 
   public void position(double pos) {
     mmPosition = pos;
-    elbowPivot.set(ControlMode.MotionMagic, pos);
+    elbowPivot.set(
+        ControlMode.MotionMagic,
+        pos,
+        DemandType.ArbitraryFeedForward,
+        calcAFFDeg(getPositionDegrees(), elevPos.getAsDouble()));
   }
 
+  /// pos degrees, elev 0-1
+  private double calcAFFDeg(double pos, double elev) {
+    // 0 -> 90
+    // -90 -> 0
+    // 90 -> 180
+    // 0 vertical is 90 in this address space
+    double deg = pos + 90;
+    double s = Math.cos(Math.toRadians(deg));
+    System.out.println("using aff of " + s * MathUtil.interpolate(0.05, 0.065, elev));
+    // reduce to prevent rising, let proportional keep us up.
+    return 0.75 * s * MathUtil.interpolate(0.05, 0.065, elev);
+  }
+
+  private double retainPositionGoal;
+
   public void retainPosition() {
-    move(0);
-    elbowPivot.set(ControlMode.MotionMagic, getPosition());
+    // 0.05 horiz elev in
+    // 0.065 horiz elev out
+    // System.out.println(SmartDashboard.getNumber("amongus_arm_ctrl", 0.0));
+    // elbowPivot.set(ControlMode.PercentOutput, SmartDashboard.getNumber("amongus_arm_ctrl", 0.0));
+    double pos = getPosition();
+    if (Math.abs(retainPositionGoal - pos) * Constants.Elbow.degreesPerTick > 5.0) {
+      retainPositionGoal = pos;
+    }
+    elbowPivot.set(
+        ControlMode.MotionMagic,
+        retainPositionGoal,
+        DemandType.ArbitraryFeedForward,
+        calcAFFDeg(pos * Constants.Elbow.degreesPerTick, elevPos.getAsDouble()));
   }
 
   public Command retainPositionCmd() {
-    return startEnd(this::retainPosition, () -> move(0));
+    return new FunctionalCommand(
+        () -> {
+          move(0);
+          retainPositionGoal = getPosition();
+        },
+        this::retainPosition,
+        (Boolean a) -> move(0),
+        () -> false,
+        this);
   }
 
   public Command moveCmd(DoubleSupplier speed) {
@@ -108,7 +151,7 @@ public class Elbow extends SubsystemBase {
   }
 
   public Command unendingPositionCmd(double pos) {
-    return startEnd(() -> position(pos), () -> {}).beforeStarting(() -> mmPosition = pos);
+    return runEnd(() -> position(pos), () -> {}).beforeStarting(() -> mmPosition = pos);
     // .withTimeout(Constants.Elbow.autoTimeout);//whoops
   }
 
@@ -135,6 +178,8 @@ public class Elbow extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("elbow pos", getPositionDegrees());
+    double p = getPosition();
+    SmartDashboard.putNumber("elbow pos", p);
+    SmartDashboard.putNumber("elbow pos deg est", p * Constants.Elbow.degreesPerTick);
   }
 }

@@ -97,6 +97,10 @@ public class Elevator extends SubsystemBase {
     return elevatorMotor.getSelectedSensorPosition();
   }
 
+  public double getPositionPercent() {
+    return elevatorMotor.getSelectedSensorPosition() * Constants.Elevator.max;
+  }
+
   @Override
   public void periodic() {
     SmartDashboard.putNumber("Elevator Position", getPosition());
