@@ -138,10 +138,10 @@ public class RobotContainer {
 
     // Temporarily disabled while it still needs to be fixed-ish
     // driver.cross_a.whileTrue(new GoToNearestScoringLocation(s_Swerve));
-    driver.cross_a.whileTrue(autoCommands.attemptBalance());
+    // driver.cross_a.whileTrue(autoCommands.attemptBalance());
     driver.circle_b.whileTrue(s_Swerve.lockModulesCommand());
 
-    driver.square_x.whileTrue(new AutoBalance(s_Swerve, new Rotation2d(0, 1)));
+    // driver.square_x.whileTrue(new AutoBalance(s_Swerve, new Rotation2d(0, 1)));
 
     s_Intake
         .intakeHasThing

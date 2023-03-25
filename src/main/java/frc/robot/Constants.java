@@ -193,7 +193,7 @@ public final class Constants {
     public static final double kD = 5;
     public static final double kF = 0.04;
 
-    public static double forwardLimit = 75;
+    public static double forwardLimit = 57;
     public static double backwardLimit = -100;
 
     public static double autoTimeout = 2.5;
