@@ -131,7 +131,16 @@ public class RobotContainer {
               double input = -driver.rightX.getAsDouble();
               return Math.copySign(Math.pow(input, Constants.turnSens), input);
             },
-            driver.leftBumper::getAsBoolean));
+            driver.leftBumper::getAsBoolean,
+            driver.dpadDown.or(driver.dpadUp).or(driver.dpadLeft).or(driver.dpadRight),
+            () ->
+                driver.dpadDown.getAsBoolean()
+                    ? 180
+                    : driver.dpadUp.getAsBoolean()
+                        ? 0
+                        : driver.dpadLeft.getAsBoolean()
+                            ? 90
+                            : driver.dpadRight.getAsBoolean() ? -90 : 0));
 
     driver.triangle_y.onTrue(new InstantCommand(s_Swerve::zeroGyro));
     // driver.circle_b.whileTrue(new BalanceThing(s_Swerve));

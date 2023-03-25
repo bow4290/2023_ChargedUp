@@ -14,6 +14,27 @@ public class TeleopSwerve extends CommandBase {
   private DoubleSupplier leftRightSup;
   private DoubleSupplier rotationSup;
   private BooleanSupplier robotCentricSup;
+  private BooleanSupplier robotSpecificRotationSup;
+  private DoubleSupplier specificRotationSup;
+
+  public TeleopSwerve(
+      Swerve s_Swerve,
+      DoubleSupplier forwardBackwardSup,
+      DoubleSupplier leftRightSup,
+      DoubleSupplier rotationSup,
+      BooleanSupplier robotCentricSup,
+      BooleanSupplier robotSpecificRotationSup,
+      DoubleSupplier specificRotationSup) {
+    this.s_Swerve = s_Swerve;
+    addRequirements(s_Swerve);
+
+    this.forwardBackwardSup = forwardBackwardSup;
+    this.leftRightSup = leftRightSup;
+    this.rotationSup = rotationSup;
+    this.robotCentricSup = robotCentricSup;
+    this.robotSpecificRotationSup = robotSpecificRotationSup;
+    this.specificRotationSup = specificRotationSup;
+  }
 
   public TeleopSwerve(
       Swerve s_Swerve,
@@ -28,6 +49,8 @@ public class TeleopSwerve extends CommandBase {
     this.leftRightSup = leftRightSup;
     this.rotationSup = rotationSup;
     this.robotCentricSup = robotCentricSup;
+    this.robotSpecificRotationSup = () -> false;
+    this.specificRotationSup = () -> 0;
   }
 
   @Override
@@ -37,7 +60,27 @@ public class TeleopSwerve extends CommandBase {
         MathUtil.applyDeadband(forwardBackwardSup.getAsDouble(), Constants.stickDeadband);
     double leftRightVal =
         MathUtil.applyDeadband(leftRightSup.getAsDouble(), Constants.stickDeadband);
-    double rotationVal = MathUtil.applyDeadband(rotationSup.getAsDouble(), Constants.stickDeadband);
+
+    double rotationVal;
+    if (robotSpecificRotationSup.getAsBoolean()) {
+
+      double wantedRotation = specificRotationSup.getAsDouble();
+      double currentRotation = s_Swerve.getPose().getRotation().getDegrees() % 360;
+      double error = wantedRotation - currentRotation;
+
+      while (error > 180) {
+        error -= 360;
+      }
+      while (error < -180) {
+        error += 360;
+      }
+
+      error = Math.toRadians(error);
+
+      rotationVal = error * 0.5; // this is technically PID control (without ID control)
+    } else {
+      rotationVal = MathUtil.applyDeadband(rotationSup.getAsDouble(), Constants.stickDeadband);
+    }
 
     /* Drive */
     s_Swerve.drive(
