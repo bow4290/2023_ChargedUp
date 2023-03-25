@@ -100,9 +100,9 @@ public class RobotContainer {
   /* Controllers */
   // TODO: Detect if a gamepad is PS4/Logitech based on button count?
   private final int driverPort = 0;
-  private final boolean driverPS4 = false; // testing stuff
+  private final boolean driverPS4 = true; // testing stuff
   private final int operatorPort = 1;
-  private final boolean operatorPS4 = false;
+  private final boolean operatorPS4 = true;
   // private final boolean operatorKabir = false; // IMPORTANT
 
   private final GenericGamepad driver = GenericGamepad.from(driverPort, driverPS4);
