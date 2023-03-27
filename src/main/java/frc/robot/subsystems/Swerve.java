@@ -215,7 +215,5 @@ public class Swerve extends SubsystemBase {
     Pose2d pose = getPose();
     SmartDashboard.putNumber("Robot X", pose.getX());
     SmartDashboard.putNumber("Robot Y", pose.getY());
-
-    SmartDashboard.putNumber("Time since last vision measurement", vision.lastVisionTime());
   }
 }
