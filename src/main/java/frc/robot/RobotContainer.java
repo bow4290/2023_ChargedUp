@@ -107,7 +107,6 @@ public class RobotContainer {
   private final int operatorPort = 1;
   private final boolean operatorPS4 = true;
   private final int keyboardApplePort = 2;
-  private final boolean keyboardApple = true;
 
   private final GenericGamepad driver = GenericGamepad.from(driverPort, driverPS4);
   private final GenericGamepad operator = GenericGamepad.from(operatorPort, operatorPS4);
@@ -115,13 +114,10 @@ public class RobotContainer {
 
   private void configureButtons() {
     driverConfiguration();
-    // //  if (operatorKabir) operatorConfigurationKabir();
-    // else
-    if (keyboardApple) {
-      operatorConfigurationAppleKeyboard();
-    } else {
-      operatorConfiguration();
-    }
+    // We can actually call both of these since they are on different ports. If concurrent commands
+    // run they will interrupt.
+    operatorConfigurationAppleKeyboard();
+    operatorConfiguration();
   }
 
   private void driverConfiguration() {
