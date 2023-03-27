@@ -32,7 +32,7 @@ public class AutoCommands {
   public Command intakeCube() {
     return s_Intake
         .pistonsCubeCmd()
-        .andThen(s_Elbow.goToDeg(-90).alongWith(s_Elevator.goToBase()).alongWith(spinIntake()));
+        .andThen(s_Elbow.goToDeg(-103).alongWith(s_Elevator.goToBase()).alongWith(spinIntake()));
   }
 
   public Command baseArmAndElevator() {
@@ -48,7 +48,7 @@ public class AutoCommands {
   public Command high() {
     return s_Elevator
         .goToMax()
-        .alongWith(s_Elbow.goToDeg(44).beforeStarting(Commands.waitSeconds(0.25)));
+        .alongWith(s_Elbow.goToDeg(50).beforeStarting(Commands.waitSeconds(0.25)));
   }
 
   public Command topCone() {
