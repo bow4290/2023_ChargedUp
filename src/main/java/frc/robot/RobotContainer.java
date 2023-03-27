@@ -9,6 +9,7 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -156,11 +157,6 @@ public class RobotContainer {
     driver.circle_b.whileTrue(s_Swerve.lockModulesCommand());
 
     // driver.square_x.whileTrue(new AutoBalance(s_Swerve, new Rotation2d(0, 1)));
-
-    s_Intake
-        .intakeHasThing
-        .onTrue(Commands.run(() -> driver.rumble.accept(1.0)))
-        .onFalse(Commands.run(() -> driver.rumble.accept(0.0)));
   }
 
   private void operatorConfigurationAppleKeyboard() {

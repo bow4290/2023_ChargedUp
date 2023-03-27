@@ -125,6 +125,8 @@ public class Intake extends SubsystemBase {
 
   private double currentFiltered;
 
+  public Trigger intakeHasThing = new Trigger(() -> currentFiltered > 5).debounce(0.2);
+
   @Override
   public void periodic() {
     SmartDashboard.putNumber("Intake Status: ", lastPowerSet);
@@ -132,7 +134,7 @@ public class Intake extends SubsystemBase {
     SmartDashboard.putNumber("Left Intake Current", leftCurrent);
     double currentFiltered = currentMeasurer.calculate(leftCurrent);
     SmartDashboard.putNumber("Left Current Filtered", currentFiltered);
-  }
 
-  public Trigger intakeHasThing = new Trigger(() -> currentFiltered > 5).debounce(0.2);
+    SmartDashboard.putBoolean("Intake Has Thing", intakeHasThing.getAsBoolean());
+  }
 }
