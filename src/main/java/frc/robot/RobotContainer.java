@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
 import frc.robot.commands.swerve.*;
 import frc.robot.subsystems.*;
 import java.io.File;
@@ -105,16 +106,22 @@ public class RobotContainer {
   private final boolean driverPS4 = true; // testing stuff
   private final int operatorPort = 1;
   private final boolean operatorPS4 = true;
-  // private final boolean operatorKabir = false; // IMPORTANT
+  private final int keyboardApplePort = 2;
+  private final boolean keyboardApple = true;
 
   private final GenericGamepad driver = GenericGamepad.from(driverPort, driverPS4);
   private final GenericGamepad operator = GenericGamepad.from(operatorPort, operatorPS4);
+  private final CommandGenericHID keyboard = new CommandGenericHID(keyboardApplePort);
 
   private void configureButtons() {
     driverConfiguration();
     // //  if (operatorKabir) operatorConfigurationKabir();
     // else
-    operatorConfiguration();
+    if (keyboardApple) {
+      operatorConfigurationAppleKeyboard();
+    } else {
+      operatorConfiguration();
+    }
   }
 
   private void driverConfiguration() {
@@ -158,6 +165,33 @@ public class RobotContainer {
         .intakeHasThing
         .onTrue(Commands.run(() -> driver.rumble.accept(1.0)))
         .onFalse(Commands.run(() -> driver.rumble.accept(0.0)));
+  }
+
+  private void operatorConfigurationAppleKeyboard() {
+    keyboard.button(1).whileTrue(s_Intake.pistonsConeCmd().andThen(s_Intake.spinInCmd()));
+    keyboard.button(2).whileTrue(s_Intake.pistonsCubeCmd().andThen(s_Intake.spinInCmd()));
+    keyboard.button(3).whileTrue(s_Intake.pistonsCubeCmd().andThen(s_Intake.spinEjectCmd()));
+    keyboard
+        .button(4)
+        .whileTrue(
+            s_Elbow
+                .goToDegUnending(0)
+                .alongWith(s_Elevator.goToBase().beforeStarting(Commands.waitSeconds(0.5))));
+
+    keyboard
+        .button(5)
+        .whileTrue(
+            s_Elbow
+                .goToDegUnending(0)
+                .alongWith(s_Elevator.goToBase().beforeStarting(Commands.waitSeconds(0.5))));
+    keyboard.button(6).whileTrue(s_Elbow.goToDegUnending(49));
+    keyboard.button(7).whileTrue(s_Elbow.goToDegUnending(-55));
+    keyboard
+        .button(8)
+        .whileTrue(
+            s_Elbow
+                .goToDegUnending(-100)
+                .alongWith(s_Elevator.goToBase().beforeStarting(Commands.waitSeconds(0.5))));
   }
 
   private void operatorConfiguration() {
