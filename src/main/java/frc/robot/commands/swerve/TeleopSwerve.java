@@ -77,7 +77,7 @@ public class TeleopSwerve extends CommandBase {
 
       error = Math.toRadians(error);
 
-      rotationVal = error * 0.5; // this is technically PID control (without ID control)
+      rotationVal = error * 0.8; // this is technically PID control (without ID control)
       rotationVal = Math.min(Math.max(rotationVal, -0.8), 0.8); // prevent tipping the bot?
     } else {
       rotationVal = MathUtil.applyDeadband(rotationSup.getAsDouble(), Constants.stickDeadband);
