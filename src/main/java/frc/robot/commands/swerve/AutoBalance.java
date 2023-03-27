@@ -3,6 +3,7 @@ package frc.robot.commands.swerve;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -16,6 +17,8 @@ public class AutoBalance extends SequentialCommandGroup {
     return PIDC;
   }
 
+  static PIDController PIDC = makePID();
+
   public AutoBalance(Swerve s_Swerve, Rotation2d dir) {
     // Basically: we aim to get on the charge station, and then once we're on it, do PID balance to
     // secure ourselves. This assumes that the robot is pretty close to, but not already on, the
@@ -24,8 +27,9 @@ public class AutoBalance extends SequentialCommandGroup {
         new TeleopSwerve(s_Swerve, dir::getSin, dir::getCos, () -> 0.7, () -> false)
             .until(new Trigger(() -> s_Swerve.getTiltMagnitude() > 0.2).debounce(0.6))
             .withTimeout(1.0),
+        Commands.run(PIDC::reset),
         new PIDCommand(
-                makePID(),
+                PIDC,
                 // Based on pitch
                 s_Swerve::getTiltMagnitude,
                 // We want to gain a pitch of 0
@@ -46,6 +50,7 @@ public class AutoBalance extends SequentialCommandGroup {
                   }
                 },
                 s_Swerve)
+            .until(PIDC::atSetpoint)
             .andThen(s_Swerve.lockModulesCommand()));
   }
 }
