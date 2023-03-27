@@ -132,7 +132,7 @@ public class Intake extends SubsystemBase {
     SmartDashboard.putNumber("Intake Status: ", lastPowerSet);
     double leftCurrent = leftIntake.getOutputCurrent();
     SmartDashboard.putNumber("Left Intake Current", leftCurrent);
-    double currentFiltered = currentMeasurer.calculate(leftCurrent);
+    currentFiltered = currentMeasurer.calculate(leftCurrent);
     SmartDashboard.putNumber("Left Current Filtered", currentFiltered);
 
     SmartDashboard.putBoolean("Intake Has Thing", intakeHasThing.getAsBoolean());
