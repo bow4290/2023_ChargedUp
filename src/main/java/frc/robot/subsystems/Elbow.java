@@ -6,6 +6,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -105,7 +106,7 @@ public class Elbow extends SubsystemBase {
     // 0 vertical is 90 in this address space
     double deg = pos + 90;
     double s = Math.cos(Math.toRadians(deg));
-    System.out.println("using aff of " + s * MathUtil.interpolate(0.05, 0.065, elev));
+    // System.out.println("using aff of " + s * MathUtil.interpolate(0.05, 0.065, elev));
     // reduce to prevent rising, let proportional keep us up.
     return 0.75 * s * MathUtil.interpolate(0.05, 0.065, elev);
   }
@@ -130,14 +131,15 @@ public class Elbow extends SubsystemBase {
 
   public Command retainPositionCmd() {
     return new FunctionalCommand(
-        () -> {
-          move(0);
-          retainPositionGoal = getPosition();
-        },
-        this::retainPosition,
-        (Boolean a) -> move(0),
-        () -> false,
-        this);
+            () -> {
+              move(0);
+              retainPositionGoal = getPosition();
+            },
+            this::retainPosition,
+            (Boolean a) -> move(0),
+            () -> false,
+            this)
+        .beforeStarting(Commands.print("Retaining position"));
   }
 
   public Command moveCmd(DoubleSupplier speed) {
@@ -151,7 +153,9 @@ public class Elbow extends SubsystemBase {
   }
 
   public Command unendingPositionCmd(double pos) {
-    return runEnd(() -> position(pos), () -> {}).beforeStarting(() -> mmPosition = pos);
+    return runEnd(() -> position(pos), () -> {})
+        .beforeStarting(() -> mmPosition = pos)
+        .beforeStarting(Commands.print("Setting position to: " + pos));
     // .withTimeout(Constants.Elbow.autoTimeout);//whoops
   }
 
