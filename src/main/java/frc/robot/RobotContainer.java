@@ -248,17 +248,17 @@ public class RobotContainer {
       System.out.println("PATH " + deployDir.toPath().resolve("pathplanner").toString());
       // Automatically list all the paths and add them all!
       Files.list(deployDir.toPath().resolve("pathplanner"))
-              .sorted()
-              .filter(file -> !file.toString().contains("unused"))
-              .forEach(
-                      file -> {
-                        try {
-                          var name = file.getName(file.getNameCount() - 1).toString().replace(".path", "");
-                          chooser.addOption(name, createAuto(name));
-                        } catch (Exception e) {
-                          SmartDashboard.putString("ERROR LOADING " + file.toString(), e.getMessage());
-                        }
-                      });
+          .sorted()
+          .filter(file -> !file.toString().contains("unused"))
+          .forEach(
+              file -> {
+                try {
+                  var name = file.getName(file.getNameCount() - 1).toString().replace(".path", "");
+                  chooser.addOption(name, createAuto(name));
+                } catch (Exception e) {
+                  SmartDashboard.putString("ERROR LOADING " + file.toString(), e.getMessage());
+                }
+              });
     } catch (Exception e) {
       // Add manually, even though this should literally never happen
       // Maybe it will happen, though?
@@ -282,7 +282,6 @@ public class RobotContainer {
     chooser.addOption("stationary cube", autoCommands.topCube());
 
     chooser.setDefaultOption("do nothing", new InstantCommand(() -> {}));
-
   }
 
   private Command createAuto(String name) {
@@ -313,18 +312,19 @@ public class RobotContainer {
 
   private void putOtherThingsInDashboard() {
     SmartDashboard.putData(
-            "Reset Swerve Modules To Absolute", s_Swerve.resetModulesToAbsoluteCommand().ignoringDisable(true));
+        "Reset Swerve Modules To Absolute",
+        s_Swerve.resetModulesToAbsoluteCommand().ignoringDisable(true));
     SmartDashboard.putData(
-            "Reset Elbow and Elevator to Zero",
-            Commands.runOnce(
-                    () -> {
-                      s_Elbow.resetToZero();
-                      s_Elevator.resetToZero();
-                    }).ignoringDisable(true));
-
+        "Reset Elbow and Elevator to Zero",
+        Commands.runOnce(
+                () -> {
+                  s_Elbow.resetToZero();
+                  s_Elevator.resetToZero();
+                })
+            .ignoringDisable(true));
 
     SmartDashboard.putData("CHOOSE AUTO", chooser);
     SmartDashboard.putData(
-            "RESEND CHOOSER", new InstantCommand(() -> SmartDashboard.putData("CHOOSE AUTO", chooser)));
+        "RESEND CHOOSER", new InstantCommand(() -> SmartDashboard.putData("CHOOSE AUTO", chooser)));
   }
 }
