@@ -16,9 +16,9 @@ public class Vision {
 
   public Vision() {
     table = NetworkTableInstance.getDefault().getTable("limelight");
-    for (int i = 1; i < 29; i += 4) {
+    for (int i = 1; i < 32; i += 4) {
       setLLDriverCmd()
-          .beforeStarting(Commands.waitSeconds(i).andThen(Commands.print("Setting LL driver")))
+          .beforeStarting(Commands.waitSeconds(i).andThen(Commands.print("Setting LL driver mode")))
           .schedule();
     }
   }
