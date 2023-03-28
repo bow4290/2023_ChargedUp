@@ -7,7 +7,6 @@ import com.pathplanner.lib.auto.SwerveAutoBuilder;
 import com.pathplanner.lib.server.PathPlannerServer;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -95,13 +94,6 @@ public class RobotContainer {
                             : driver.dpadRight.getAsBoolean() ? -90 : 0));
 
     driver.triangle_y.onTrue(new InstantCommand(s_Swerve::zeroGyro));
-    driver.square_x.onTrue(
-        new InstantCommand(
-            () -> {
-              var l = NetworkTableInstance.getDefault().getTable("limelight");
-              l.getEntry("ledMode").setNumber(1);
-              l.getEntry("camMode").setNumber(1);
-            }));
     // driver.circle_b.whileTrue(new BalanceThing(s_Swerve));
 
     // Temporarily disabled while it still needs to be fixed-ish
@@ -322,6 +314,8 @@ public class RobotContainer {
                   s_Elevator.resetToZero();
                 })
             .ignoringDisable(true));
+
+    SmartDashboard.putData("Limelight Drive Mode", s_Swerve.vision.setLLDriverCmd());
 
     SmartDashboard.putData("CHOOSE AUTO", chooser);
     SmartDashboard.putData(
