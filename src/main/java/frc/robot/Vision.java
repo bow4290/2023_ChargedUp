@@ -1,9 +1,8 @@
 package frc.robot;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import java.util.Optional;
 
 /**
@@ -14,14 +13,9 @@ public class Vision {
   private AprilTagFieldLayout aprilLayout;
 
   public Vision() {
-
-    try {
-      aprilLayout =
-          AprilTagFieldLayout.loadFromResource(AprilTagFields.k2023ChargedUp.m_resourceFile);
-    } catch (Exception e) {
-      // This is unnecessary, since code would error. This is impossible, anyways
-      SmartDashboard.putString("WARNING: ERROR LOADING LAYOUT!", "yes");
-    }
+    var l = NetworkTableInstance.getDefault().getTable("limelight");
+    l.getEntry("ledMode").setNumber(1);
+    l.getEntry("camMode").setNumber(1);
   }
 
   /** A non-vendor-library-dependent way to hold the estimated robot position */

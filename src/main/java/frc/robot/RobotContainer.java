@@ -7,6 +7,7 @@ import com.pathplanner.lib.auto.SwerveAutoBuilder;
 import com.pathplanner.lib.server.PathPlannerServer;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -94,6 +95,13 @@ public class RobotContainer {
                             : driver.dpadRight.getAsBoolean() ? -90 : 0));
 
     driver.triangle_y.onTrue(new InstantCommand(s_Swerve::zeroGyro));
+    driver.square_x.onTrue(
+        new InstantCommand(
+            () -> {
+              var l = NetworkTableInstance.getDefault().getTable("limelight");
+              l.getEntry("ledMode").setNumber(1);
+              l.getEntry("camMode").setNumber(1);
+            }));
     // driver.circle_b.whileTrue(new BalanceThing(s_Swerve));
 
     // Temporarily disabled while it still needs to be fixed-ish
@@ -101,7 +109,9 @@ public class RobotContainer {
     // driver.cross_a.whileTrue(autoCommands.attemptBalance());
     driver.circle_b.whileTrue(s_Swerve.lockModulesCommand());
 
-    // driver.square_x.whileTrue(new AutoBalance(s_Swerve, new Rotation2d(0, 1)));
+    driver.rightBumper.whileTrue(autoCommands.topCube());
+
+    driver.square_x.whileTrue(new AutoBalance(s_Swerve, new Rotation2d(0, 1)));
   }
 
   private void operatorConfigurationAppleKeyboard() {
@@ -127,8 +137,18 @@ public class RobotContainer {
         .button(8)
         .whileTrue(
             s_Elbow
-                .goToDegUnending(-100)
+                .goToDegUnending(-105)
                 .alongWith(s_Elevator.goToBase().beforeStarting(Commands.waitSeconds(0.5))));
+
+    keyboard.button(9).whileTrue(s_Elevator.goToBase());
+    keyboard.button(10).whileTrue(s_Elevator.goToMax());
+    keyboard.button(11).whileTrue(s_Elbow.goToDegUnending(55));
+    keyboard
+        .button(12)
+        .whileTrue(
+            s_Elbow
+                .goToDegUnending(10)
+                .alongWith(s_Intake.pistonsCubeCmd().andThen(s_Intake.spinEjectCmd())));
   }
 
   private void operatorConfiguration() {
@@ -144,7 +164,7 @@ public class RobotContainer {
             .goToDegUnending(0)
             .alongWith(s_Elevator.goToBase().beforeStarting(Commands.waitSeconds(0.5))));
     // Intake position from battery side
-    operator.dpadDown.whileTrue(s_Elbow.goToDegUnending(-100).alongWith(s_Elevator.goToBase()));
+    operator.dpadDown.whileTrue(s_Elbow.goToDegUnending(-105).alongWith(s_Elevator.goToBase()));
     // Elevator to base
     operator.dpadLeft.whileTrue(s_Elevator.goToBase());
     // Elevator to mid

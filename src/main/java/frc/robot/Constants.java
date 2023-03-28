@@ -169,9 +169,9 @@ public final class Constants {
     public static final int elbowPivotID = 9;
     public static final int elbowPivot2ID = 11;
 
-    public static final double motionVelocity = 8000; // 10000;
-    public static final double motionAcceleration = 4500; // 7500;
-    public static final int motionSmoothing = 3;
+    public static final double motionVelocity = 14000; // 10000;
+    public static final double motionAcceleration = 18000; // 7500;
+    public static final int motionSmoothing = 1;
 
     // 512/7 ratio, according to build
     // Testing determined the ratio is probably closer to 1024/7 so just use that
@@ -212,7 +212,7 @@ public final class Constants {
     // 8740
     public static final double base = 0;
     public static final double middle = 50000;
-    public static final double max = 84500;
+    public static final double max = 82500;
 
     public static final double revolutionsPerMeter = 40 * 2048; // (APPROXIMATE, DO NOT USE)
     public static final double metersPerRevolution = 1 / revolutionsPerMeter;
