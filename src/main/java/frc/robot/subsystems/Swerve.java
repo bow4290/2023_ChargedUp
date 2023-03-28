@@ -23,7 +23,7 @@ public class Swerve extends SubsystemBase {
   public SwerveModule[] mSwerveMods;
   public WPI_Pigeon2 gyro;
 
-  private Vision vision = new Vision();
+  public Vision vision = new Vision();
 
   public Swerve() {
     gyro = new WPI_Pigeon2(Constants.Swerve.pigeonID);

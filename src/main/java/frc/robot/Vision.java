@@ -1,21 +1,35 @@
 package frc.robot;
 
-import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Commands;
 import java.util.Optional;
 
 /**
- * The Vision class interfaces with the PhotonVision (Limelight) and gets robot positions using
- * AprilTags. This is used by the Swerve subsystem.
+ * The Vision class interfaces with the Limelight and gets robot positions using AprilTags. This is
+ * used by the Swerve subsystem.
  */
 public class Vision {
-  private AprilTagFieldLayout aprilLayout;
+  NetworkTable table;
 
   public Vision() {
-    var l = NetworkTableInstance.getDefault().getTable("limelight");
-    l.getEntry("ledMode").setNumber(1);
-    l.getEntry("camMode").setNumber(1);
+    table = NetworkTableInstance.getDefault().getTable("limelight");
+    for (int i = 1; i < 32; i += 4) {
+      setLLDriverCmd()
+          .beforeStarting(Commands.waitSeconds(i).andThen(Commands.print("Setting LL driver mode")))
+          .schedule();
+    }
+  }
+
+  public void setLLDriver() {
+    table.getEntry("ledMode").setNumber(1);
+    table.getEntry("camMode").setNumber(1);
+  }
+
+  public CommandBase setLLDriverCmd() {
+    return Commands.runOnce(this::setLLDriver).ignoringDisable(true);
   }
 
   /** A non-vendor-library-dependent way to hold the estimated robot position */

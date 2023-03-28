@@ -7,7 +7,6 @@ import com.pathplanner.lib.auto.SwerveAutoBuilder;
 import com.pathplanner.lib.server.PathPlannerServer;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -25,82 +24,28 @@ import java.util.HashMap;
 public class RobotContainer {
   private final Swerve s_Swerve = new Swerve();
   private final Intake s_Intake = new Intake();
-  private final Elbow s_Elbow;
   private final Elevator s_Elevator = new Elevator();
+  private final Elbow s_Elbow = new Elbow(s_Elevator::getPositionPercent);
   private SwerveAutoBuilder autoBuilder;
-  private AutoCommands autoCommands;
+  private AutoCommands autoCommands = new AutoCommands(s_Swerve, s_Intake, s_Elbow, s_Elevator);
 
   SendableChooser<Command> chooser = new SendableChooser<>();
 
   public RobotContainer() {
-    s_Elbow = new Elbow(s_Elevator::getPositionPercent);
-    autoCommands = new AutoCommands(s_Swerve, s_Intake, s_Elbow, s_Elevator);
-    DriverStation.silenceJoystickConnectionWarning(true); // finally!
+    DriverStation.silenceJoystickConnectionWarning(true); // Remove annoying warnings
 
     configureButtons();
     createAutoBuilder();
+    populateAutoChooser();
     putInfoInDashboard();
+    putOtherThingsInDashboard();
     // Create a server for PathPlanner so that the robot pathing can be viewed.
     PathPlannerServer.startServer(5811);
-
-    SmartDashboard.putData(
-        "Reset Swerve Modules To Absolute", s_Swerve.resetModulesToAbsoluteCommand());
-    SmartDashboard.putData(
-        "Reset Elbow and Elevator to Zero",
-        Commands.runOnce(
-            () -> {
-              s_Elbow.resetToZero();
-              s_Elevator.resetToZero();
-            }));
-
-    var deployDir = Filesystem.getDeployDirectory();
-
-    try {
-      System.out.println("PATH " + deployDir.toPath().resolve("pathplanner").toString());
-      // Automatically list all the paths and add them all!
-      Files.list(deployDir.toPath().resolve("pathplanner"))
-          .sorted()
-          .filter(file -> !file.toString().contains("unused"))
-          .forEach(
-              file -> {
-                try {
-                  var name = file.getName(file.getNameCount() - 1).toString().replace(".path", "");
-                  chooser.addOption(name, createAuto(name));
-                } catch (Exception e) {
-                  SmartDashboard.putString("ERROR LOADING " + file.toString(), e.getMessage());
-                }
-              });
-    } catch (Exception e) {
-      // Add manually, even though this should literally never happen
-      // Maybe it will happen, though?
-      SmartDashboard.putString("WARNING", "UNABLE TO AUTOMATICALLY DO AUTOS");
-      e.printStackTrace();
-      chooser.addOption("2nd cone", createAuto("2nd cone"));
-      chooser.addOption("5th cone", createAuto("5th cone"));
-      chooser.addOption("6th cone", createAuto("6th cone"));
-      chooser.addOption("1st cube", createAuto("1st cube"));
-      chooser.addOption("3rd cube", createAuto("3rd cube"));
-
-      chooser.addOption("2nd cone + balance", createAuto("2nd cone + balance"));
-      chooser.addOption("5th cone + balance", createAuto("5th cone + balance"));
-      chooser.addOption("6th cone + balance", createAuto("6th cone + balance"));
-      chooser.addOption("1st cube + balance", createAuto("1st cube + balance"));
-      chooser.addOption("3rd cube + balance", createAuto("3rd cube + balance"));
-
-      chooser.addOption("5th cone + pickup", createAuto("5th cone + pickup"));
-    }
-    chooser.addOption("stationary cone", autoCommands.topCone());
-    chooser.addOption("stationary cube", autoCommands.topCube());
-
-    chooser.setDefaultOption("do nothing", new InstantCommand(() -> {}));
-
-    SmartDashboard.putData("CHOOSE AUTO", chooser);
-    SmartDashboard.putData(
-        "RESEND CHOOSER", new InstantCommand(() -> SmartDashboard.putData("CHOOSE AUTO", chooser)));
 
     // DO NOT UNCOMMENT THE FOLLOWING LINES
     // robot.explode();
   }
+
   /* Controllers */
   // TODO: Detect if a gamepad is PS4/Logitech based on button count?
   private final int driverPort = 0;
@@ -149,13 +94,6 @@ public class RobotContainer {
                             : driver.dpadRight.getAsBoolean() ? -90 : 0));
 
     driver.triangle_y.onTrue(new InstantCommand(s_Swerve::zeroGyro));
-    driver.square_x.onTrue(
-        new InstantCommand(
-            () -> {
-              var l = NetworkTableInstance.getDefault().getTable("limelight");
-              l.getEntry("ledMode").setNumber(1);
-              l.getEntry("camMode").setNumber(1);
-            }));
     // driver.circle_b.whileTrue(new BalanceThing(s_Swerve));
 
     // Temporarily disabled while it still needs to be fixed-ish
@@ -295,6 +233,49 @@ public class RobotContainer {
             s_Swerve);
   }
 
+  private void populateAutoChooser() {
+    var deployDir = Filesystem.getDeployDirectory();
+
+    try {
+      System.out.println("PATH " + deployDir.toPath().resolve("pathplanner").toString());
+      // Automatically list all the paths and add them all!
+      Files.list(deployDir.toPath().resolve("pathplanner"))
+          .sorted()
+          .filter(file -> !file.toString().contains("unused"))
+          .forEach(
+              file -> {
+                try {
+                  var name = file.getName(file.getNameCount() - 1).toString().replace(".path", "");
+                  chooser.addOption(name, createAuto(name));
+                } catch (Exception e) {
+                  SmartDashboard.putString("ERROR LOADING " + file.toString(), e.getMessage());
+                }
+              });
+    } catch (Exception e) {
+      // Add manually, even though this should literally never happen
+      // Maybe it will happen, though?
+      SmartDashboard.putString("WARNING", "UNABLE TO AUTOMATICALLY DO AUTOS");
+      e.printStackTrace();
+      chooser.addOption("2nd cone", createAuto("2nd cone"));
+      chooser.addOption("5th cone", createAuto("5th cone"));
+      chooser.addOption("6th cone", createAuto("6th cone"));
+      chooser.addOption("1st cube", createAuto("1st cube"));
+      chooser.addOption("3rd cube", createAuto("3rd cube"));
+
+      chooser.addOption("2nd cone + balance", createAuto("2nd cone + balance"));
+      chooser.addOption("5th cone + balance", createAuto("5th cone + balance"));
+      chooser.addOption("6th cone + balance", createAuto("6th cone + balance"));
+      chooser.addOption("1st cube + balance", createAuto("1st cube + balance"));
+      chooser.addOption("3rd cube + balance", createAuto("3rd cube + balance"));
+
+      chooser.addOption("5th cone + pickup", createAuto("5th cone + pickup"));
+    }
+    chooser.addOption("stationary cone", autoCommands.topCone());
+    chooser.addOption("stationary cube", autoCommands.topCube());
+
+    chooser.setDefaultOption("do nothing", new InstantCommand(() -> {}));
+  }
+
   private Command createAuto(String name) {
     var pathGroup = PathPlanner.loadPathGroup(name, new PathConstraints(3, 3));
     return Commands.sequence(
@@ -319,5 +300,25 @@ public class RobotContainer {
     } catch (Exception e) {
     }
     SmartDashboard.putString("Code Last Deployed", deployInfo);
+  }
+
+  private void putOtherThingsInDashboard() {
+    SmartDashboard.putData(
+        "Reset Swerve Modules To Absolute",
+        s_Swerve.resetModulesToAbsoluteCommand().ignoringDisable(true));
+    SmartDashboard.putData(
+        "Reset Elbow and Elevator to Zero",
+        Commands.runOnce(
+                () -> {
+                  s_Elbow.resetToZero();
+                  s_Elevator.resetToZero();
+                })
+            .ignoringDisable(true));
+
+    SmartDashboard.putData("Limelight Drive Mode", s_Swerve.vision.setLLDriverCmd());
+
+    SmartDashboard.putData("CHOOSE AUTO", chooser);
+    SmartDashboard.putData(
+        "RESEND CHOOSER", new InstantCommand(() -> SmartDashboard.putData("CHOOSE AUTO", chooser)));
   }
 }
