@@ -54,14 +54,14 @@ public class Intake extends SubsystemBase {
               motor.enableVoltageCompensation(11);
               motor.setIdleMode(IdleMode.kBrake);
               // Prevent smoking bot?
-              motor.setSmartCurrentLimit(10);
+              motor.setSmartCurrentLimit(14);
             });
 
     List.of(leftPID, rightPID)
         .forEach(
             pid -> {
-              pid.setP(0.2); // Probably needs to be tuned or something!
-              pid.setOutputRange(-0.3, 0.3);
+              pid.setP(0.1); // Probably needs to be tuned or something!
+              pid.setOutputRange(-0.2, 0.2);
             });
 
     solenoid =
@@ -120,12 +120,12 @@ public class Intake extends SubsystemBase {
   }
 
   public Command autoEjectCmd() {
-    return spinEjectCmd().withTimeout(0.5);
+    return pistonsCubeCmd().andThen(spinEjectCmd().withTimeout(0.25));
   }
 
   private double currentFiltered;
 
-  public Trigger intakeHasThing = new Trigger(() -> currentFiltered > 5).debounce(0.2);
+  public Trigger intakeHasThing = new Trigger(() -> currentFiltered > 9).debounce(0.2);
 
   @Override
   public void periodic() {

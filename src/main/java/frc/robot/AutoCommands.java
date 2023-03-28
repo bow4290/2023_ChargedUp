@@ -53,11 +53,7 @@ public class AutoCommands {
 
   public Command topCone() {
     return Commands.sequence(
-        high(),
-        s_Intake.pistonsCubeCmd(),
-        s_Intake.autoEjectCmd(),
-        baseArmAndElevator(),
-        s_Intake.pistonsConeCmd());
+        high(), s_Intake.autoEjectCmd(), baseArmAndElevator(), s_Intake.pistonsConeCmd());
   }
 
   /// Like top cone, but don't put arm back afterwards.

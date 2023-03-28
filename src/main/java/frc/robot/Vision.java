@@ -1,10 +1,8 @@
 package frc.robot;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import java.util.Optional;
 
 /**
@@ -17,8 +15,7 @@ public class Vision {
   public Vision() {
     var l = NetworkTableInstance.getDefault().getTable("limelight");
     l.getEntry("ledMode").setNumber(1);
-    l.getEntry("camMode").setNumber(1);//
-
+    l.getEntry("camMode").setNumber(1);
   }
 
   /** A non-vendor-library-dependent way to hold the estimated robot position */
