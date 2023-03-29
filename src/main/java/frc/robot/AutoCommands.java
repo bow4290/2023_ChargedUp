@@ -1,12 +1,7 @@
 package frc.robot;
 
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.FunctionalCommand;
-import frc.lib.math.RateMeasurer;
 import frc.robot.subsystems.Elbow;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Intake;
@@ -73,27 +68,5 @@ public class AutoCommands {
 
   public Command topCubeSecond() {
     return high().andThen(s_Intake.autoEjectCmd(), quickReset());
-  }
-
-  public Command attemptBalance() {
-    RateMeasurer measurer = new RateMeasurer();
-    return new FunctionalCommand(
-        () -> measurer.init(s_Swerve.getTiltMagnitude()),
-        () -> {
-          double[] grav = s_Swerve.getGravity();
-          double magnitude = Math.sqrt(grav[0] * grav[0] + grav[1] * grav[1]);
-          Rotation2d rot = new Rotation2d(grav[0], grav[1]);
-          measurer.addMeasurement(magnitude);
-          SmartDashboard.putNumber("mag rate", measurer.getRate());
-          if (magnitude > 0.08 && Math.abs(measurer.getRate()) < 0.1) {
-            double mult = 0.5;
-            s_Swerve.drive(
-                new Translation2d(mult * rot.getCos(), mult * rot.getSin()), 0, false, true);
-          } else {
-            s_Swerve.lockModules();
-          }
-        },
-        s_Swerve::lockModules,
-        () -> false);
   }
 }
