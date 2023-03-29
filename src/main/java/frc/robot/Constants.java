@@ -198,6 +198,18 @@ public final class Constants {
     public static double backwardLimit = -110;
 
     public static double autoTimeout = 2.5;
+
+    public static final class Positions {
+      public static double ground = -105;
+      public static double second = -55;
+      public static double secondWeak = -40;
+      public static double third = 50;
+      public static double thirdWeak = 40;
+      public static double humanDoubleBattery = 55;
+      public static double humanDoubleForward = -55;
+      public static double humanSingleBattery = -59;
+      public static double humanSingleForward = 59;
+    }
   }
 
   public static final class Elevator {

@@ -75,6 +75,24 @@ public class Elevator extends SubsystemBase {
     return positionCmd(Constants.Elevator.base);
   }
 
+  public Command smartBase(Command cmd) {
+    return smartPos(cmd, 0.0);
+  }
+
+  public Command smartBase(Command cmd, Command conc) {
+    return smartPos(cmd, conc, 0.0);
+  }
+
+  public Command smartPos(Command cmd, double pos) {
+    return cmd.raceWith(positionCmd(pos).repeatedly().beforeStarting(Commands.waitSeconds(0.25)))
+        .andThen(goToBase());
+  }
+
+  public Command smartPos(Command cmd, Command conc, double pos) {
+    return cmd.raceWith(positionCmd(pos).repeatedly().beforeStarting(Commands.waitSeconds(0.25)))
+        .andThen(goToBase().alongWith(conc));
+  }
+
   public Command goToMid() {
     return positionCmd(Constants.Elevator.middle);
   }
@@ -100,7 +118,11 @@ public class Elevator extends SubsystemBase {
   }
 
   public double getPositionPercent() {
-    return elevatorMotor.getSelectedSensorPosition() * Constants.Elevator.max;
+    return elevatorMotor.getSelectedSensorPosition() / Constants.Elevator.max;
+  }
+
+  public double percentToPosition(double percentage) {
+    return percentage * Constants.Elevator.max;
   }
 
   @Override

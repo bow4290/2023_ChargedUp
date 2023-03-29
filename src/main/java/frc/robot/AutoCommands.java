@@ -27,7 +27,7 @@ public class AutoCommands {
   public Command intakeCube() {
     return s_Intake
         .pistonsCubeCmd()
-        .andThen(s_Elbow.goToDeg(-103).alongWith(s_Elevator.goToBase()).alongWith(spinIntake()));
+        .andThen(s_Elbow.groundPosition().alongWith(s_Elevator.goToBase()).alongWith(spinIntake()));
   }
 
   public Command baseArmAndElevator() {
@@ -43,7 +43,10 @@ public class AutoCommands {
   public Command high() {
     return s_Elevator
         .goToMax()
-        .alongWith(s_Elbow.goToDeg(50).beforeStarting(Commands.waitSeconds(0.25)));
+        .alongWith(
+            s_Elbow
+                .goToDeg(Constants.Elbow.Positions.third)
+                .beforeStarting(Commands.waitSeconds(0.25)));
   }
 
   public Command topCone() {
@@ -68,5 +71,18 @@ public class AutoCommands {
 
   public Command topCubeSecond() {
     return high().andThen(s_Intake.autoEjectCmd(), quickReset());
+  }
+
+  public Command prepRam() {
+    return s_Elbow.goToDeg(0);
+  }
+
+  public Command ram() {
+    return s_Elbow
+        .goToDeg(10)
+        .alongWith(
+            s_Intake
+                .pistonsCubeCmd()
+                .andThen(s_Intake.runEnd(() -> s_Intake.spin(-1.0), s_Intake::stopSpinning)));
   }
 }
