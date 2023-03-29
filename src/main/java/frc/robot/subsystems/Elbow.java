@@ -180,6 +180,14 @@ public class Elbow extends SubsystemBase {
     return getPosition() * Constants.Elbow.degreesPerTick;
   }
 
+  public Command groundPosition() {
+    return positionCmd(Constants.Elbow.Positions.ground);
+  }
+
+  public Command secondPosition() {
+    return positionCmd(Constants.Elbow.Positions.second);
+  }
+
   @Override
   public void periodic() {
     double p = getPosition();

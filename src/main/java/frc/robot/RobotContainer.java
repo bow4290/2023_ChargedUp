@@ -5,7 +5,6 @@ import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.auto.PIDConstants;
 import com.pathplanner.lib.auto.SwerveAutoBuilder;
 import com.pathplanner.lib.server.PathPlannerServer;
-import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
@@ -107,40 +106,44 @@ public class RobotContainer {
   }
 
   private void operatorConfigurationAppleKeyboard() {
-    keyboard.button(1).whileTrue(s_Intake.pistonsConeCmd().andThen(s_Intake.spinInCmd()));
-    keyboard.button(2).whileTrue(s_Intake.pistonsCubeCmd().andThen(s_Intake.spinInCmd()));
-    keyboard.button(3).whileTrue(s_Intake.pistonsCubeCmd().andThen(s_Intake.spinEjectCmd()));
-    keyboard
-        .button(4)
-        .whileTrue(
-            s_Elbow
-                .goToDegUnending(0)
-                .alongWith(s_Elevator.goToBase().beforeStarting(Commands.waitSeconds(0.5))));
+    // 1 -> third
+    // 2 -> forward (reverse) second
+    // 3 -> second
+    // 4 -> ground
+    // 15, 16, 17, 18: cube version of above.
+    // 5 -> battery single intake
+    // 6 -> battery double intake
+    // 7 -> single intake
+    // 8 -> double intake
+    // 11 -> spin intake in
+    // 12 -> spin intake out
+    // 13 -> reset arm
+    keyboard.button(1).whileTrue(new RobotState().elbowThird().elevatorMax().build(this));
+    keyboard.button(2).whileTrue(new RobotState().elbowThird().elevatorMiddle().build(this));
+    keyboard.button(3).whileTrue(new RobotState().elbowSecond().elevator(0.25).build(this));
+    keyboard.button(4).whileTrue(new RobotState().elbowGround().elevatorBase().build(this));
+
+    keyboard.button(15).whileTrue(new RobotState().elbowThirdWeak().elevator(0.7).build(this));
+    keyboard.button(16).whileTrue(new RobotState().elbowThirdWeak().elevatorBase().build(this));
+    keyboard.button(17).whileTrue(new RobotState().elbowSecondWeak().elevatorBase().build(this));
+    keyboard.button(18).whileTrue(new RobotState().elbowGround().elevatorBase().build(this));
 
     keyboard
         .button(5)
-        .whileTrue(
-            s_Elbow
-                .goToDegUnending(0)
-                .alongWith(s_Elevator.goToBase().beforeStarting(Commands.waitSeconds(0.5))));
-    keyboard.button(6).whileTrue(s_Elbow.goToDegUnending(49));
-    keyboard.button(7).whileTrue(s_Elbow.goToDegUnending(-55));
+        .whileTrue(new RobotState().elbowSingleBattery().elevatorBase().intakeIn().build(this));
+    keyboard
+        .button(6)
+        .whileTrue(new RobotState().elbowDoubleBattery().elevatorMax().intakeIn().build(this));
+    keyboard
+        .button(7)
+        .whileTrue(new RobotState().elbowSingleForward().elevatorBase().intakeIn().build(this));
     keyboard
         .button(8)
-        .whileTrue(
-            s_Elbow
-                .goToDegUnending(-105)
-                .alongWith(s_Elevator.goToBase().beforeStarting(Commands.waitSeconds(0.5))));
+        .whileTrue(new RobotState().elbowDoubleForward().elevatorBase().intakeIn().build(this));
 
-    keyboard.button(9).whileTrue(s_Elevator.goToBase());
-    keyboard.button(10).whileTrue(s_Elevator.goToMax());
-    keyboard.button(11).whileTrue(s_Elbow.goToDegUnending(55));
-    keyboard
-        .button(12)
-        .whileTrue(
-            s_Elbow
-                .goToDegUnending(10)
-                .alongWith(s_Intake.pistonsCubeCmd().andThen(s_Intake.spinEjectCmd())));
+    keyboard.button(11).whileTrue(new RobotState().intakeIn().build(this));
+    keyboard.button(12).whileTrue(new RobotState().intakeEject().build(this));
+    keyboard.button(13).whileTrue(new RobotState().elbowBase().elevatorBase().build(this));
   }
 
   private void operatorConfiguration() {
@@ -152,11 +155,10 @@ public class RobotContainer {
     operator.circle_b.whileTrue(s_Intake.pistonsCubeCmd().andThen(s_Intake.spinEjectCmd()));
     // Arm to vertical, elevator to base
     operator.cross_a.whileTrue(
-        s_Elbow
-            .goToDegUnending(0)
-            .alongWith(s_Elevator.goToBase().beforeStarting(Commands.waitSeconds(0.5))));
+        s_Elevator.smartBase(s_Elbow.goToDeg(0), s_Elbow.goToDegUnending(0)));
     // Intake position from battery side
-    operator.dpadDown.whileTrue(s_Elbow.goToDegUnending(-105).alongWith(s_Elevator.goToBase()));
+    operator.dpadDown.whileTrue(
+        s_Elevator.smartBase(s_Elbow.groundPosition(), s_Elbow.groundPosition().repeatedly()));
     // Elevator to base
     operator.dpadLeft.whileTrue(s_Elevator.goToBase());
     // Elevator to mid
@@ -164,7 +166,7 @@ public class RobotContainer {
     // Elevator to max
     operator.dpadRight.whileTrue(s_Elevator.goToMax());
     // Arm back battery side for 2nd row
-    operator.leftBumper.whileTrue(s_Elbow.goToDegUnending(-55).alongWith(s_Elevator.goToMid()));
+    operator.leftBumper.whileTrue(s_Elbow.secondPosition().alongWith(s_Elevator.goToMid()));
     // Arm out front side for 3rd row
     operator.leftTriggerB.whileTrue(
         s_Elevator
@@ -191,6 +193,54 @@ public class RobotContainer {
             () -> operator.rightX.getAsDouble() * (operator.topMiddle.getAsBoolean() ? 1 : 0.2)));
   }
 
+  // elbow in degrees, 0 is up.
+  // elevator [0, 1]
+  // intake [-1, 1] positive for in, negative for out
+  // sustain true to maintain state, false to end command once achieved
+  // min time for spin intake at least x seconds even when state achieved early (for sustain =
+  // false)
+  // pass null for keep/don't care
+  // I miss monads :(
+  public Command achieveState(
+      Double elbow,
+      Double elevator,
+      Boolean cone,
+      Double intake,
+      Boolean thenBrake,
+      boolean sustain,
+      double minTime) {
+    if (elevator != null) elevator = s_Elevator.percentToPosition(elevator);
+    Command cmd = (elbow != null) ? s_Elbow.goToDeg(elbow) : new InstantCommand();
+    cmd =
+        (elevator != null)
+            ? (elevator < 1.0)
+                ? s_Elevator.smartPos(cmd, cmd.repeatedly(), elevator)
+                : cmd.alongWith(s_Elevator.positionCmd(elevator))
+            : cmd;
+    Command sus = (elbow != null) ? s_Elbow.goToDegUnending(elbow) : new InstantCommand();
+    sus = (elevator != null) ? sus.alongWith(s_Elevator.positionCmd(elevator).repeatedly()) : sus;
+    cmd =
+        (sustain)
+            ? cmd.andThen(sus.repeatedly())
+            : (minTime > 0.0) ? cmd.andThen(sus.repeatedly().withTimeout(minTime)) : cmd;
+    cmd =
+        (cone != null)
+            ? (cone)
+                ? cmd.beforeStarting(s_Intake.pistonsConeCmd())
+                : cmd.beforeStarting(s_Intake.pistonsCubeCmd())
+            : cmd;
+    cmd =
+        (intake != null)
+            ? cmd.deadlineWith(
+                s_Intake.runEnd(
+                    () -> s_Intake.spin(intake),
+                    (thenBrake != null && thenBrake)
+                        ? s_Intake::retainPositionCmd
+                        : s_Intake::stopSpinning))
+            : cmd;
+    return cmd;
+  }
+
   public Command getAutonomousCommand() {
     return chooser.getSelected();
   }
@@ -212,13 +262,16 @@ public class RobotContainer {
     eventMap.put("intakeCube", autoCommands.intakeCube());
     eventMap.put("intakeUp", s_Elbow.goToDeg(0).alongWith(s_Elevator.goToBase()));
 
-    var thetaController =
+    eventMap.put("prepRam", autoCommands.prepRam());
+    eventMap.put("ram", autoCommands.ram());
+
+    /*var thetaController =
         new ProfiledPIDController(
             Constants.AutoConstants.kPThetaController,
             0,
             0,
             Constants.AutoConstants.kThetaControllerConstraints);
-    thetaController.enableContinuousInput(-Math.PI, Math.PI);
+    thetaController.enableContinuousInput(-Math.PI, Math.PI);*/
 
     autoBuilder =
         new SwerveAutoBuilder(
