@@ -53,7 +53,7 @@ public class Intake extends SubsystemBase {
               motor.enableVoltageCompensation(11);
               motor.setIdleMode(IdleMode.kBrake);
               // Prevent smoking bot?
-              motor.setSmartCurrentLimit(14);
+              motor.setSmartCurrentLimit(25);
             });
 
     List.of(leftPID /*, rightPID*/)
