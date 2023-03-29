@@ -70,7 +70,7 @@ public class Swerve extends SubsystemBase {
                 ? ChassisSpeeds.fromFieldRelativeSpeeds(speeds, getPose().getRotation())
                 : speeds);
     // Normalizes wheel speeds by the max (wheel) speed.
-    SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.Swerve.maxSpeed);
+    SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, speeds, Constants.Swerve.maxSpeed, Constants.Swerve.maxSpeed, Constants.Swerve.maxAngularVelocity);
 
     for (SwerveModule mod : mSwerveMods) {
       mod.setDesiredState(swerveModuleStates[mod.moduleNumber], isOpenLoop);
