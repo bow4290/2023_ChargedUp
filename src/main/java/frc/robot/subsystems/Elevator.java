@@ -62,8 +62,8 @@ public class Elevator extends SubsystemBase {
     return startEnd(() -> position(pos), () -> {})
         .beforeStarting(() -> mmPosition = pos)
         .until(this::isFinished)
-        .withTimeout(Constants.Elevator.autoTimeout)
-        .beforeStarting(Commands.print("Elevator pos set: " + pos));
+        .withTimeout(Constants.Elevator.autoTimeout);
+    // .beforeStarting(Commands.print("Elevator pos set: " + pos));
   }
 
   public boolean isFinished() {

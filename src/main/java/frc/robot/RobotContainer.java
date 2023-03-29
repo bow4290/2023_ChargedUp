@@ -236,12 +236,16 @@ public class RobotContainer {
       double minTime) {
     if (elevator != null) elevator = s_Elevator.percentToPosition(elevator);
     Command cmd = (elbow != null) ? s_Elbow.goToDeg(elbow) : new InstantCommand();
+    Command cmd2 = (elbow != null) ? s_Elbow.goToDeg(elbow) : new InstantCommand();
     cmd =
         (elevator != null)
-            ? (elevator < 1.0)
-                ? s_Elevator.smartPos(cmd, cmd.repeatedly(), elevator)
-                : cmd.alongWith(s_Elevator.positionCmd(elevator))
+            ?
+            // ? false // (elevator < 1.0)
+            //   ? s_Elevator.smartPos(cmd, cmd2.repeatedly(), elevator)
+            // :
+            cmd.alongWith(s_Elevator.positionCmd(elevator))
             : cmd;
+
     Command sus = (elbow != null) ? s_Elbow.goToDegUnending(elbow) : new InstantCommand();
     sus = (elevator != null) ? sus.alongWith(s_Elevator.positionCmd(elevator).repeatedly()) : sus;
     cmd =

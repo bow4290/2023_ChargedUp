@@ -153,9 +153,13 @@ public class Elbow extends SubsystemBase {
   }
 
   public Command unendingPositionCmd(double pos) {
-    return runEnd(() -> position(pos), () -> {})
-        .beforeStarting(() -> mmPosition = pos)
-        .beforeStarting(Commands.print("Setting position to: " + pos));
+    return runEnd(
+        () -> {
+          mmPosition = pos;
+          position(pos);
+        },
+        () -> {});
+    // .beforeStarting(Commands.print("Setting position to: " + pos));
     // .withTimeout(Constants.Elbow.autoTimeout);//whoops
   }
 

@@ -5,12 +5,12 @@ import java.util.Optional;
 
 /// Builder pattern 'cuz java doesn't have structs
 public class RobotState {
-  Optional<Double> elbow;
-  Optional<Double> elevator;
+  Optional<Double> elbow = Optional.empty();
+  Optional<Double> elevator = Optional.empty();
   // True -> Closed, False -> Open
-  Optional<Boolean> intakePistons;
-  Optional<Double> intakeSpeed;
-  Optional<Boolean> intakeBrake;
+  Optional<Boolean> intakePistons = Optional.empty();
+  Optional<Double> intakeSpeed = Optional.empty();
+  Optional<Boolean> intakeBrake = Optional.empty();
 
   public RobotState elbow(double v) {
     elbow = Optional.of(v);
