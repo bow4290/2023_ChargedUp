@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.swerve.*;
 import frc.robot.subsystems.*;
 import java.io.File;
@@ -81,16 +82,13 @@ public class RobotContainer {
               double input = -driver.rightX.getAsDouble();
               return Math.copySign(Math.pow(input, Constants.turnSens), input);
             },
-            driver.leftBumper::getAsBoolean,
-            driver.dpadDown.or(driver.dpadUp).or(driver.dpadLeft).or(driver.dpadRight),
-            () ->
-                driver.dpadDown.getAsBoolean()
-                    ? 180
-                    : driver.dpadUp.getAsBoolean()
-                        ? 0
-                        : driver.dpadLeft.getAsBoolean()
-                            ? 90
-                            : driver.dpadRight.getAsBoolean() ? -90 : 0));
+            driver.leftBumper,
+            driver.rightJoystickPushed.and(
+                    () ->
+                        Math.hypot(driver.rightX.getAsDouble(), driver.rightY.getAsDouble())
+                            > 0.2),
+            () -> Math.round((Math.toDegrees(Math.atan2(driver.rightY.getAsDouble(), driver.rightX.getAsDouble())) - 90)/45)*45
+        ));
 
     driver.triangle_y.onTrue(new InstantCommand(s_Swerve::zeroGyro));
     // driver.circle_b.whileTrue(new BalanceThing(s_Swerve));
@@ -326,7 +324,7 @@ public class RobotContainer {
                   var name = file.getName(file.getNameCount() - 1).toString().replace(".path", "");
                   chooser.addOption(name, createAuto(name));
                 } catch (Exception e) {
-                  SmartDashboard.putString("ERROR LOADING " + file.toString(), e.getMessage());
+                  SmartDashboard.putString("ERROR LOADING " + file, e.getMessage());
                 }
               });
     } catch (Exception e) {
