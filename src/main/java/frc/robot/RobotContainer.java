@@ -108,25 +108,36 @@ public class RobotContainer {
   private void operatorConfigurationAppleKeyboard() {
     // 1 -> third
     // 2 -> forward (reverse) second
-    // 3 -> second
-    // 4 -> ground
+    // 3 -> reverse third (cube)
+    // 4 -> second
     // 15, 16, 17, 18: cube version of above.
     // 5 -> battery single intake
     // 6 -> battery double intake
     // 7 -> single intake
     // 8 -> double intake
+    // 9 & 14 -> ground
     // 11 -> spin intake in
     // 12 -> spin intake out
     // 13 -> reset arm
+    // 19 -> elevator down
+    // 20 -> elevator up
+    // 21 -> arm down
+    // 22 -> arm up
+    // 23 -> elevator max
+    // 24 -> elevator middle
+    // 25 -> elevator base
+    // 26 -> elbow third
+    // 27 -> elbow vertical
+    // 28 -> elbow second
     keyboard.button(1).whileTrue(new RobotState().elbowThird().elevatorMax().build(this));
     keyboard.button(2).whileTrue(new RobotState().elbowThird().elevatorMiddle().build(this));
-    keyboard.button(3).whileTrue(new RobotState().elbowSecond().elevator(0.25).build(this));
-    keyboard.button(4).whileTrue(new RobotState().elbowGround().elevatorBase().build(this));
+    keyboard.button(3).whileTrue(new RobotState().elbowSecond().elevatorMax().build(this));
+    keyboard.button(4).whileTrue(new RobotState().elbowSecond().elevator(0.25).build(this));
 
     keyboard.button(15).whileTrue(new RobotState().elbowThirdWeak().elevator(0.7).build(this));
     keyboard.button(16).whileTrue(new RobotState().elbowThirdWeak().elevatorBase().build(this));
-    keyboard.button(17).whileTrue(new RobotState().elbowSecondWeak().elevatorBase().build(this));
-    keyboard.button(18).whileTrue(new RobotState().elbowGround().elevatorBase().build(this));
+    keyboard.button(17).whileTrue(new RobotState().elbowSecondWeak().elevator(0.7).build(this));
+    keyboard.button(18).whileTrue(new RobotState().elbowSecondWeak().elevatorBase().build(this));
 
     keyboard
         .button(5)
@@ -139,11 +150,25 @@ public class RobotContainer {
         .whileTrue(new RobotState().elbowSingleForward().elevatorBase().intakeIn().build(this));
     keyboard
         .button(8)
-        .whileTrue(new RobotState().elbowDoubleForward().elevatorBase().intakeIn().build(this));
+        .whileTrue(new RobotState().elbowDoubleForward().elevatorMax().intakeIn().build(this));
 
+    keyboard.button(9).whileTrue(new RobotState().elbowGround().elevatorBase().build(this));
+    keyboard.button(14).whileTrue(new RobotState().elbowGround().elevatorBase().build(this));
     keyboard.button(11).whileTrue(new RobotState().intakeIn().build(this));
     keyboard.button(12).whileTrue(new RobotState().intakeEject().build(this));
     keyboard.button(13).whileTrue(new RobotState().elbowBase().elevatorBase().build(this));
+
+    keyboard.button(19).whileTrue(s_Elevator.moveCmd(() -> -0.15));
+    keyboard.button(20).whileTrue(s_Elevator.moveCmd(() -> 0.15));
+    keyboard.button(21).whileTrue(s_Elbow.moveCmd(() -> -0.15));
+    keyboard.button(22).whileTrue(s_Elbow.moveCmd(() -> 0.15));
+
+    keyboard.button(23).whileTrue(new RobotState().elevatorMax().build(this));
+    keyboard.button(24).whileTrue(new RobotState().elevatorMiddle().build(this));
+    keyboard.button(25).whileTrue(new RobotState().elevatorBase().build(this));
+    keyboard.button(26).whileTrue(new RobotState().elbowThird().build(this));
+    keyboard.button(27).whileTrue(new RobotState().elbowBase().build(this));
+    keyboard.button(28).whileTrue(new RobotState().elbowSecond().build(this));
   }
 
   private void operatorConfiguration() {

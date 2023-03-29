@@ -63,15 +63,15 @@ public class RobotState {
   }
 
   public RobotState elevatorBase() {
-    return elevator(Constants.Elevator.base);
+    return elevator(0.0);
   }
 
   public RobotState elevatorMiddle() {
-    return elevator(Constants.Elevator.middle);
+    return elevator(0.5);
   }
 
   public RobotState elevatorMax() {
-    return elevator(Constants.Elevator.max);
+    return elevator(1.0);
   }
 
   public RobotState pistons(boolean v) {
