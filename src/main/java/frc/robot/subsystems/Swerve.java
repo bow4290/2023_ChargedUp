@@ -64,13 +64,14 @@ public class Swerve extends SubsystemBase {
     // In teleop, this is controlled by a button that is held down.
     // Note that the robot does not have a concept of the field,
     // and the gyro must be configured according to starting orientation.
+    var robotRelative = fieldRelative
+            ? ChassisSpeeds.fromFieldRelativeSpeeds(speeds, getPose().getRotation())
+            : speeds;
     SwerveModuleState[] swerveModuleStates =
         Constants.Swerve.swerveKinematics.toSwerveModuleStates(
-            fieldRelative
-                ? ChassisSpeeds.fromFieldRelativeSpeeds(speeds, getPose().getRotation())
-                : speeds);
+            robotRelative);
     // Normalizes wheel speeds by the max (wheel) speed.
-    SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, speeds, Constants.Swerve.maxSpeed, Constants.Swerve.maxSpeed, Constants.Swerve.maxAngularVelocity);
+    SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, robotRelative, Constants.Swerve.maxSpeed, Constants.Swerve.maxSpeed, Constants.Swerve.maxAngularVelocity);
 
     for (SwerveModule mod : mSwerveMods) {
       mod.setDesiredState(swerveModuleStates[mod.moduleNumber], isOpenLoop);
