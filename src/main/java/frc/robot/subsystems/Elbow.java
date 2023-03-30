@@ -108,7 +108,7 @@ public class Elbow extends SubsystemBase {
     double s = Math.cos(Math.toRadians(deg));
     // System.out.println("using aff of " + s * MathUtil.interpolate(0.05, 0.065, elev));
     // reduce to prevent rising, let proportional keep us up.
-    return 0.75 * s * MathUtil.interpolate(0.05, 0.065, elev);
+    return 0.95 * s * MathUtil.interpolate(0.05, 0.065, elev);
   }
 
   private double retainPositionGoal;
