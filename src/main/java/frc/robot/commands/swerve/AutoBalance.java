@@ -5,11 +5,12 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.Swerve;
 
 public class AutoBalance extends SequentialCommandGroup {
   public static PIDController makePID() {
-    final var PIDC = new PIDController(5, 0.01, 500);
+    final var PIDC = new PIDController(2.5, 0.01, 2000);
     // 0.04 ~= sin(2.5deg)
     PIDC.setTolerance(0.04, 0.05);
     return PIDC;
@@ -22,9 +23,9 @@ public class AutoBalance extends SequentialCommandGroup {
     // secure ourselves. This assumes that the robot is pretty close to, but not already on, the
     // side of the charge station
     super(
-        /*new TeleopSwerve(s_Swerve, dir::getSin, dir::getCos, () -> 0.7, () -> false)
-        .until(new Trigger(() -> s_Swerve.getTiltMagnitude() > 0.2).debounce(0.3))
-        .withTimeout(0.6),*/
+        new TeleopSwerve(s_Swerve, dir::getSin, dir::getCos, () -> 0.7, () -> false)
+            .until(new Trigger(() -> s_Swerve.getTiltMagnitude() > 0.2).debounce(0.3))
+            .withTimeout(0.6),
         // Commands.run(PIDC::reset),
         new PIDCommand(
                 PIDC,

@@ -72,8 +72,8 @@
           "reset"
         ],
         "executionBehavior": "parallel",
-        "waitBehavior": "none",
-        "waitTime": 0
+        "waitBehavior": "minimum",
+        "waitTime": 1.0
       }
     },
     {

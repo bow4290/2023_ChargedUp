@@ -200,7 +200,7 @@ public final class Constants {
     public static double autoTimeout = 2.5;
 
     public static final class Positions {
-      public static double ground = -105;
+      public static double ground = -100;
       public static double second = -55;
       public static double secondWeak = -40;
       public static double third = 50;

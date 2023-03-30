@@ -14,7 +14,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.swerve.*;
 import frc.robot.subsystems.*;
 import java.io.File;
@@ -83,12 +82,16 @@ public class RobotContainer {
               return Math.copySign(Math.pow(input, Constants.turnSens), input);
             },
             driver.leftBumper,
-            driver.rightJoystickPushed.and(
-                    () ->
-                        Math.hypot(driver.rightX.getAsDouble(), driver.rightY.getAsDouble())
-                            > 0.2),
-            () -> Math.round((Math.toDegrees(Math.atan2(driver.rightY.getAsDouble(), driver.rightX.getAsDouble())) - 90)/45)*45
-        ));
+            driver.rightBumper.and(
+                () -> Math.hypot(driver.rightX.getAsDouble(), driver.rightY.getAsDouble()) > 0.2),
+            () ->
+                Math.round(
+                        (Math.toDegrees(
+                                    Math.atan2(
+                                        -driver.rightY.getAsDouble(), driver.rightX.getAsDouble()))
+                                - 90)
+                            / 90)
+                    * 90));
 
     driver.triangle_y.onTrue(new InstantCommand(s_Swerve::zeroGyro));
     // driver.circle_b.whileTrue(new BalanceThing(s_Swerve));
@@ -97,8 +100,8 @@ public class RobotContainer {
     // driver.cross_a.whileTrue(new GoToNearestScoringLocation(s_Swerve));
     // driver.cross_a.whileTrue(autoCommands.attemptBalance());
     driver.circle_b.whileTrue(s_Swerve.lockModulesCommand());
-
-    driver.rightBumper.whileTrue(autoCommands.topCube());
+    driver.cross_a.whileTrue(autoCommands.intakeCube());
+    // driver.rightBumper.whileTrue(autoCommands.topCube());
 
     driver.square_x.whileTrue(new AutoBalance(s_Swerve, new Rotation2d(0, 1)));
   }
@@ -305,8 +308,8 @@ public class RobotContainer {
             s_Swerve::getPose,
             s_Swerve::resetOdometry,
             Constants.Swerve.swerveKinematics,
-            new PIDConstants(Constants.AutoConstants.kPYController, 0.0, 0.0),
-            new PIDConstants(Constants.AutoConstants.kPThetaController, 0.0, 0.0),
+            new PIDConstants(5.0, 0.1, 0.3),
+            new PIDConstants(4.3, 0.1, 0.3),
             s_Swerve::setModuleStates,
             eventMap,
             true, // Automatically mirror path based on alliance
@@ -387,7 +390,7 @@ public class RobotContainer {
         "Reset Swerve Modules To Absolute",
         s_Swerve.resetModulesToAbsoluteCommand().ignoringDisable(true));
     SmartDashboard.putData(
-        "Reset Elbow and Elevator to Zero",
+        "Reset Elbow and Elevator to Zero Better",
         Commands.runOnce(
                 () -> {
                   s_Elbow.resetToZero();

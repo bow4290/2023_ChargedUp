@@ -177,6 +177,7 @@ public class Elbow extends SubsystemBase {
   }
 
   public void resetToZero() {
+    System.out.println("zero arm");
     elbowPivot.setSelectedSensorPosition(0);
   }
 
@@ -185,11 +186,11 @@ public class Elbow extends SubsystemBase {
   }
 
   public Command groundPosition() {
-    return positionCmd(Constants.Elbow.Positions.ground);
+    return goToDeg(Constants.Elbow.Positions.ground);
   }
 
   public Command secondPosition() {
-    return positionCmd(Constants.Elbow.Positions.second);
+    return goToDeg(Constants.Elbow.Positions.second);
   }
 
   @Override
