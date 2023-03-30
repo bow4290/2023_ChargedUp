@@ -7,8 +7,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.83,
-        "y": 5.089871888363262
+        "x": 1.811295845302959,
+        "y": 4.831798029573172
       },
       "holonomicAngle": -180.0,
       "isReversal": false,
@@ -26,18 +26,43 @@
     },
     {
       "anchorPoint": {
-        "x": 6.58586955598207,
-        "y": 4.61366936378239
+        "x": 4.194245854380793,
+        "y": 4.805409422658634
       },
       "prevControl": {
-        "x": 5.459943409983651,
-        "y": 4.831062970884745
+        "x": 3.5298438517462962,
+        "y": 4.474414556893805
       },
       "nextControl": {
-        "x": 5.459943409983651,
-        "y": 4.831062970884745
+        "x": 5.287498641678621,
+        "y": 5.350051157848794
       },
-      "holonomicAngle": -180.0,
+      "holonomicAngle": 180.0,
+      "isReversal": false,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": false,
+      "stopEvent": {
+        "names": [],
+        "executionBehavior": "parallel",
+        "waitBehavior": "none",
+        "waitTime": 0
+      }
+    },
+    {
+      "anchorPoint": {
+        "x": 6.629568795009069,
+        "y": 4.9104860621693085
+      },
+      "prevControl": {
+        "x": 6.003850086485385,
+        "y": 5.381805693188854
+      },
+      "nextControl": {
+        "x": 6.003850086485385,
+        "y": 5.381805693188854
+      },
+      "holonomicAngle": 144.64280469390937,
       "isReversal": true,
       "velOverride": null,
       "isLocked": false,
@@ -55,12 +80,12 @@
         "y": 4.45
       },
       "prevControl": {
-        "x": 2.6031353976527836,
-        "y": 4.637898907008995
+        "x": 3.492117795195098,
+        "y": 4.557878409330763
       },
       "nextControl": {
-        "x": 1.8559650608227778,
-        "y": 4.412787609426707
+        "x": 1.8508078456374033,
+        "y": 4.440823561199846
       },
       "holonomicAngle": 180.0,
       "isReversal": false,
@@ -178,6 +203,9 @@
       }
     }
   ],
+  "maxVelocity": 4.0,
+  "maxAcceleration": 4.0,
+  "isReversed": null,
   "markers": [
     {
       "position": 0.01,
@@ -186,25 +214,25 @@
       ]
     },
     {
-      "position": 1.094602272727274,
+      "position": 2.09,
       "names": [
         "prepRam"
       ]
     },
     {
-      "position": 1.75,
+      "position": 2.8,
       "names": [
         "ram"
       ]
     },
     {
-      "position": 2.379083806818181,
+      "position": 3.38,
       "names": [
         "intakeCube"
       ]
     },
     {
-      "position": 4.303030303030665,
+      "position": 5.38,
       "names": [
         "baseArmAndElevator"
       ]
