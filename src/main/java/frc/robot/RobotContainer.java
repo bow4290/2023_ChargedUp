@@ -135,10 +135,38 @@ public class RobotContainer {
     keyboard.button(3).whileTrue(new RobotState().elbowSecond().elevatorMax().build(this));
     keyboard.button(4).whileTrue(new RobotState().elbowSecond().elevator(0.25).build(this));
 
-    keyboard.button(15).whileTrue(new RobotState().elbowThirdWeak().elevator(0.7).build(this));
-    keyboard.button(16).whileTrue(new RobotState().elbowThirdWeak().elevatorBase().build(this));
-    keyboard.button(17).whileTrue(new RobotState().elbowSecondWeak().elevator(0.7).build(this));
-    keyboard.button(18).whileTrue(new RobotState().elbowSecondWeak().elevatorBase().build(this));
+    keyboard
+        .button(15)
+        .whileTrue(
+            new RobotState()
+                .elbowThirdWeak()
+                .elevator(0.7)
+                .build(this)
+                .andThen(new RobotState().intakeEject().build(this)));
+    keyboard
+        .button(16)
+        .whileTrue(
+            new RobotState()
+                .elbowThirdWeak()
+                .elevatorBase()
+                .build(this)
+                .andThen(new RobotState().intakeEject().build(this)));
+    keyboard
+        .button(17)
+        .whileTrue(
+            new RobotState()
+                .elbowSecondWeak()
+                .elevator(0.7)
+                .build(this)
+                .andThen(new RobotState().intakeEject().build(this)));
+    keyboard
+        .button(18)
+        .whileTrue(
+            new RobotState()
+                .elbowSecondWeak()
+                .elevatorBase()
+                .build(this)
+                .andThen(new RobotState().intakeEject().build(this)));
 
     keyboard
         .button(5)
