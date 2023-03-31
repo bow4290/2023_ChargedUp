@@ -308,8 +308,8 @@ public class RobotContainer {
             s_Swerve::getPose,
             s_Swerve::resetOdometry,
             Constants.Swerve.swerveKinematics,
-            new PIDConstants(5.0, 0.1, 0.3),
-            new PIDConstants(4.3, 0.1, 0.3),
+            new PIDConstants(4.0, 0.0, 0.3),
+            new PIDConstants(4.0, 0.0, 0.3),
             s_Swerve::setModuleStates,
             eventMap,
             true, // Automatically mirror path based on alliance
