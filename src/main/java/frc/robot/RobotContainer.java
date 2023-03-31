@@ -290,6 +290,7 @@ public class RobotContainer {
     eventMap.put("balance", new AutoBalance(s_Swerve, new Rotation2d(0, -1)));
     eventMap.put("balanceminus", new AutoBalance(s_Swerve, new Rotation2d(0, 1)));
     eventMap.put("intakeCube", autoCommands.intakeCube());
+    eventMap.put("intakeFlippedCone", autoCommands.intakeFlippedCone());
     eventMap.put("intakeUp", s_Elbow.goToDeg(0).alongWith(s_Elevator.goToBase()));
 
     eventMap.put("prepRam", autoCommands.prepRam());

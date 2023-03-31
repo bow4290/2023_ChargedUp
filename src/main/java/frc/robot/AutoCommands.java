@@ -27,7 +27,13 @@ public class AutoCommands {
   public Command intakeCube() {
     return s_Intake
         .pistonsCubeCmd()
-        .andThen(s_Elbow.groundPosition().alongWith(s_Elevator.goToBase()).alongWith(spinIntake()));
+        .andThen(s_Elbow.groundPosition().alongWith(s_Elevator.goToBase(), spinIntake()));
+  }
+
+  public Command intakeFlippedCone() {
+    return s_Intake
+        .pistonsConeCmd()
+        .andThen(s_Elbow.goToDeg(-95).alongWith(s_Elevator.goToBase(), spinIntake()));
   }
 
   public Command baseArmAndElevator() {
