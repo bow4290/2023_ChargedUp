@@ -287,6 +287,8 @@ public class RobotContainer {
     eventMap.put("topCubeMid", s_Elevator.goToMax());
     eventMap.put("baseArmAndElevator", autoCommands.baseArmAndElevator());
 
+    eventMap.put("eject", s_Intake.autoEjectCmd());
+
     eventMap.put("balance", new AutoBalance(s_Swerve, new Rotation2d(0, -1)));
     eventMap.put("balanceminus", new AutoBalance(s_Swerve, new Rotation2d(0, 1)));
     eventMap.put("intakeCube", autoCommands.intakeCube());
@@ -361,7 +363,7 @@ public class RobotContainer {
   }
 
   private Command createAuto(String name) {
-    var pathGroup = PathPlanner.loadPathGroup(name, new PathConstraints(3, 3));
+    var pathGroup = PathPlanner.loadPathGroup(name, new PathConstraints(4, 4));
     return Commands.sequence(
         Commands.print("Starting auto: " + name), // For debugging / looking through post-match logs
         autoBuilder.fullAuto(pathGroup)

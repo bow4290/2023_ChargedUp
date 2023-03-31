@@ -161,7 +161,7 @@ public final class Constants {
     public static final PneumaticsModuleType pneumaticType = PneumaticsModuleType.CTREPCM;
 
     public static final double inSpeed = 1;
-    public static final double ejectSpeed = -0.75;
+    public static final double ejectSpeed = -1.0;
     public static final double stopSpeed = 0;
   }
 
@@ -170,7 +170,7 @@ public final class Constants {
     public static final int elbowPivot2ID = 11;
 
     public static final double motionVelocity = 14000; // 10000;
-    public static final double motionAcceleration = 18000; // 7500;
+    public static final double motionAcceleration = 14000; // 7500;
     public static final int motionSmoothing = 1;
 
     // 512/7 ratio, according to build

@@ -50,10 +50,10 @@ public class Intake extends SubsystemBase {
             motor -> {
               motor.restoreFactoryDefaults();
               motor.setInverted(false);
-              motor.enableVoltageCompensation(11);
+              motor.enableVoltageCompensation(12);
               motor.setIdleMode(IdleMode.kBrake);
               // Prevent smoking bot?
-              motor.setSmartCurrentLimit(15);
+              motor.setSmartCurrentLimit(20);
             });
 
     List.of(leftPID /*, rightPID*/)
@@ -119,7 +119,7 @@ public class Intake extends SubsystemBase {
   }
 
   public Command autoEjectCmd() {
-    return pistonsCubeCmd().andThen(spinEjectCmd().withTimeout(0.25));
+    return pistonsCubeCmd().andThen(spinEjectCmd().withTimeout(0.4));
   }
 
   private double currentFiltered;

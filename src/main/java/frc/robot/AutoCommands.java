@@ -33,7 +33,7 @@ public class AutoCommands {
   public Command intakeFlippedCone() {
     return s_Intake
         .pistonsConeCmd()
-        .andThen(s_Elbow.goToDeg(-95).alongWith(s_Elevator.goToBase(), spinIntake()));
+        .andThen(s_Elbow.goToDeg(-96).alongWith(s_Elevator.goToBase(), spinIntake()));
   }
 
   public Command baseArmAndElevator() {
@@ -43,7 +43,7 @@ public class AutoCommands {
   }
 
   public Command quickReset() {
-    return baseArmAndElevator().withTimeout(0.25);
+    return baseArmAndElevator().withTimeout(0.2);
   }
 
   public Command high() {
@@ -52,7 +52,7 @@ public class AutoCommands {
         .alongWith(
             s_Elbow
                 .goToDeg(Constants.Elbow.Positions.third)
-                .beforeStarting(Commands.waitSeconds(0.25)));
+                .beforeStarting(Commands.waitSeconds(0.15)));
   }
 
   public Command topCone() {
@@ -72,7 +72,7 @@ public class AutoCommands {
   }
 
   public Command topCubePreparation() {
-    return quickReset();
+    return high();
   }
 
   public Command topCubeSecond() {
