@@ -76,15 +76,15 @@
     },
     {
       "anchorPoint": {
-        "x": 2.1345913781874963,
+        "x": 2.0,
         "y": 4.426037098519695
       },
       "prevControl": {
-        "x": 3.6472319001674847,
+        "x": 3.5126405219799883,
         "y": 4.533915507850457
       },
       "nextControl": {
-        "x": 2.005921950609789,
+        "x": 1.8713305724222926,
         "y": 4.41686065971954
       },
       "holonomicAngle": 180.0,
@@ -94,7 +94,7 @@
       "isStopPoint": true,
       "stopEvent": {
         "names": [
-          "eject"
+          "topCube"
         ],
         "executionBehavior": "sequential",
         "waitBehavior": "none",
@@ -163,7 +163,7 @@
       "nextControl": null,
       "holonomicAngle": 135.0,
       "isReversal": false,
-      "velOverride": 0.1,
+      "velOverride": null,
       "isLocked": false,
       "isStopPoint": false,
       "stopEvent": {

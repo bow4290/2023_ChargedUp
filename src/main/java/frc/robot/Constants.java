@@ -204,7 +204,7 @@ public final class Constants {
       public static double ground = -101;
       public static double second = -55;
       public static double secondWeak = -40;
-      public static double third = 51;
+      public static double third = 49;
       public static double thirdWeak = 40;
       public static double humanDoubleBattery = -55;
       public static double humanDoubleForward = 55;
