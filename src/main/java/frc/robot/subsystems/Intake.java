@@ -54,7 +54,7 @@ public class Intake extends SubsystemBase {
               motor.enableVoltageCompensation(12);
               motor.setIdleMode(IdleMode.kBrake);
               // Prevent smoking bot?
-              motor.setSmartCurrentLimit(15);
+              motor.setSmartCurrentLimit(20);
             });
 
     List.of(leftPID, rightPID)
@@ -125,7 +125,7 @@ public class Intake extends SubsystemBase {
 
   private double currentFiltered;
 
-  public Trigger intakeHasThing = new Trigger(() -> currentFiltered > 9).debounce(0.2);
+  public Trigger intakeHasThing = new Trigger(() -> currentFiltered > 15).debounce(0.2);
 
   @Override
   public void periodic() {
