@@ -169,7 +169,7 @@ public final class Constants {
     public static final int elbowPivot2ID = 11;
 
     public static final double motionVelocity = 14000; // 10000;
-    public static final double motionAcceleration = 14000; // 7500;
+    public static final double motionAcceleration = 15000; // 7500;
     public static final int motionSmoothing = 1;
 
     // 512/7 ratio, according to build
@@ -186,8 +186,8 @@ public final class Constants {
 
     public static final double elbowDeadband = 0.02;
 
-    public static double rotationEps = 2 * ticksPerDegree;
-    public static double velocityEps = 6 * ticksPerDegree;
+    public static double rotationEps = 2.5 * ticksPerDegree;
+    public static double velocityEps = 7 * ticksPerDegree;
 
     public static final double kP = 0.5; // 0.5;
     public static final double kD = 2.5; // 5;
@@ -213,8 +213,8 @@ public final class Constants {
   }
 
   public static final class Elevator {
-    public static double positionEps = 1000;
-    public static double velocityEps = 4000;
+    public static double positionEps = 1500;
+    public static double velocityEps = 4500;
     public static final int elevatorMotorID = 10;
     public static final double extendSpeed = 0.3;
     public static final double retractSpeed = -0.3;
