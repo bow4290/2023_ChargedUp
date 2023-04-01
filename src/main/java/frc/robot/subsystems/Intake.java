@@ -34,7 +34,7 @@ public class Intake extends SubsystemBase {
   private final RelativeEncoder leftPos;
   private final RelativeEncoder rightPos;
 
-  private final LinearFilter currentMeasurer = LinearFilter.movingAverage(9);
+  private final LinearFilter currentMeasurer = LinearFilter.movingAverage(8);
 
   public Intake() {
     leftIntake = new CANSparkMax(Constants.Intake.leftIntakeID, MotorType.kBrushless);
