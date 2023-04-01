@@ -125,7 +125,7 @@ public class Intake extends SubsystemBase {
 
   private double currentFiltered;
 
-  public Trigger intakeHasThing = new Trigger(() -> currentFiltered > 15).debounce(0.2);
+  public Trigger intakeHasThing = new Trigger(() -> currentFiltered > 13).debounce(0.2);
 
   @Override
   public void periodic() {
