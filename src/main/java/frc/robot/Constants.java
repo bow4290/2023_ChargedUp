@@ -160,7 +160,7 @@ public final class Constants {
         public static final PneumaticsModuleType pneumaticType = PneumaticsModuleType.CTREPCM;
     */
     public static final double inSpeed = 1;
-    public static final double ejectSpeed = -1;
+    public static final double ejectSpeed = -.75;
     public static final double stopSpeed = 0;
   }
 
@@ -213,7 +213,7 @@ public final class Constants {
   }
 
   public static final class Elevator {
-    public static double positionEps = 1500;
+    public static double positionEps = 800;
     public static double velocityEps = 4500;
     public static final int elevatorMotorID = 10;
     public static final double extendSpeed = 0.3;
