@@ -33,7 +33,8 @@ public class AutoCommands {
   public Command intakeFlippedCone() {
     return s_Intake
         .pistonsConeCmd()
-        .andThen(s_Elbow.goToDeg(-96).alongWith(s_Elevator.goToBase(), spinIntake()));
+        // ver 99
+        .andThen(s_Elbow.goToDeg(-98).alongWith(s_Elevator.goToBase(), spinIntake()));
   }
 
   public Command baseArmAndElevator() {

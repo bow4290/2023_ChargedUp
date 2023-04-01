@@ -10,7 +10,7 @@ import frc.robot.subsystems.Swerve;
 
 public class AutoBalance extends SequentialCommandGroup {
   public static PIDController makePID() {
-    final var PIDC = new PIDController(2.5, 0.01, 2000);
+    final var PIDC = new PIDController(2, 0.005, 5000);
     // 0.04 ~= sin(2.5deg)
     PIDC.setTolerance(0.04, 0.05);
     return PIDC;
