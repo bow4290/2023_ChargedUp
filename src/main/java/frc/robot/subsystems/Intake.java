@@ -6,7 +6,6 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
 import edu.wpi.first.math.filter.LinearFilter;
-import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -16,8 +15,8 @@ import java.util.List;
 
 public class Intake extends SubsystemBase {
   private final CANSparkMax leftIntake;
-  private final CANSparkMax rightIntake;
-  private final DoubleSolenoid solenoid;
+  // private final CANSparkMax rightIntake;
+  // private final DoubleSolenoid solenoid;
 
   public double lastPowerSet = 0;
 
@@ -29,24 +28,24 @@ public class Intake extends SubsystemBase {
   public IntakePistonStatus status;
 
   private final SparkMaxPIDController leftPID;
-  private final SparkMaxPIDController rightPID;
+  // private final SparkMaxPIDController rightPID;
 
   private final RelativeEncoder leftPos;
-  private final RelativeEncoder rightPos;
+  // private final RelativeEncoder rightPos;
 
   private final LinearFilter currentMeasurer = LinearFilter.movingAverage(8);
 
   public Intake() {
     leftIntake = new CANSparkMax(Constants.Intake.leftIntakeID, MotorType.kBrushless);
-    rightIntake = new CANSparkMax(Constants.Intake.rightIntakeID, MotorType.kBrushless);
+    //  rightIntake = new CANSparkMax(Constants.Intake.rightIntakeID, MotorType.kBrushless);
 
     leftPID = leftIntake.getPIDController();
-    rightPID = rightIntake.getPIDController();
+    //  rightPID = rightIntake.getPIDController();
 
     leftPos = leftIntake.getEncoder();
-    rightPos = rightIntake.getEncoder();
+    ////  rightPos = rightIntake.getEncoder();
 
-    List.of(leftIntake, rightIntake)
+    List.of(leftIntake /* , rightIntake*/)
         .forEach(
             motor -> {
               motor.restoreFactoryDefaults();
@@ -54,21 +53,21 @@ public class Intake extends SubsystemBase {
               motor.enableVoltageCompensation(12);
               motor.setIdleMode(IdleMode.kBrake);
               // Prevent smoking bot?
-              motor.setSmartCurrentLimit(20);
+              motor.setSmartCurrentLimit(25);
             });
 
-    List.of(leftPID, rightPID)
+    List.of(leftPID /* , rightPID*/)
         .forEach(
             pid -> {
               pid.setP(0.1); // Probably needs to be tuned or something!
               pid.setOutputRange(-0.2, 0.2);
             });
 
-    solenoid =
-        new DoubleSolenoid(
-            Constants.Intake.pneumaticType,
-            Constants.Intake.solenoidPortForward,
-            Constants.Intake.solenoidPortReverse);
+    /*solenoid =
+    new DoubleSolenoid(
+        Constants.Intake.pneumaticType,
+        Constants.Intake.solenoidPortForward,
+        Constants.Intake.solenoidPortReverse);*/
 
     setDefaultCommand(retainPositionCmd());
   }
@@ -76,12 +75,12 @@ public class Intake extends SubsystemBase {
   public void spin(double intakeSpeed) {
     lastPowerSet = intakeSpeed;
     leftIntake.set(intakeSpeed);
-    rightIntake.set(-intakeSpeed);
+    // rightIntake.set(-intakeSpeed);
   }
 
   public void stayAtPosition() {
     leftPID.setReference(leftPos.getPosition(), CANSparkMax.ControlType.kPosition);
-    rightPID.setReference(rightPos.getPosition(), CANSparkMax.ControlType.kPosition);
+    // rightPID.setReference(rightPos.getPosition(), CANSparkMax.ControlType.kPosition);
   }
 
   public Command retainPositionCmd() {
@@ -93,14 +92,15 @@ public class Intake extends SubsystemBase {
   }
 
   public void setSolenoid(IntakePistonStatus status) {
-    DoubleSolenoid.Value solenoidValue =
-        status == IntakePistonStatus.Cone
-            ? DoubleSolenoid.Value.kForward
-            : DoubleSolenoid.Value.kReverse;
-    this.status = status;
+    /*  DoubleSolenoid.Value solenoidValue =
+          status == IntakePistonStatus.Cone
+              ? DoubleSolenoid.Value.kForward
+              : DoubleSolenoid.Value.kReverse;
+      this.status = status;
 
-    solenoid.set(solenoidValue);
-    System.out.println("Setting solenoid to " + solenoidValue);
+      solenoid.set(solenoidValue);
+      System.out.println("Setting solenoid to " + solenoidValue);
+    */
   }
 
   public Command pistonsCubeCmd() {
@@ -125,7 +125,7 @@ public class Intake extends SubsystemBase {
 
   private double currentFiltered;
 
-  public Trigger intakeHasThing = new Trigger(() -> currentFiltered > 13).debounce(0.05);
+  public Trigger intakeHasThing = new Trigger(() -> currentFiltered > 20).debounce(0.05);
 
   @Override
   public void periodic() {

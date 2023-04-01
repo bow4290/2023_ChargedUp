@@ -9,7 +9,6 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import frc.lib.util.COTSFalconSwerveConstants;
 import frc.lib.util.SwerveModuleConstants;
 
@@ -154,13 +153,13 @@ public final class Constants {
   }
 
   public static final class Intake {
-    public static final int leftIntakeID = 13;
-    public static final int rightIntakeID = 12;
-    public static final int solenoidPortForward = 2;
-    public static final int solenoidPortReverse = 0;
-    public static final PneumaticsModuleType pneumaticType = PneumaticsModuleType.CTREPCM;
-
-    public static final double inSpeed = -0.5;
+    public static final int leftIntakeID = 4;
+    // public static final int rightIntakeID = 12;
+    /*public static final int solenoidPortForward = 2;
+        public static final int solenoidPortReverse = 0;
+        public static final PneumaticsModuleType pneumaticType = PneumaticsModuleType.CTREPCM;
+    */
+    public static final double inSpeed = -1;
     public static final double ejectSpeed = 1;
     public static final double stopSpeed = 0;
   }
