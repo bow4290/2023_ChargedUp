@@ -154,8 +154,8 @@ public final class Constants {
   }
 
   public static final class Intake {
-    public static final int leftIntakeID = 4;
-    // public static final int rightIntakeID = 12;
+    public static final int leftIntakeID = 13;
+    public static final int rightIntakeID = 12;
     public static final int solenoidPortForward = 2;
     public static final int solenoidPortReverse = 0;
     public static final PneumaticsModuleType pneumaticType = PneumaticsModuleType.CTREPCM;
