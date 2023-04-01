@@ -34,7 +34,7 @@ public class Intake extends SubsystemBase {
   private final RelativeEncoder leftPos;
   private final RelativeEncoder rightPos;
 
-  private final LinearFilter currentMeasurer = LinearFilter.movingAverage(15);
+  private final LinearFilter currentMeasurer = LinearFilter.movingAverage(9);
 
   public Intake() {
     leftIntake = new CANSparkMax(Constants.Intake.leftIntakeID, MotorType.kBrushless);
@@ -125,7 +125,7 @@ public class Intake extends SubsystemBase {
 
   private double currentFiltered;
 
-  public Trigger intakeHasThing = new Trigger(() -> currentFiltered > 13).debounce(0.2);
+  public Trigger intakeHasThing = new Trigger(() -> currentFiltered > 13).debounce(0.05);
 
   @Override
   public void periodic() {
