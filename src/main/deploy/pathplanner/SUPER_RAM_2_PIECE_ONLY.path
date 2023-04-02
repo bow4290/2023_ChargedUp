@@ -135,93 +135,14 @@
         "x": 4.851000412901302,
         "y": 5.043402788227378
       },
-      "nextControl": {
-        "x": 5.90442090281509,
-        "y": 4.612458042353554
-      },
-      "holonomicAngle": 135.0,
-      "isReversal": false,
-      "velOverride": null,
-      "isLocked": false,
-      "isStopPoint": false,
-      "stopEvent": {
-        "names": [],
-        "executionBehavior": "parallel",
-        "waitBehavior": "none",
-        "waitTime": 0
-      }
-    },
-    {
-      "anchorPoint": {
-        "x": 6.57,
-        "y": 3.88
-      },
-      "prevControl": {
-        "x": 6.437709091765233,
-        "y": 4.012290908234769
-      },
-      "nextControl": {
-        "x": 6.737901332947774,
-        "y": 3.712098667052226
-      },
-      "holonomicAngle": 135.0,
-      "isReversal": false,
-      "velOverride": null,
-      "isLocked": false,
-      "isStopPoint": false,
-      "stopEvent": {
-        "names": [
-          "baseArmAndElevator"
-        ],
-        "executionBehavior": "parallel",
-        "waitBehavior": "none",
-        "waitTime": 0
-      }
-    },
-    {
-      "anchorPoint": {
-        "x": 4.851000412901301,
-        "y": 4.748966843905253
-      },
-      "prevControl": {
-        "x": 6.115319524482587,
-        "y": 4.813803721422242
-      },
-      "nextControl": {
-        "x": 3.7397421714274715,
-        "y": 4.691979241778389
-      },
-      "holonomicAngle": 180.0,
-      "isReversal": false,
-      "velOverride": null,
-      "isLocked": false,
-      "isStopPoint": false,
-      "stopEvent": {
-        "names": [],
-        "executionBehavior": "parallel",
-        "waitBehavior": "none",
-        "waitTime": 0
-      }
-    },
-    {
-      "anchorPoint": {
-        "x": 1.6406988264213502,
-        "y": 5.147880058793294
-      },
-      "prevControl": {
-        "x": 1.9351347707434756,
-        "y": 4.578004037524663
-      },
       "nextControl": null,
-      "holonomicAngle": 180.0,
+      "holonomicAngle": 135.0,
       "isReversal": false,
       "velOverride": null,
       "isLocked": false,
       "isStopPoint": false,
       "stopEvent": {
-        "names": [
-          "topCone"
-        ],
+        "names": [],
         "executionBehavior": "parallel",
         "waitBehavior": "none",
         "waitTime": 0
@@ -245,13 +166,7 @@
       ]
     },
     {
-      "position": 3.05,
-      "names": [
-        "intakeFlippedCone"
-      ]
-    },
-    {
-      "position": 6.38,
+      "position": 5.0,
       "names": [
         "baseArmAndElevator"
       ]
