@@ -94,7 +94,7 @@
       "isStopPoint": true,
       "stopEvent": {
         "names": [
-          "topCubeSecond"
+          "topCube"
         ],
         "executionBehavior": "sequential",
         "waitBehavior": "none",
@@ -142,15 +142,17 @@
       "isLocked": false,
       "isStopPoint": false,
       "stopEvent": {
-        "names": [],
-        "executionBehavior": "parallel",
+        "names": [
+          "baseArmAndElevator"
+        ],
+        "executionBehavior": "sequential",
         "waitBehavior": "none",
         "waitTime": 0
       }
     }
   ],
   "maxVelocity": 4.0,
-  "maxAcceleration": 3.0,
+  "maxAcceleration": 4.0,
   "isReversed": null,
   "markers": [
     {
@@ -166,9 +168,9 @@
       ]
     },
     {
-      "position": 5.0,
+      "position": 3.05,
       "names": [
-        "baseArmAndElevator"
+        "intakeFlippedCone"
       ]
     }
   ]
