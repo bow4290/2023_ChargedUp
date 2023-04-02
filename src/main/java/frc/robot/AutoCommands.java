@@ -53,7 +53,7 @@ public class AutoCommands {
         .alongWith(
             s_Elbow
                 .goToDeg(Constants.Elbow.Positions.third)
-                .beforeStarting(Commands.waitSeconds(0.15)));
+                .beforeStarting(Commands.waitSeconds(0.3)));
   }
 
   public Command topCone() {
