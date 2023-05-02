@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -25,6 +26,7 @@ public class RobotContainer {
   private final Intake s_Intake = new Intake();
   private final Elevator s_Elevator = new Elevator();
   private final Elbow s_Elbow = new Elbow(s_Elevator::getPositionPercent);
+  private final LED s_LED = new LED();
   private SwerveAutoBuilder autoBuilder;
   private AutoCommands autoCommands = new AutoCommands(s_Swerve, s_Intake, s_Elbow, s_Elevator);
 
@@ -100,10 +102,12 @@ public class RobotContainer {
     // driver.cross_a.whileTrue(new GoToNearestScoringLocation(s_Swerve));
     // driver.cross_a.whileTrue(autoCommands.attemptBalance());
     driver.circle_b.whileTrue(s_Swerve.lockModulesCommand());
-    driver.cross_a.whileTrue(autoCommands.intakeCube());
+    //driver.cross_a.whileTrue(autoCommands.intakeCube());
     // driver.rightBumper.whileTrue(autoCommands.topCube());
+    driver.cross_a.onTrue(s_LED.setLEDsCommand(Color.kBlue));
+    driver.square_x.onTrue(s_LED.setLEDsCommand(Color.kRed));
 
-    driver.square_x.whileTrue(new AutoBalance(s_Swerve, new Rotation2d(0, 1)));
+    //driver.square_x.whileTrue(new AutoBalance(s_Swerve, new Rotation2d(0, 1)));
   }
 
   private void operatorConfigurationAppleKeyboard() {
