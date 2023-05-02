@@ -102,12 +102,11 @@ public class RobotContainer {
     // driver.cross_a.whileTrue(new GoToNearestScoringLocation(s_Swerve));
     // driver.cross_a.whileTrue(autoCommands.attemptBalance());
     driver.circle_b.whileTrue(s_Swerve.lockModulesCommand());
-    //driver.cross_a.whileTrue(autoCommands.intakeCube());
+    // driver.cross_a.whileTrue(autoCommands.intakeCube());
     // driver.rightBumper.whileTrue(autoCommands.topCube());
     driver.cross_a.onTrue(s_LED.setLEDsCommand(Color.kBlue));
     driver.square_x.onTrue(s_LED.setLEDsCommand(Color.kRed));
-
-    //driver.square_x.whileTrue(new AutoBalance(s_Swerve, new Rotation2d(0, 1)));
+    // driver.square_x.whileTrue(new AutoBalance(s_Swerve, new Rotation2d(0, 1)));
   }
 
   private void operatorConfigurationAppleKeyboard() {

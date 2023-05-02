@@ -52,6 +52,7 @@ public class Vision {
       position = new PoseEstimate(camPose.estimatedPose.toPose2d(), camPose.timestampSeconds);
       timeSinceLastVision.reset();
     }*/
+
     PoseEstimate position = null;
 
     return Optional.ofNullable(position);
