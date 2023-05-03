@@ -13,11 +13,11 @@ public class LED extends SubsystemBase {
 
   public LED() {
     buffer = new AddressableLEDBuffer(length);
-    solid(Color.kGreen);
     led = new AddressableLED(0);
     led.setLength(length);
 
-    led.setData(buffer);
+    solid(Color.kGreen);
+    show();
     led.start();
   }
 
@@ -31,7 +31,38 @@ public class LED extends SubsystemBase {
     }
   }
 
+  private static final double maxCurrent = 1500; // See VRM datasheet
+  private static final double theoreticalAchievableCurrent = length * 60;
+  private static final double maxTotalBrightness =
+      (maxCurrent / theoreticalAchievableCurrent) * length * ("RGB").length();
+  private static final double safetyMarginThing = 0;
+
+  /**
+   * Modified colors in buffer to prevent too much current being used
+   */
+  public void preprocessBuffer() {
+    double sum = 0;
+    for (int i = 0; i < length; i++) {
+      var color = buffer.getLED(i);
+      sum += color.red + color.green + color.blue;
+    }
+    double div = sum / maxTotalBrightness + safetyMarginThing;
+    if (div > 1) {
+      // If we will consume too much current, unbrighten colors
+      for (int i = 0; i < length; i++) {
+        var color = buffer.getLED(i);
+        buffer.setLED(i, new Color(color.red / div, color.green / div, color.blue / div));
+      }
+      System.out.println("Warning: LED strip exceeded limit by " + div);
+    }
+  }
+
+  /**
+   * Calls preprocessBuffer and then sets LED data.
+   * The buffer is not guaranteed to remain the same after calling this.
+   */
   public void show() {
+    preprocessBuffer();
     led.setData(buffer);
   }
 
