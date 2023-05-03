@@ -9,12 +9,13 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class LED extends SubsystemBase {
   private final AddressableLED led;
   private final AddressableLEDBuffer buffer;
-  private static final int length = 40;
+  private static final int length = 50;
 
   public LED() {
     buffer = new AddressableLEDBuffer(length);
+    solid(Color.kGreen);
     led = new AddressableLED(0);
-    led.setLength(40);
+    led.setLength(length);
 
     led.setData(buffer);
     led.start();
