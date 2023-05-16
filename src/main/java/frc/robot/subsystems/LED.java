@@ -37,9 +37,7 @@ public class LED extends SubsystemBase {
       (maxCurrent / theoreticalAchievableCurrent) * length * ("RGB").length();
   private static final double safetyMarginThing = 0;
 
-  /**
-   * Modified colors in buffer to prevent too much current being used
-   */
+  /** Modified colors in buffer to prevent too much current being used */
   public void preprocessBuffer() {
     double sum = 0;
     for (int i = 0; i < length; i++) {
@@ -58,8 +56,8 @@ public class LED extends SubsystemBase {
   }
 
   /**
-   * Calls preprocessBuffer and then sets LED data.
-   * The buffer is not guaranteed to remain the same after calling this.
+   * Calls preprocessBuffer and then sets LED data. The buffer is not guaranteed to remain the same
+   * after calling this.
    */
   public void show() {
     preprocessBuffer();
