@@ -43,8 +43,8 @@ public class RobotContainer {
     // Create a server for PathPlanner so that the robot pathing can be viewed.
     PathPlannerServer.startServer(5811);
 
-    // s_Intake.intakeHasThing.whileTrue(s_LED.setLEDsCommand(Color.kPurple));
-    // s_Intake.intakeHasThing.negate().whileTrue(s_LED.setLEDsCommand(Color.kRed));
+    s_Intake.intakeHasThing.whileTrue(s_LED.setLEDsCommand(Color.kPurple));
+    s_Intake.intakeHasThing.negate().whileTrue(s_LED.setLEDsCommand(Color.kRed));
     // DO NOT UNCOMMENT THE FOLLOWING LINES
     // robot.explode();
   }
