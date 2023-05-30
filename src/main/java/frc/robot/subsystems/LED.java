@@ -2,22 +2,19 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class LED extends SubsystemBase {
-  private final AddressableLED led;
-  private final AddressableLEDBuffer buffer;
+  private static final int port = 0;
   private static final int length = 50;
+  private final AddressableLED led = new AddressableLED(port);
+  private final AddressableLEDBuffer buffer = new AddressableLEDBuffer(length);
 
   public LED() {
-    buffer = new AddressableLEDBuffer(length);
-    led = new AddressableLED(0);
     led.setLength(length);
-
-    solid(Color.kGreen);
-    show();
     led.start();
   }
 
@@ -37,7 +34,7 @@ public class LED extends SubsystemBase {
       (maxCurrent / theoreticalAchievableCurrent) * length * ("RGB").length();
   private static final double safetyMarginThing = 0;
 
-  /** Modified colors in buffer to prevent too much current being used */
+  /** Modify colors in buffer to prevent too much current being used */
   public void preprocessBuffer() {
     double sum = 0;
     for (int i = 0; i < length; i++) {
@@ -64,8 +61,44 @@ public class LED extends SubsystemBase {
     led.setData(buffer);
   }
 
-  public Command setLEDsCommand(Color c) {
-    return runOnce(
+  public static final double rainbowPeriod = 1;
+  public static final double rainbowIncrement = 10;
+
+  /*
+  A quick note on LED commands:
+  Each individual LED pattern (rainbow, solidLEDs, etc.) is implemented as a runOnce
+  **There is no state** so all the commands should just use getFPGATimestamp to determine their lighting up things
+  Then the "big SelectCommand" in RobotContainer chooses the right command based on the state
+   */
+  private Command runLEDs(Runnable action) {
+    return runOnce(action).ignoringDisable(true);
+  }
+
+  public Command rainbow() {
+    return runLEDs(
+        () -> {
+          double time = (Timer.getFPGATimestamp() % rainbowPeriod) * (180 / rainbowPeriod);
+          for (int i = 0; i < length; i++) {
+            var col = Color.fromHSV((int) (time + rainbowIncrement * i), 255, 255);
+            setPixel(i, col);
+          }
+          show();
+        });
+  }
+
+  public Command snow() {
+    return runLEDs(
+        () -> {
+          double subsection = Math.floor((Timer.getFPGATimestamp() * 2) % 10);
+          for (int i = 0; i < length; i++) {
+            setPixel(i, i % 10 == subsection ? Color.kBlack : Color.kWhite);
+          }
+          show();
+        });
+  }
+
+  public Command solidLEDsCommand(Color c) {
+    return runLEDs(
         () -> {
           solid(c);
           show();

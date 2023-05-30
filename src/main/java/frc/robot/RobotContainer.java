@@ -5,6 +5,7 @@ import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.auto.PIDConstants;
 import com.pathplanner.lib.auto.SwerveAutoBuilder;
 import com.pathplanner.lib.server.PathPlannerServer;
+import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
@@ -20,6 +21,7 @@ import frc.robot.subsystems.*;
 import java.io.File;
 import java.nio.file.Files;
 import java.util.HashMap;
+import java.util.Map;
 
 public class RobotContainer {
   private final Swerve s_Swerve = new Swerve();
@@ -29,10 +31,10 @@ public class RobotContainer {
   private final LED s_LED = new LED();
   private SwerveAutoBuilder autoBuilder;
   private AutoCommands autoCommands = new AutoCommands(s_Swerve, s_Intake, s_Elbow, s_Elevator);
-
+  private Robot bot;
   SendableChooser<Command> chooser = new SendableChooser<>();
 
-  public RobotContainer() {
+  public RobotContainer(Robot bot) {
     DriverStation.silenceJoystickConnectionWarning(true); // Remove annoying warnings
 
     configureButtons();
@@ -40,11 +42,9 @@ public class RobotContainer {
     populateAutoChooser();
     putInfoInDashboard();
     putOtherThingsInDashboard();
+    startRunningLEDs();
     // Create a server for PathPlanner so that the robot pathing can be viewed.
     PathPlannerServer.startServer(5811);
-
-    s_Intake.intakeHasThing.whileTrue(s_LED.setLEDsCommand(Color.kPurple));
-    s_Intake.intakeHasThing.negate().whileTrue(s_LED.setLEDsCommand(Color.kRed));
     // DO NOT UNCOMMENT THE FOLLOWING LINES
     // robot.explode();
   }
@@ -106,8 +106,6 @@ public class RobotContainer {
     driver.circle_b.whileTrue(s_Swerve.lockModulesCommand());
     // driver.cross_a.whileTrue(autoCommands.intakeCube());
     // driver.rightBumper.whileTrue(autoCommands.topCube());
-    driver.cross_a.onTrue(s_LED.setLEDsCommand(Color.kBlue));
-    driver.square_x.onTrue(s_LED.setLEDsCommand(Color.kRed));
     // driver.square_x.whileTrue(new AutoBalance(s_Swerve, new Rotation2d(0, 1)));
   }
 
@@ -439,5 +437,36 @@ public class RobotContainer {
     SmartDashboard.putData("CHOOSE AUTO", chooser);
     SmartDashboard.putData(
         "RESEND CHOOSER", new InstantCommand(() -> SmartDashboard.putData("CHOOSE AUTO", chooser)));
+  }
+
+  private enum LEDState {
+    rainbow,
+    green,
+    yellow,
+    purple,
+    snow
+  }
+
+  private void startRunningLEDs() {
+    var squareRecently = driver.square_x.debounce(3, Debouncer.DebounceType.kFalling);
+    var crossRecently = driver.cross_a.debounce(3, Debouncer.DebounceType.kFalling);
+
+    Commands.select(
+            Map.ofEntries(
+                Map.entry(LEDState.rainbow, s_LED.rainbow()),
+                Map.entry(LEDState.snow, s_LED.snow()),
+                Map.entry(LEDState.green, s_LED.solidLEDsCommand(Color.kGreen)),
+                Map.entry(LEDState.yellow, s_LED.solidLEDsCommand(Color.kYellow)),
+                Map.entry(LEDState.purple, s_LED.solidLEDsCommand(Color.kPurple))),
+            () ->
+                s_Intake.intakeHasThing.getAsBoolean()
+                    ? LEDState.green
+                    : squareRecently.getAsBoolean()
+                        ? LEDState.purple
+                        : crossRecently.getAsBoolean()
+                            ? LEDState.yellow
+                            : bot.isAutonomous() ? LEDState.snow : LEDState.rainbow)
+        .repeatedly()
+        .schedule();
   }
 }
