@@ -22,11 +22,11 @@ import java.nio.file.Files;
 import java.util.HashMap;
 
 public class RobotContainer {
-  private final Swerve s_Swerve = new Swerve();
+  public final Swerve s_Swerve = new Swerve();
   private final Intake s_Intake = new Intake();
   private final Elevator s_Elevator = new Elevator();
   private final Elbow s_Elbow = new Elbow(s_Elevator::getPositionPercent);
-  private final LED s_LED = new LED();
+  public final LED s_LED = new LED();
   private SwerveAutoBuilder autoBuilder;
   private AutoCommands autoCommands = new AutoCommands(s_Swerve, s_Intake, s_Elbow, s_Elevator);
 
@@ -57,12 +57,14 @@ public class RobotContainer {
   private final boolean operatorPS4 = true;
   private final int keyboardApplePort = 2;
 
-  private final GenericGamepad driver = GenericGamepad.from(driverPort, driverPS4);
+  public final GenericGamepad driver = GenericGamepad.from(driverPort, driverPS4);
   private final GenericGamepad operator = GenericGamepad.from(operatorPort, operatorPS4);
   private final CommandGenericHID keyboard = new CommandGenericHID(keyboardApplePort);
 
+  Controls controls = new Controls();
+
   private void configureButtons() {
-    driverConfiguration();
+    controls.driverConfiguration(this);
     // We can actually call both of these since they are on different ports. If concurrent commands
     // run they will interrupt.
     // operatorConfigurationAppleKeyboard();
