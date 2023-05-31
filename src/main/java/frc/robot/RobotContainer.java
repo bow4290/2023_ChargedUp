@@ -10,7 +10,6 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -59,18 +58,23 @@ public class RobotContainer {
 
   public final GenericGamepad driver = GenericGamepad.from(driverPort, driverPS4);
   public final GenericGamepad operator = GenericGamepad.from(operatorPort, operatorPS4);
-  private final CommandGenericHID keyboard = new CommandGenericHID(keyboardApplePort);
+  public final CommandGenericHID keyboard = new CommandGenericHID(keyboardApplePort);
 
   // Java stuff, creates a new Controls object
   Controls controls = new Controls();
 
   private void configureButtons() {
-    // We can actually call both of these since they are on different ports. If concurrent commands
-    // run they will interrupt.
+    // We can actually call both operatorConfigurationAppleKeyboard and operatorConfiguration
+    // because they are on different ports.
+    // If concurrent commands run they will interrupt.
 
     // we call from controls, which gets the code from our Controls.java class
     controls.driverConfiguration(this);
-    // operatorConfigurationAppleKeyboard();
+    // Checks the boolean useAppleConfig, which controls whether or not to use Apple's keyboard
+    // operator config
+    if (controls.useAppleConfig == true) {
+      controls.operatorConfigurationAppleKeyboard(this);
+    }
     controls.operatorConfiguration(this);
   }
 
@@ -167,7 +171,6 @@ public class RobotContainer {
     keyboard.button(27).whileTrue(new RobotState().elbowBase().build(this));
     keyboard.button(28).whileTrue(new RobotState().elbowSecond().build(this));
   }
-
 
   // elbow in degrees, 0 is up.
   // elevator [0, 1]
