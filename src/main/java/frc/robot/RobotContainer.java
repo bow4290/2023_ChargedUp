@@ -24,11 +24,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class RobotContainer {
-  private final Swerve s_Swerve = new Swerve();
-  private final Intake s_Intake = new Intake();
-  private final Elevator s_Elevator = new Elevator();
-  private final Elbow s_Elbow = new Elbow(s_Elevator::getPositionPercent);
-  private final LED s_LED = new LED();
+  public final Swerve s_Swerve = new Swerve();
+  public final Intake s_Intake = new Intake();
+  public final Elevator s_Elevator = new Elevator();
+  public final Elbow s_Elbow = new Elbow(s_Elevator::getPositionPercent);
+  public final LED s_LED = new LED();
   private SwerveAutoBuilder autoBuilder;
   private AutoCommands autoCommands = new AutoCommands(s_Swerve, s_Intake, s_Elbow, s_Elevator);
   private Robot bot;
@@ -57,197 +57,26 @@ public class RobotContainer {
   private final boolean operatorPS4 = true;
   private final int keyboardApplePort = 2;
 
-  private final GenericGamepad driver = GenericGamepad.from(driverPort, driverPS4);
-  private final GenericGamepad operator = GenericGamepad.from(operatorPort, operatorPS4);
-  private final CommandGenericHID keyboard = new CommandGenericHID(keyboardApplePort);
+  public final GenericGamepad driver = GenericGamepad.from(driverPort, driverPS4);
+  public final GenericGamepad operator = GenericGamepad.from(operatorPort, operatorPS4);
+  public final CommandGenericHID keyboard = new CommandGenericHID(keyboardApplePort);
+
+  // Java stuff, creates a new Controls object
+  Controls controls = new Controls();
 
   private void configureButtons() {
-    driverConfiguration();
-    // We can actually call both of these since they are on different ports. If concurrent commands
-    // run they will interrupt.
-    // operatorConfigurationAppleKeyboard();
-    operatorConfiguration();
-  }
+    // We can actually call both operatorConfigurationAppleKeyboard and operatorConfiguration
+    // because they are on different ports.
+    // If concurrent commands run they will interrupt.
 
-  private void driverConfiguration() {
-    s_Swerve.setDefaultCommand(
-        new TeleopSwerve(
-            s_Swerve,
-            () -> {
-              double input = -driver.leftY.getAsDouble();
-              return Math.copySign(Math.pow(input, Constants.driveSens), input);
-            },
-            () -> {
-              double input = -driver.leftX.getAsDouble();
-              return Math.copySign(Math.pow(input, Constants.driveSens), input);
-            },
-            () -> {
-              double input = -driver.rightX.getAsDouble();
-              return Math.copySign(Math.pow(input, Constants.turnSens), input);
-            },
-            driver.leftBumper,
-            driver.rightBumper.and(
-                () -> Math.hypot(driver.rightX.getAsDouble(), driver.rightY.getAsDouble()) > 0.2),
-            () ->
-                Math.round(
-                        (Math.toDegrees(
-                                    Math.atan2(
-                                        -driver.rightY.getAsDouble(), driver.rightX.getAsDouble()))
-                                - 90)
-                            / 90)
-                    * 90));
-
-    driver.triangle_y.onTrue(new InstantCommand(s_Swerve::zeroGyro));
-    // driver.circle_b.whileTrue(new BalanceThing(s_Swerve));
-
-    // Temporarily disabled while it still needs to be fixed-ish
-    // driver.cross_a.whileTrue(new GoToNearestScoringLocation(s_Swerve));
-    // driver.cross_a.whileTrue(autoCommands.attemptBalance());
-    driver.circle_b.whileTrue(s_Swerve.lockModulesCommand());
-    // driver.cross_a.whileTrue(autoCommands.intakeCube());
-    // driver.rightBumper.whileTrue(autoCommands.topCube());
-    // driver.square_x.whileTrue(new AutoBalance(s_Swerve, new Rotation2d(0, 1)));
-  }
-
-  private void operatorConfigurationAppleKeyboard() {
-    // 1 -> third
-    // 2 -> forward (reverse) second
-    // 3 -> reverse third (cube)
-    // 4 -> second
-    // 15, 16, 17, 18: cube version of above.
-    // 5 -> battery single intake
-    // 6 -> battery double intake
-    // 7 -> single intake
-    // 8 -> double intake
-    // 9 & 14 -> ground
-    // 11 -> spin intake in
-    // 12 -> spin intake out
-    // 13 -> reset arm
-    // 19 -> elevator down
-    // 20 -> elevator up
-    // 21 -> arm down
-    // 22 -> arm up
-    // 23 -> elevator max
-    // 24 -> elevator middle
-    // 25 -> elevator base
-    // 26 -> elbow third
-    // 27 -> elbow vertical
-    // 28 -> elbow second
-    keyboard.button(1).whileTrue(new RobotState().elbowThird().elevatorMax().build(this));
-    keyboard.button(2).whileTrue(new RobotState().elbowThird().elevatorMiddle().build(this));
-    keyboard.button(3).whileTrue(new RobotState().elbowSecond().elevatorMax().build(this));
-    keyboard.button(4).whileTrue(new RobotState().elbowSecond().elevator(0.25).build(this));
-
-    keyboard
-        .button(15)
-        .whileTrue(
-            new RobotState()
-                .elbowThirdWeak()
-                .elevator(0.7)
-                .build(this)
-                .andThen(new RobotState().intakeEject().build(this)));
-    keyboard
-        .button(16)
-        .whileTrue(
-            new RobotState()
-                .elbowThirdWeak()
-                .elevatorBase()
-                .build(this)
-                .andThen(new RobotState().intakeEject().build(this)));
-    keyboard
-        .button(17)
-        .whileTrue(
-            new RobotState()
-                .elbowSecondWeak()
-                .elevator(0.7)
-                .build(this)
-                .andThen(new RobotState().intakeEject().build(this)));
-    keyboard
-        .button(18)
-        .whileTrue(
-            new RobotState()
-                .elbowSecondWeak()
-                .elevatorBase()
-                .build(this)
-                .andThen(new RobotState().intakeEject().build(this)));
-
-    keyboard
-        .button(5)
-        .whileTrue(new RobotState().elbowSingleBattery().elevatorBase().intakeIn().build(this));
-    keyboard
-        .button(6)
-        .whileTrue(new RobotState().elbowDoubleBattery().elevatorMax().intakeIn().build(this));
-    keyboard
-        .button(7)
-        .whileTrue(new RobotState().elbowSingleForward().elevatorBase().intakeIn().build(this));
-    keyboard
-        .button(8)
-        .whileTrue(new RobotState().elbowDoubleForward().elevatorMax().intakeIn().build(this));
-
-    keyboard.button(9).whileTrue(new RobotState().elbowGround().elevatorBase().build(this));
-    keyboard.button(14).whileTrue(new RobotState().elbowGround().elevatorBase().build(this));
-    keyboard.button(11).whileTrue(new RobotState().intakeIn().build(this));
-    keyboard.button(12).whileTrue(new RobotState().intakeEject().build(this));
-    keyboard.button(13).whileTrue(new RobotState().elbowBase().elevatorBase().build(this));
-
-    keyboard.button(19).whileTrue(s_Elevator.moveCmd(() -> -0.15));
-    keyboard.button(20).whileTrue(s_Elevator.moveCmd(() -> 0.15));
-    keyboard.button(21).whileTrue(s_Elbow.moveCmd(() -> -0.15));
-    keyboard.button(22).whileTrue(s_Elbow.moveCmd(() -> 0.15));
-
-    keyboard.button(23).whileTrue(new RobotState().elevatorMax().build(this));
-    keyboard.button(24).whileTrue(new RobotState().elevatorMiddle().build(this));
-    keyboard.button(25).whileTrue(new RobotState().elevatorBase().build(this));
-    keyboard.button(26).whileTrue(new RobotState().elbowThird().build(this));
-    keyboard.button(27).whileTrue(new RobotState().elbowBase().build(this));
-    keyboard.button(28).whileTrue(new RobotState().elbowSecond().build(this));
-  }
-
-  private void operatorConfiguration() {
-    // Pistons to cube, intake spin in
-    operator.square_x.whileTrue(s_Intake.pistonsCubeCmd().andThen(s_Intake.spinInCmd()));
-    // Pistons to cone, intake spin in
-    operator.triangle_y.whileTrue(s_Intake.pistonsConeCmd().andThen(s_Intake.spinInCmd()));
-    // Pistons to cube, intake spin out (eject)
-    operator.circle_b.whileTrue(s_Intake.pistonsCubeCmd().andThen(s_Intake.spinEjectCmd()));
-    // Arm to vertical, elevator to base
-    operator.cross_a.whileTrue(
-        s_Elevator.smartBase(s_Elbow.goToDeg(0), s_Elbow.goToDegUnending(0)));
-    // Intake position from battery side
-    operator.dpadDown.whileTrue(
-        s_Elevator.smartBase(s_Elbow.groundPosition(), s_Elbow.groundPosition().repeatedly()));
-    // Elevator to base
-    operator.dpadLeft.whileTrue(s_Elevator.goToBase());
-    // Elevator to mid
-    operator.dpadUp.whileTrue(s_Elevator.goToMid());
-    // Elevator to max
-    operator.dpadRight.whileTrue(s_Elevator.goToMax());
-    // Arm back battery side for 2nd row
-    operator.leftBumper.whileTrue(s_Elbow.secondPosition().alongWith(s_Elevator.goToMid()));
-    // Arm out front side for 3rd row
-    operator.leftTriggerB.whileTrue(
-        s_Elevator
-            .goToMax()
-            .alongWith(s_Elbow.goToDegUnending(49).beforeStarting(Commands.waitSeconds(0.3))));
-    // Arm out battery side, human player double (platform)
-    operator.rightBumper.whileTrue(s_Elbow.goToDegUnending(-55));
-    // Arm out battery side, human player single (ramp) cube
-    operator.rightTriggerB.whileTrue(s_Elbow.goToDegUnending(-59));
-    // Arm out front side, human player single (ramp) cone
-    operator.rightMiddle.whileTrue(s_Elbow.goToDegUnending(57));
-    // Intake but slightly lower
-    operator.leftMiddle.whileTrue(s_Elbow.goToDegUnending(-105).alongWith(s_Elevator.goToBase()));
-    // Pistons to cone
-    /*operator.leftMiddle.onTrue(s_Intake.pistonsConeCmd());
-    // Pistons to cube
-    operator.rightMiddle.onTrue(s_Intake.pistonsCubeCmd());*/
-
-    operator.leftJoystickPushed.whileTrue(
-        s_Elevator.moveCmd(
-            () -> operator.leftY.getAsDouble() * (operator.topMiddle.getAsBoolean() ? -1 : -0.3)));
-    operator.rightJoystickPushed.whileTrue(
-        s_Elbow.moveCmd(
-            () -> operator.rightX.getAsDouble() * (operator.topMiddle.getAsBoolean() ? 1 : 0.2)));
+    // we call from controls, which gets the code from our Controls.java class
+    controls.driverConfiguration(this);
+    // Checks the boolean useAppleConfig, which controls whether or not to use Apple's keyboard
+    // operator config
+    if (controls.useAppleConfig) {
+      controls.operatorConfigurationAppleKeyboard(this);
+    }
+    controls.operatorConfiguration(this);
   }
 
   // elbow in degrees, 0 is up.
