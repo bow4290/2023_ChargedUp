@@ -50,8 +50,11 @@ public class Controls {
     bot.driver.circle_b.whileTrue(bot.s_Swerve.lockModulesCommand());
     // bot.driver.cross_a.whileTrue(autoCommands.intakeCube());
     // bot.driver.rightBumper.whileTrue(autoCommands.topCube());
-    bot.driver.cross_a.onTrue(bot.s_LED.setLEDsCommand(Color.kBlue));
-    bot.driver.square_x.onTrue(bot.s_LED.setLEDsCommand(Color.kRed));
+
+    // Reserved. Currently handled by RobotContainer startRunningLEDS
+    // bot.driver.cross_a.onTrue(bot.s_LED.setLEDsCommand(Color.kBlue));
+    // bot.driver.square_x.onTrue(bot.s_LED.setLEDsCommand(Color.kRed));
+
     // bot.driver.square_x.whileTrue(new AutoBalance(bot.s_Swerve, new Rotation2d(0, 1)));
   }
 

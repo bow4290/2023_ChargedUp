@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -72,7 +73,7 @@ public class RobotContainer {
     controls.driverConfiguration(this);
     // Checks the boolean useAppleConfig, which controls whether or not to use Apple's keyboard
     // operator config
-    if (controls.useAppleConfig == true) {
+    if (controls.useAppleConfig) {
       controls.operatorConfigurationAppleKeyboard(this);
     }
     controls.operatorConfiguration(this);
