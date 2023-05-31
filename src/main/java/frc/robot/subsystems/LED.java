@@ -28,11 +28,10 @@ public class LED extends SubsystemBase {
     }
   }
 
-  private static final double maxCurrent = 1500; // See VRM datasheet
+  private static final double maxCurrent = 1550;
   private static final double theoreticalAchievableCurrent = length * 60;
   private static final double maxTotalBrightness =
       (maxCurrent / theoreticalAchievableCurrent) * length * ("RGB").length();
-  private static final double safetyMarginThing = 0;
 
   /** Modify colors in buffer to prevent too much current being used */
   public void preprocessBuffer() {
@@ -41,14 +40,13 @@ public class LED extends SubsystemBase {
       var color = buffer.getLED(i);
       sum += color.red + color.green + color.blue;
     }
-    double div = sum / maxTotalBrightness + safetyMarginThing;
+    double div = sum / maxTotalBrightness;
     if (div > 1) {
       // If we will consume too much current, unbrighten colors
       for (int i = 0; i < length; i++) {
         var color = buffer.getLED(i);
         buffer.setLED(i, new Color(color.red / div, color.green / div, color.blue / div));
       }
-      System.out.println("Warning: LED strip exceeded limit by " + div);
     }
   }
 

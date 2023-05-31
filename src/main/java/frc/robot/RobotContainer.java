@@ -36,7 +36,7 @@ public class RobotContainer {
 
   public RobotContainer(Robot bot) {
     DriverStation.silenceJoystickConnectionWarning(true); // Remove annoying warnings
-
+    this.bot = bot;
     configureButtons();
     createAutoBuilder();
     populateAutoChooser();
