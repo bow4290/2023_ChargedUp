@@ -5,24 +5,34 @@ import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.RobotContainer;
+import java.util.Map;
 
 public class LED extends SubsystemBase {
   private static final int port = 0;
   private static final int length = 50;
   private final AddressableLED led = new AddressableLED(port);
   private final AddressableLEDBuffer buffer = new AddressableLEDBuffer(length);
+  private RobotContainer bot; // This probably is not great practice but it works and is convenient
 
   public LED() {
     led.setLength(length);
     led.start();
   }
 
+  public void setBot(RobotContainer bot) {
+    this.bot = bot;
+    startRunningLEDs();
+  }
+
   public void setPixel(int i, Color c) {
     buffer.setLED(i, c);
   }
 
-  public void solid(Color c) {
+  public void setSolid(Color c) {
     for (int i = 0; i < length; i++) {
       setPixel(i, c);
     }
@@ -69,7 +79,12 @@ public class LED extends SubsystemBase {
   Then the "big SelectCommand" in RobotContainer chooses the right command based on the state
    */
   private Command runLEDs(Runnable action) {
-    return runOnce(action).ignoringDisable(true);
+    return runOnce(
+            () -> {
+              action.run();
+              show();
+            })
+        .ignoringDisable(true);
   }
 
   public Command rainbow() {
@@ -80,7 +95,6 @@ public class LED extends SubsystemBase {
             var col = Color.fromHSV((int) (time + rainbowIncrement * i), 255, 255);
             setPixel(i, col);
           }
-          show();
         });
   }
 
@@ -91,15 +105,50 @@ public class LED extends SubsystemBase {
           for (int i = 0; i < length; i++) {
             setPixel(i, i % 10 == subsection ? Color.kBlack : Color.kWhite);
           }
-          show();
         });
   }
 
-  public Command solidLEDsCommand(Color c) {
-    return runLEDs(
-        () -> {
-          solid(c);
-          show();
-        });
+  public Command solid(Color c) {
+    return runLEDs(() -> setSolid(c));
+  }
+
+  public Trigger squareRecently;
+  public Trigger crossRecently;
+
+  private enum LEDState {
+    rainbow,
+    green,
+    yellow,
+    purple,
+    snow
+  }
+
+  private LEDState chooseLEDState() {
+    if (bot.s_Intake.intakeHasThing.getAsBoolean()) {
+      return LEDState.green;
+    }
+    if (squareRecently.getAsBoolean()) {
+      return LEDState.purple;
+    }
+    if (crossRecently.getAsBoolean()) {
+      return LEDState.yellow;
+    } // bot.bot lol??
+    if (bot.bot.isAutonomousEnabled()) {
+      return LEDState.snow;
+    }
+    return LEDState.rainbow;
+  }
+
+  private void startRunningLEDs() {
+    Commands.select(
+            Map.ofEntries(
+                Map.entry(LEDState.rainbow, rainbow()),
+                Map.entry(LEDState.snow, snow()),
+                Map.entry(LEDState.green, solid(Color.kGreen)),
+                Map.entry(LEDState.yellow, solid(Color.kYellow)),
+                Map.entry(LEDState.purple, solid(Color.kPurple))),
+            this::chooseLEDState)
+        .repeatedly()
+        .schedule();
   }
 }

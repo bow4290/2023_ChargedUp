@@ -1,6 +1,6 @@
 package frc.robot;
 
-import edu.wpi.first.wpilibj.util.Color;
+import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.commands.swerve.*;
@@ -50,10 +50,9 @@ public class Controls {
     bot.driver.circle_b.whileTrue(bot.s_Swerve.lockModulesCommand());
     // bot.driver.cross_a.whileTrue(autoCommands.intakeCube());
     // bot.driver.rightBumper.whileTrue(autoCommands.topCube());
-
-    // Reserved. Currently handled by RobotContainer startRunningLEDS
-    // bot.driver.cross_a.onTrue(bot.s_LED.setLEDsCommand(Color.kBlue));
-    // bot.driver.square_x.onTrue(bot.s_LED.setLEDsCommand(Color.kRed));
+    // Link to LEDs
+    bot.s_LED.squareRecently = bot.driver.square_x.debounce(3, Debouncer.DebounceType.kFalling);
+    bot.s_LED.crossRecently = bot.driver.cross_a.debounce(3, Debouncer.DebounceType.kFalling);
 
     // bot.driver.square_x.whileTrue(new AutoBalance(bot.s_Swerve, new Rotation2d(0, 1)));
   }

@@ -5,13 +5,11 @@ import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.auto.PIDConstants;
 import com.pathplanner.lib.auto.SwerveAutoBuilder;
 import com.pathplanner.lib.server.PathPlannerServer;
-import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -21,7 +19,6 @@ import frc.robot.subsystems.*;
 import java.io.File;
 import java.nio.file.Files;
 import java.util.HashMap;
-import java.util.Map;
 
 public class RobotContainer {
   public final Swerve s_Swerve = new Swerve();
@@ -31,22 +28,22 @@ public class RobotContainer {
   public final LED s_LED = new LED();
   private SwerveAutoBuilder autoBuilder;
   private AutoCommands autoCommands = new AutoCommands(s_Swerve, s_Intake, s_Elbow, s_Elevator);
-  private Robot bot;
+  public Robot bot;
   SendableChooser<Command> chooser = new SendableChooser<>();
 
   public RobotContainer(Robot bot) {
-    DriverStation.silenceJoystickConnectionWarning(true); // Remove annoying warnings
     this.bot = bot;
+    DriverStation.silenceJoystickConnectionWarning(true); // Remove annoying warnings
     configureButtons();
     createAutoBuilder();
     populateAutoChooser();
     putInfoInDashboard();
     putOtherThingsInDashboard();
-    startRunningLEDs();
+    s_LED.setBot(this);
     // Create a server for PathPlanner so that the robot pathing can be viewed.
     PathPlannerServer.startServer(5811);
     // DO NOT UNCOMMENT THE FOLLOWING LINES
-    // robot.explode();
+    // bot.explode();
   }
 
   /* Controllers */
@@ -78,7 +75,9 @@ public class RobotContainer {
     }
     controls.operatorConfiguration(this);
   }
-
+  /*
+  (BTW: you can ignore this function)
+   */
   // elbow in degrees, 0 is up.
   // elevator [0, 1]
   // intake [-1, 1] positive for in, negative for out
@@ -266,36 +265,5 @@ public class RobotContainer {
     SmartDashboard.putData("CHOOSE AUTO", chooser);
     SmartDashboard.putData(
         "RESEND CHOOSER", new InstantCommand(() -> SmartDashboard.putData("CHOOSE AUTO", chooser)));
-  }
-
-  private enum LEDState {
-    rainbow,
-    green,
-    yellow,
-    purple,
-    snow
-  }
-
-  private void startRunningLEDs() {
-    var squareRecently = driver.square_x.debounce(3, Debouncer.DebounceType.kFalling);
-    var crossRecently = driver.cross_a.debounce(3, Debouncer.DebounceType.kFalling);
-
-    Commands.select(
-            Map.ofEntries(
-                Map.entry(LEDState.rainbow, s_LED.rainbow()),
-                Map.entry(LEDState.snow, s_LED.snow()),
-                Map.entry(LEDState.green, s_LED.solidLEDsCommand(Color.kGreen)),
-                Map.entry(LEDState.yellow, s_LED.solidLEDsCommand(Color.kYellow)),
-                Map.entry(LEDState.purple, s_LED.solidLEDsCommand(Color.kPurple))),
-            () ->
-                s_Intake.intakeHasThing.getAsBoolean()
-                    ? LEDState.green
-                    : squareRecently.getAsBoolean()
-                        ? LEDState.purple
-                        : crossRecently.getAsBoolean()
-                            ? LEDState.yellow
-                            : bot.isAutonomous() ? LEDState.snow : LEDState.rainbow)
-        .repeatedly()
-        .schedule();
   }
 }
