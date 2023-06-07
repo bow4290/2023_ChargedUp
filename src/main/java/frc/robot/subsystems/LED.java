@@ -12,7 +12,7 @@ import frc.robot.RobotContainer;
 import java.util.Map;
 
 public class LED extends SubsystemBase {
-  private static final int port = 0;
+  private static final int port = 1;
   private static final int length = 50;
   private final AddressableLED led = new AddressableLED(port);
   private final AddressableLEDBuffer buffer = new AddressableLEDBuffer(length);
