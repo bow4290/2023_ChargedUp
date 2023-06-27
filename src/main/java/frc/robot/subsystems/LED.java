@@ -130,8 +130,8 @@ public class LED extends SubsystemBase {
     // blue endgame warning thing
     if (bot.bot.isTeleopEnabled()
         && DriverStation.isFMSAttached()
-        && Timer.getMatchTime() < 30
-        && Timer.getMatchTime() > 28) {
+        && Timer.getMatchTime() < 31
+        && Timer.getMatchTime() > 27) {
       return LEDState.blue;
     }
 
