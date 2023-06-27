@@ -127,14 +127,6 @@ public class LED extends SubsystemBase {
   }
 
   private LEDState chooseLEDState() {
-    if (bot.s_Intake.intakeHasThing.getAsBoolean()) {
-      return LEDState.green;
-    }
-
-    if (bot.bot.isAutonomousEnabled()) {
-      return LEDState.snow;
-    }
-
     // blue endgame warning thing
     if (bot.bot.isTeleopEnabled()
         && DriverStation.isFMSAttached()
@@ -143,6 +135,13 @@ public class LED extends SubsystemBase {
       return LEDState.blue;
     }
 
+    if (bot.s_Intake.intakeHasThing.getAsBoolean()) {
+      return LEDState.green;
+    }
+
+    if (bot.bot.isAutonomousEnabled()) {
+      return LEDState.snow;
+    }
     if (bot.driver.square_x.getAsBoolean()) {
       return LEDState.purple;
     }
