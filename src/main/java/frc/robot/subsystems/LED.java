@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -121,7 +122,8 @@ public class LED extends SubsystemBase {
     yellow,
     purple,
     red,
-    snow
+    snow,
+    blue
   }
 
   private LEDState chooseLEDState() {
@@ -131,6 +133,14 @@ public class LED extends SubsystemBase {
 
     if (bot.bot.isAutonomousEnabled()) {
       return LEDState.snow;
+    }
+
+    // blue endgame warning thing
+    if (bot.bot.isTeleopEnabled()
+        && DriverStation.isFMSAttached()
+        && Timer.getMatchTime() < 30
+        && Timer.getMatchTime() > 28) {
+      return LEDState.blue;
     }
 
     if (bot.driver.square_x.getAsBoolean()) {
@@ -148,7 +158,8 @@ public class LED extends SubsystemBase {
     } // bot.bot lol??
 
     // if the elbow is currently doing something non-default with the elbow, red
-    if (bot.bot.isTeleopEnabled() && bot.s_Elbow.getCurrentCommand() != bot.s_Elbow.getDefaultCommand()) {
+    if (bot.bot.isTeleopEnabled()
+        && bot.s_Elbow.getCurrentCommand() != bot.s_Elbow.getDefaultCommand()) {
       return LEDState.red;
     }
 
@@ -163,6 +174,7 @@ public class LED extends SubsystemBase {
                 Map.entry(LEDState.green, solid(Color.kGreen)),
                 Map.entry(LEDState.yellow, solid(Color.kYellow)),
                 Map.entry(LEDState.purple, solid(Color.kPurple)),
+                Map.entry(LEDState.blue, solid(Color.kBlue)),
                 Map.entry(LEDState.red, solid(Color.kRed))),
             this::chooseLEDState)
         .repeatedly()
