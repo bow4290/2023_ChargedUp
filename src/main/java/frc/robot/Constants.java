@@ -107,7 +107,7 @@ public final class Constants {
     // WARNING IF YOU TURN THIS TOO HIGH IT TIPS THE BOT AND EXPLODES
     public static final double maxAngularVelocity = 5.0;
 
-    public static final NeutralMode angleNeutralMode = NeutralMode.Coast;
+    public static final NeutralMode angleNeutralMode = NeutralMode.Brake;
     public static final NeutralMode driveNeutralMode = NeutralMode.Brake;
 
     /* Module Specific Constants */

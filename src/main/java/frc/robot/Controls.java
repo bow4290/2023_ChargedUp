@@ -9,8 +9,11 @@ import frc.robot.subsystems.*;
 public class Controls {
   // Determines whether or not to use Apple's keyboard operator config or not
   public final boolean useAppleConfig = false;
-
+    public int elbowDegrees;
+    public boolean reverseSide;
+    public boolean cube;
   public void driverConfiguration(RobotContainer bot) {
+    reverseSide = false;
     bot.s_Swerve.setDefaultCommand(
         new TeleopSwerve(
             bot.s_Swerve,
@@ -55,64 +58,95 @@ public class Controls {
     bot.s_LED.crossRecently = bot.driver.cross_a.debounce(3, Debouncer.DebounceType.kFalling);
 
     // bot.driver.square_x.whileTrue(new AutoBalance(bot.s_Swerve, new Rotation2d(0, 1)));
+    
+    bot.driver.square_x.whileTrue(null); //reverse side switcher
+    
+    bot.driver.circle_b.whileTrue(
+        bot.s_Elevator.goToMid().alongWith(
+        bot.s_Elbow.secondPosition())); //mid command (coming soon)
+
+    bot.driver.triangle_y.whileTrue(
+        bot.s_Elevator.goToMax().alongWith(
+        bot.s_Elbow.secondPosition())); //high command (coming soon)
+    
+    bot.driver.cross_a.whileTrue(
+        bot.s_Elevator.goToBase().alongWith(
+        bot.s_Elbow.groundPosition())); //low command (coming soon)
+    
+    bot.driver.leftBumper.whileTrue(
+        bot.s_Intake.spinEjectCmd()); //outtake
+    
+    // bot.driver.rightBumper.whileTrue(null); //go to selected position (low, mid, high) L not needed, spasm time
+    bot.driver.leftTriggerB.whileTrue(
+        bot.s_Elevator.goToBase().alongWith(
+        bot.s_Elbow.groundPosition()).alongWith(
+        bot.s_Intake.spinInCmd())); //ground intake
+
+    bot.driver.rightTriggerB.whileTrue(
+        bot.s_Elbow.goToDegUnending(57).alongWith(
+        bot.s_Elevator.goToBase()).alongWith(
+        bot.s_Intake.spinInCmd())); //substation
+
+    bot.driver.circle_b.and(bot.driver.square_x).and(bot.driver.triangle_y).and(bot.driver.cross_a).and(bot.driver.leftBumper).and(bot.driver.leftTriggerB).and(bot.driver.rightTriggerB).whileFalse(bot.s_Elevator.smartBase(bot.s_Elbow.goToDeg(0), bot.s_Elbow.goToDegUnending(0)));
   }
+    
 
   public void operatorConfiguration(RobotContainer bot) {
 
-    // Pistons to cube, intake spin in
-    bot.operator.square_x.whileTrue(
-        bot.s_Intake.pistonsCubeCmd().andThen(bot.s_Intake.spinInCmd()));
-    // Pistons to cone, intake spin in
-    bot.operator.triangle_y.whileTrue(
-        bot.s_Intake.pistonsConeCmd().andThen(bot.s_Intake.spinInCmd()));
-    // Pistons to cube, intake spin out (eject)
-    bot.operator.circle_b.whileTrue(
-        bot.s_Intake.pistonsCubeCmd().andThen(bot.s_Intake.spinEjectCmd()));
-    // Arm to vertical, elevator to base
-    bot.operator.cross_a.whileTrue(
-        bot.s_Elevator.smartBase(bot.s_Elbow.goToDeg(0), bot.s_Elbow.goToDegUnending(0)));
-    // Intake position from battery side
-    bot.operator.dpadDown.whileTrue(
-        bot.s_Elevator.smartBase(
-            bot.s_Elbow.groundPosition(), bot.s_Elbow.groundPosition().repeatedly()));
-    // Elevator to base
-    bot.operator.dpadLeft.whileTrue(bot.s_Elevator.goToBase());
-    // Elevator to mid
-    bot.operator.dpadUp.whileTrue(bot.s_Elevator.goToMid());
-    // Elevator to max
-    bot.operator.dpadRight.whileTrue(bot.s_Elevator.goToMax());
-    // Arm back battery side for 2nd row
-    bot.operator.leftBumper.whileTrue(
-        bot.s_Elbow.secondPosition().alongWith(bot.s_Elevator.goToMid()));
-    // Arm out front side for 3rd row
-    bot.operator.leftTriggerB.whileTrue(
-        bot.s_Elevator
-            .goToMax()
-            .alongWith(bot.s_Elbow.goToDegUnending(49).beforeStarting(Commands.waitSeconds(0.3))));
-    // Arm out battery side, human player double (platform)
-    bot.operator.rightBumper.whileTrue(bot.s_Elbow.goToDegUnending(-55));
-    // Arm out battery side, human player single (ramp) cube
-    bot.operator.rightTriggerB.whileTrue(bot.s_Elbow.goToDegUnending(-59));
-    // Arm out front side, human player single (ramp) cone
-    bot.operator.rightMiddle.whileTrue(bot.s_Elbow.goToDegUnending(57));
-    // Intake but slightly lower
-    bot.operator.leftMiddle.whileTrue(
-        bot.s_Elbow.goToDegUnending(-105).alongWith(bot.s_Elevator.goToBase()));
-    // Pistons to cone
-    /*operator.leftMiddle.onTrue(s_Intake.pistonsConeCmd());
-    // Pistons to cube
-    operator.rightMiddle.onTrue(s_Intake.pistonsCubeCmd());*/
+    // // Pistons to cube, intake spin in
+    // bot.operator.square_x.whileTrue(
+    //     bot.s_Intake.pistonsCubeCmd().andThen(bot.s_Intake.spinInCmd()));
+    // // Pistons to cone, intake spin in
+    // bot.operator.triangle_y.whileTrue(
+    //     bot.s_Intake.pistonsConeCmd().andThen(bot.s_Intake.spinInCmd()));
+    // // Pistons to cube, intake spin out (eject)
+    // bot.operator.circle_b.whileTrue(
+    //     bot.s_Intake.pistonsCubeCmd().andThen(bot.s_Intake.spinEjectCmd()));
+    // // Arm to vertical, elevator to base
+    // bot.operator.cross_a.whileTrue(
+    //     bot.s_Elevator.smartBase(bot.s_Elbow.goToDeg(0), bot.s_Elbow.goToDegUnending(0)));
+    // // Intake position from battery side
+    // bot.operator.dpadDown.whileTrue(
+    //     bot.s_Elevator.smartBase(
+    //         bot.s_Elbow.groundPosition(), bot.s_Elbow.groundPosition().repeatedly()));
+    // // Elevator to base
+    // bot.operator.dpadLeft.whileTrue(bot.s_Elevator.goToBase());
+    // // Elevator to mid
+    // bot.operator.dpadUp.whileTrue(bot.s_Elevator.goToMid());
+    // // Elevator to max
+    // bot.operator.dpadRight.whileTrue(bot.s_Elevator.goToMax());
+    // // Arm back battery side for 2nd row
+    // bot.operator.leftBumper.whileTrue(
+    //     bot.s_Elbow.secondPosition().alongWith(bot.s_Elevator.goToMid()));
+    // // Arm out front side for 3rd row
+    // bot.operator.leftTriggerB.whileTrue(
+    //     bot.s_Elevator
+    //         .goToMax()
+    //         .alongWith(bot.s_Elbow.goToDegUnending(49).beforeStarting(Commands.waitSeconds(0.3))));
+    // // Arm out battery side, human player double (platform)
+    // bot.operator.rightBumper.whileTrue(bot.s_Elbow.goToDegUnending(-55));
+    // // Arm out battery side, human player single (ramp) cube
+    // bot.operator.rightTriggerB.whileTrue(bot.s_Elbow.goToDegUnending(-59));
+    // // Arm out front side, human player single (ramp) cone
+    // bot.operator.rightMiddle.whileTrue(bot.s_Elbow.goToDegUnending(57));
+    // // Intake but slightly lower
+    // bot.operator.leftMiddle.whileTrue(
+    //     bot.s_Elbow.goToDegUnending(-105).alongWith(bot.s_Elevator.goToBase()));
+    // // Pistons to cone
+    // /*operator.leftMiddle.onTrue(s_Intake.pistonsConeCmd());
+    // // Pistons to cube
+    // operator.rightMiddle.onTrue(s_Intake.pistonsCubeCmd());*/
 
-    bot.operator.leftJoystickPushed.whileTrue(
-        bot.s_Elevator.moveCmd(
-            () ->
-                bot.operator.leftY.getAsDouble()
-                    * (bot.operator.topMiddle.getAsBoolean() ? -1 : -0.3)));
-    bot.operator.rightJoystickPushed.whileTrue(
-        bot.s_Elbow.moveCmd(
-            () ->
-                bot.operator.rightX.getAsDouble()
-                    * (bot.operator.topMiddle.getAsBoolean() ? 1 : 0.2)));
+    // bot.operator.leftJoystickPushed.whileTrue(
+    //     bot.s_Elevator.moveCmd(
+    //         () ->
+    //             bot.operator.leftY.getAsDouble()
+    //                 * (bot.operator.topMiddle.getAsBoolean() ? -1 : -0.3)));
+    // bot.operator.rightJoystickPushed.whileTrue(
+    //     bot.s_Elbow.moveCmd(
+    //         () ->
+    //             bot.operator.rightX.getAsDouble()
+    //                 * (bot.operator.topMiddle.getAsBoolean() ? 1 : 0.2)));
   }
 
   public void operatorConfigurationAppleKeyboard(RobotContainer bot) {
