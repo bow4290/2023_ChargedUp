@@ -6,6 +6,7 @@ import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -16,6 +17,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.*;
+import frc.robot.util.GeometryUtils;
+
 import java.util.Optional;
 
 public class Swerve extends SubsystemBase {
@@ -53,6 +56,22 @@ public class Swerve extends SubsystemBase {
         new SwerveDrivePoseEstimator(
             Constants.Swerve.swerveKinematics, getYaw(), getModulePositions(), new Pose2d());
   }
+  private static ChassisSpeeds correctForDynamics(ChassisSpeeds originalSpeeds) {
+    final double LOOP_TIME_S = 0.02;
+    Pose2d futureRobotPose =
+        new Pose2d(
+            originalSpeeds.vxMetersPerSecond * LOOP_TIME_S,
+            originalSpeeds.vyMetersPerSecond * LOOP_TIME_S,
+            Rotation2d.fromRadians(originalSpeeds.omegaRadiansPerSecond * LOOP_TIME_S));
+    Twist2d twistForPose = GeometryUtils.log(futureRobotPose);
+    ChassisSpeeds updatedSpeeds =
+        new ChassisSpeeds(
+            twistForPose.dx / LOOP_TIME_S,
+            twistForPose.dy / LOOP_TIME_S,
+            twistForPose.dtheta / LOOP_TIME_S);
+    return updatedSpeeds;
+}
+
 
   public void drive(
       Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop) {
@@ -64,6 +83,7 @@ public class Swerve extends SubsystemBase {
     // In teleop, this is controlled by a button that is held down.
     // Note that the robot does not have a concept of the field,
     // and the gyro must be configured according to starting orientation.
+    speeds = correctForDynamics(speeds); //jimmy p omegabytes
     var robotRelative =
         fieldRelative
             ? ChassisSpeeds.fromFieldRelativeSpeeds(speeds, getPose().getRotation())
