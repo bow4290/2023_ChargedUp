@@ -1,4 +1,4 @@
-//jimmy p omegabyte's math for 2nd order kinematice :]
+// jimmy p omegabyte's math for 2nd order kinematice :]
 package frc.robot.util;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -8,7 +8,6 @@ import edu.wpi.first.math.geometry.Twist2d;
 
 public class GeometryUtils {
   private static final double kEps = 1E-9;
-
 
   public static Pose2d exp(final Twist2d delta) {
     double sin_theta = Math.sin(delta.dtheta);

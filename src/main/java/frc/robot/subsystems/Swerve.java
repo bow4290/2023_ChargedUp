@@ -18,7 +18,6 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.*;
 import frc.robot.util.GeometryUtils;
-
 import java.util.Optional;
 
 public class Swerve extends SubsystemBase {
@@ -56,6 +55,7 @@ public class Swerve extends SubsystemBase {
         new SwerveDrivePoseEstimator(
             Constants.Swerve.swerveKinematics, getYaw(), getModulePositions(), new Pose2d());
   }
+
   private static ChassisSpeeds correctForDynamics(ChassisSpeeds originalSpeeds) {
     final double LOOP_TIME_S = 0.02;
     Pose2d futureRobotPose =
@@ -70,8 +70,7 @@ public class Swerve extends SubsystemBase {
             twistForPose.dy / LOOP_TIME_S,
             twistForPose.dtheta / LOOP_TIME_S);
     return updatedSpeeds;
-}
-
+  }
 
   public void drive(
       Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop) {
@@ -83,7 +82,7 @@ public class Swerve extends SubsystemBase {
     // In teleop, this is controlled by a button that is held down.
     // Note that the robot does not have a concept of the field,
     // and the gyro must be configured according to starting orientation.
-    speeds = correctForDynamics(speeds); //jimmy p omegabytes
+    speeds = correctForDynamics(speeds); // jimmy p omegabytes
     var robotRelative =
         fieldRelative
             ? ChassisSpeeds.fromFieldRelativeSpeeds(speeds, getPose().getRotation())
