@@ -104,7 +104,7 @@ public class LED extends SubsystemBase {
         () -> {
           double subsection = Math.floor((Timer.getFPGATimestamp() * 2) % 10);
           for (int i = 0; i < length; i++) {
-            setPixel(i, i % 10 == subsection ? Color.kBlack : Color.kWhite);
+            setPixel(i, i % 10 == subsection ? Color.kWhite : Color.kBlack);
           }
         });
   }
