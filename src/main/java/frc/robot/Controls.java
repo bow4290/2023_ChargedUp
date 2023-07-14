@@ -1,6 +1,7 @@
 package frc.robot;
 
 import edu.wpi.first.math.filter.Debouncer;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.commands.swerve.*;
@@ -46,8 +47,8 @@ public class Controls {
 
     // Temporarily disabled while it still needs to be fixed-ish
     // bot.driver.cross_a.whileTrue(new GoToNearestScoringLocation(bot.s_Swerve));
-    // bot.driver.cross_a.whileTrue(autoCommands.attemptBalance());
-    bot.driver.circle_b.whileTrue(bot.s_Swerve.lockModulesCommand());
+    bot.driver.circle_b.whileTrue(new AutoBalance(bot.s_Swerve, new Rotation2d(0, -1)));
+    // bot.driver.circle_b.whileTrue(bot.s_Swerve.lockModulesCommand());
     // bot.driver.cross_a.whileTrue(autoCommands.intakeCube());
     // bot.driver.rightBumper.whileTrue(autoCommands.topCube());
     // Link to LEDs

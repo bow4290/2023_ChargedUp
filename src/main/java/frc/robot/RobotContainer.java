@@ -27,7 +27,7 @@ public class RobotContainer {
   public final Elbow s_Elbow = new Elbow(s_Elevator::getPositionPercent);
   public final LED s_LED = new LED();
   private SwerveAutoBuilder autoBuilder;
-  private AutoCommands autoCommands = new AutoCommands(s_Swerve, s_Intake, s_Elbow, s_Elevator);
+  public AutoCommands autoCommands = new AutoCommands(s_Swerve, s_Intake, s_Elbow, s_Elevator);
   public Robot bot;
   SendableChooser<Command> chooser = new SendableChooser<>();
 

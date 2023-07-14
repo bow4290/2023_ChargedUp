@@ -10,7 +10,7 @@ import frc.robot.subsystems.Swerve;
 
 public class AutoBalance extends SequentialCommandGroup {
   public static PIDController makePID() {
-    final var PIDC = new PIDController(2, 0.005, 5000);
+    final var PIDC = new PIDController(2.1, 0.005, 5000);
     // 0.04 ~= sin(2.5deg)
     PIDC.setTolerance(0.04, 0.05);
     return PIDC;
@@ -23,9 +23,9 @@ public class AutoBalance extends SequentialCommandGroup {
     // secure ourselves. This assumes that the robot is pretty close to, but not already on, the
     // side of the charge station
     super(
-        new TeleopSwerve(s_Swerve, dir::getSin, dir::getCos, () -> 0.7, () -> false)
-            .until(new Trigger(() -> s_Swerve.getTiltMagnitude() > 0.2).debounce(0.3))
-            .withTimeout(0.6),
+        new TeleopSwerve(s_Swerve, dir::getSin, dir::getCos, () -> 0.4, () -> false)
+            .until(new Trigger(() -> s_Swerve.getTiltMagnitude() > 0.2).debounce(0.4))
+            .withTimeout(1.0),
         // Commands.run(PIDC::reset),
         new PIDCommand(
                 PIDC,
