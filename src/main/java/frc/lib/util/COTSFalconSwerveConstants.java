@@ -100,7 +100,7 @@ public class COTSFalconSwerveConstants {
   public static COTSFalconSwerveConstants SDSMK4i(double driveGearRatio) {
     // IF THE THING IS NOT DOING THE THING SO WE CHANGED THE THING HERE SO THAT IT DOES WHAT THE
     // THING DOES
-    double wheelDiameter = Units.inchesToMeters(3.85);
+    double wheelDiameter = Units.inchesToMeters(3.84);
 
     /** (150 / 7) : 1 */
     double angleGearRatio = ((150.0 / 7.0) / 1.0);
